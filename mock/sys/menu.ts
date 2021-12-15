@@ -17,7 +17,7 @@ const dashboardRoute = {
     {
       path: 'index',
       name: 'DashboardDemo',
-      component: '/lxmongo/index',
+      component: '/welcome/index',
       // component: () => import('/@/views/lxmongo/index.vue'),
       meta: {
         title: 'routes.dashboard.index',
@@ -41,7 +41,7 @@ const kcimRoute = {
     {
       path: 'index',
       name: 'KCIMDemo',
-      component: '/lxmongo/kcim',
+      component: '/kcim/kcim',
       // component: () => import('/@/views/lxmongo/kcim.vue'),
       meta: {
         title: 'routes.demo.kcim.kcim',
@@ -66,7 +66,7 @@ const mycimRoute = {
     {
       path: 'index',
       name: 'MyCIMPage',
-      component: '/lxmongo/mycim',
+      component: '/mycim/mycim',
       // component: () => import('/@/views/lxmongo/mycim.vue'),
       meta: {
         title: 'routes.demo.mycim.mycim',
@@ -91,7 +91,7 @@ const cimRoute = {
     {
       path: 'index',
       name: 'CIMDemo',
-      component: '/lxmongo/cim',
+      component: '/cim/cim',
       // component: () => import('/@/views/lxmongo/cim.vue'),
       meta: {
         title: 'routes.demo.cim.cim',
@@ -116,7 +116,7 @@ const mappingRoute = {
     {
       path: 'index',
       name: 'MappingDemo',
-      component: '/lxmongo/mapping',
+      component: '/mapping/mapping',
       // component: () => import('/@/views/lxmongo/mapping.vue'),
       meta: {
         title: 'routes.dashboard.mapping',
@@ -169,7 +169,7 @@ const sysRoute = {
         title: 'routes.demo.system.account',
         ignoreKeepAlive: true,
       },
-      component: '/demo/system/account/index',
+      component: '/system/account/index',
     },
     {
       path: 'account_detail/:id',
@@ -181,7 +181,7 @@ const sysRoute = {
         showMenu: false,
         currentActiveMenu: '/system/account',
       },
-      component: '/demo/system/account/AccountDetail',
+      component: '/system/account/AccountDetail',
     },
     {
       path: 'role',
@@ -190,7 +190,7 @@ const sysRoute = {
         title: 'routes.demo.system.role',
         ignoreKeepAlive: true,
       },
-      component: '/demo/system/role/index',
+      component: '/system/role/index',
     },
 
     {
@@ -200,7 +200,7 @@ const sysRoute = {
         title: 'routes.demo.system.menu',
         ignoreKeepAlive: true,
       },
-      component: '/demo/system/menu/index',
+      component: '/system/menu/index',
     },
     {
       path: 'dept',
@@ -209,7 +209,7 @@ const sysRoute = {
         title: 'routes.demo.system.dept',
         ignoreKeepAlive: true,
       },
-      component: '/demo/system/dept/index',
+      component: '/system/dept/index',
     },
     {
       path: 'changePassword',
@@ -218,14 +218,14 @@ const sysRoute = {
         title: 'routes.demo.system.password',
         ignoreKeepAlive: true,
       },
-      component: '/demo/system/password/index',
+      component: '/system/password/index',
     },
   ],
 };
 
 export default [
   {
-    url: '/basic-api/getMenuList',
+    url: '/api/getMenuList',
     timeout: 1000,
     method: 'get',
     response: (request: requestParams) => {

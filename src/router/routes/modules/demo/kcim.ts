@@ -18,7 +18,7 @@ export const kcim: AppRouteModule = {
     {
       path: 'index',
       name: 'KCIMDemo',
-      component: () => import('/@/views/lxmongo/kcim.vue'),
+      component: () => import('../../../../views/kcim/kcim.vue'),
       meta: {
         title: t('routes.demo.kcim.kcim'),
         hideMenu: true,

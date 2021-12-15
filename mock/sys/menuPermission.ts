@@ -89,7 +89,7 @@
 
 // export default [
 //   {
-//     url: '/basic-api/getUserPermissionInfo',
+//     url: '/api/getUserPermissionInfo',
 //     timeout: 1000,
 //     method: 'get',
 //     response: () => {
@@ -97,7 +97,7 @@
 //     },
 //   },
 //   {
-//     url: '/basic-api/getMenuPermissionInfo',
+//     url: '/api/getMenuPermissionInfo',
 //     timeout: 1000,
 //     method: 'get',
 //     response: () => {

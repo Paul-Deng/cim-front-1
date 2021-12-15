@@ -18,7 +18,7 @@ export const mapping: AppRouteModule = {
     {
       path: 'index',
       name: 'MappingDemo',
-      component: () => import('/@/views/lxmongo/mapping.vue'),
+      component: () => import('../../../views/mapping/mapping.vue'),
       meta: {
         title: t('routes.dashboard.mapping'),
         icon: 'simple-icons:about-dot-me',

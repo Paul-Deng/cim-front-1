@@ -18,7 +18,7 @@ const cim: AppRouteModule = {
     {
       path: 'index',
       name: 'CIMDemo',
-      component: () => import('/@/views/lxmongo/cim.vue'),
+      component: () => import('../../../../views/cim/cim.vuem.vue'),
       meta: {
         title: t('routes.demo.cim.cim'),
       },

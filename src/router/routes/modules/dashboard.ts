@@ -18,7 +18,7 @@ export const dashboard: AppRouteModule = {
     {
       path: 'index',
       name: 'DashboardDemo',
-      component: () => import('/@/views/lxmongo/index.vue'),
+      component: () => import('../../../views/welcome/index.vueex.vue'),
       meta: {
         title: t('routes.dashboard.index'),
       },

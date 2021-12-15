@@ -189,6 +189,7 @@ export const usePermissionStore = defineStore({
             console.log(getMenuList());
             routeList = (await getMenuList()) as AppRouteRecordRaw[];
             console.log('routeList');
+            console.log(routeList);
           } catch (error) {
             console.log(routeList);
             console.error(error);
