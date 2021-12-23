@@ -7,7 +7,7 @@ import { Icon } from '/@/components/Icon';
 export const columns: BasicColumn[] = [
   {
     title: '菜单名称',
-    dataIndex: 'menuName',
+    dataIndex: 'name',
     width: 200,
     align: 'left',
   },
@@ -98,21 +98,26 @@ export const formSchema: FormSchema[] = [
     component: 'Input',
     required: true,
   },
-
   {
-    field: 'parentMenu',
+    field: 'parentId',
     label: '上级菜单',
-    component: 'TreeSelect',
-    componentProps: {
-      replaceFields: {
-        title: 'menuName',
-        key: 'id',
-        value: 'id',
-      },
-      getPopupContainer: () => document.body,
-    },
+    component: 'Input',
+    // componentProps: {
+    //   replaceFields: {
+    //     title: 'menuName',
+    //     key: 'id',
+    //     value: 'id',
+    //   },
+    //   getPopupContainer: () => document.body,
+    // },
   },
-
+  {
+    field: 'redirect',
+    label: '导向菜单',
+    component: 'Input',
+    required: true,
+    ifShow: ({ values }) => isDir(values.type),
+  },
   {
     field: 'orderNo',
     label: '排序',
@@ -124,7 +129,7 @@ export const formSchema: FormSchema[] = [
     label: '图标',
     component: 'IconPicker',
     required: true,
-    ifShow: ({ values }) => !isButton(values.type),
+    ifShow: ({ values }) => isDir(values.type),
   },
 
   {
@@ -136,10 +141,18 @@ export const formSchema: FormSchema[] = [
   },
   {
     field: 'component',
-    label: '组件路径',
+    label: '组件',
     component: 'Input',
-    ifShow: ({ values }) => isMenu(values.type),
+    required: true,
+    ifShow: ({ values }) => !isButton(values.type),
   },
+  // {
+  //   field: 'childComponent',
+  //   label: '组件路径',
+  //   component: 'Input',
+  //   required: true,
+  //   ifShow: ({ values }) => isMenu(values.type),
+  // },
   {
     field: 'permission',
     label: '权限标识',
@@ -171,7 +184,19 @@ export const formSchema: FormSchema[] = [
     },
     ifShow: ({ values }) => !isButton(values.type),
   },
-
+  {
+    field: 'hideChildren',
+    label: '是否隐藏子菜单',
+    component: 'RadioButtonGroup',
+    defaultValue: false,
+    componentProps: {
+      options: [
+        { label: '否', value: false },
+        { label: '是', value: true },
+      ],
+    },
+    ifShow: ({ values }) => isDir(values.type),
+  },
   {
     field: 'keepalive',
     label: '是否缓存',

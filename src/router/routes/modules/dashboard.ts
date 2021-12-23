@@ -18,7 +18,7 @@ export const dashboard: AppRouteModule = {
     {
       path: 'index',
       name: 'DashboardDemo',
-      component: () => import('../../../views/welcome/index.vueex.vue'),
+      component: () => import('/@/views/welcome/index.vue'),
       meta: {
         title: t('routes.dashboard.index'),
       },

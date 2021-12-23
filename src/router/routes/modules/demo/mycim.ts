@@ -18,7 +18,7 @@ export const mycim: AppRouteModule = {
     {
       path: 'index',
       name: 'MyCIMPage',
-      component: () => import('/@/views/mycim/mycim.vuecim.vue'),
+      component: () => import('/@/views/mycim/mycim.vue'),
       meta: {
         title: t('routes.demo.mycim.mycim'),
         hideMenu: true,

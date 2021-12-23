@@ -1,6 +1,8 @@
 <template>
   <div>
     <div class="side">
+      <button onclick="alert('Hello world!')" type="button"> 添加 </button>
+
       <a-menu
         id="dddddd"
         v-model:openKeys="openKeys"

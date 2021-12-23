@@ -36,8 +36,11 @@
   import MenuDrawer from './MenuDrawer.vue';
 
   import { columns, searchFormSchema } from './menu.data';
+  import { useMessage } from '/@/hooks/web/useMessage';
 
+  const { createMessage } = useMessage();
   const [registerDrawer, { openDrawer }] = useDrawer();
+
   const [registerTable, { reload, expandAll }] = useTable({
     title: '菜单列表',
     api: getMenuList,
@@ -63,13 +66,21 @@
     },
   });
 
-  function handleCreate() {
+  async function handleCreate(this: any, record: Recordable) {
     openDrawer(true, {
+      record,
       isUpdate: false,
     });
+    console.log('newmenu');
+    try {
+      var params = record;
+      console.log(params);
+    } catch (error) {
+      createMessage.error('失败');
+    }
   }
 
-  function handleEdit(record: Recordable) {
+  async function handleEdit(record: Recordable) {
     openDrawer(true, {
       record,
       isUpdate: true,
@@ -80,7 +91,7 @@
     console.log(record);
   }
 
-  function handleSuccess() {
+  async function handleSuccess() {
     reload();
   }
 

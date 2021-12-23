@@ -42,22 +42,27 @@ export interface DeptListItem {
 }
 
 export interface MenuListItem {
-  id: string;
-  orderNo: string;
-  createTime: string;
-  status: number;
-  icon: string;
   component: string;
-  permission: string;
+  hidden?: boolean;
+  id?: number;
+  parentId?: number;
+  requestMethod?: string;
+  sort?: number;
+  subMenus?: MenuListItem[];
+  type?: string;
+  path?: string;
+  icon?: string;
+  url?: string;
+  menuName?: string;
 }
 
-export interface RoleListItem {
+export interface RoleItem {
   id: string;
-  roleName: string;
-  roleValue: string;
+  name: string;
+  code: string;
   status: number;
-  orderNo: string;
-  createTime: string;
+  // orderNo: string;
+  createdTime: string;
 }
 
 /**
@@ -67,8 +72,8 @@ export type AccountListGetResultModel = BasicFetchResult<AccountListItem>;
 
 export type DeptListGetResultModel = BasicFetchResult<DeptListItem>;
 
-export type MenuListGetResultModel = BasicFetchResult<MenuListItem>;
+export type MenuListGetResultModel = MenuListItem[];
 
-export type RolePageListGetResultModel = BasicFetchResult<RoleListItem>;
+export type RolePageListGetResultModel = RoleItem[];
 
-export type RoleListGetResultModel = RoleListItem[];
+export type RoleListGetResultModel = RoleItem[];

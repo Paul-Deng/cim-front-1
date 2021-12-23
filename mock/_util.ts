@@ -5,7 +5,7 @@ export function resultSuccess<T = Recordable>(result: T, { message = 'ok' } = {}
     code: 0,
     result,
     message,
-    type: 'success',
+    // type: 'success',
   };
 }
 

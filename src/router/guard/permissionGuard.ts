@@ -9,13 +9,7 @@ import { PAGE_NOT_FOUND_ROUTE } from '/@/router/routes/basic';
 
 import { RootRoute } from '/@/router/routes';
 
-// const LOGIN_PATH = PageEnum.BASE_LOGIN;
-
 const ROOT_PATH = RootRoute.path;
-
-// const HOME_PATH = PageEnum.BASE_HOME;
-
-// const whitePathList: PageEnum[] = [LOGIN_PATH];
 
 export function createPermissionGuard(router: Router) {
   const userStore = useUserStoreWithOut();
@@ -33,22 +27,6 @@ export function createPermissionGuard(router: Router) {
 
     const token = userStore.getToken;
 
-    // Whitelist can be directly entered
-    // if (whitePathList.includes(to.path as PageEnum)) {
-    //   if (to.path === LOGIN_PATH && token) {
-    //     const isSessionTimeout = userStore.getSessionTimeout;
-    //     try {
-    //       await userStore.afterLoginAction();
-    //       if (!isSessionTimeout) {
-    //         next((to.query?.redirect as string) || '/');
-    //         return;
-    //       }
-    //     } catch {}
-    //   }
-    //   next();
-    //   return;
-    // }
-
     // token does not exist
     if (!token) {
       // You can access without permission. You need to set the routing meta.ignoreAuth to true
@@ -58,41 +36,6 @@ export function createPermissionGuard(router: Router) {
       }
     }
 
-    //   // redirect login page
-    //   const redirectData: { path: string; replace: boolean; query?: Recordable<string> } = {
-    //     path: HOME_PATH,
-    //     replace: true,
-    //   };
-    //   if (to.path) {
-    //     redirectData.query = {
-    //       ...redirectData.query,
-    //       redirect: to.path,
-    //     };
-    //   }
-    //   next(redirectData);
-    //   return;
-    // }
-
-    // Jump to the 404 page after processing the login
-    // if (
-    //   from.path === LOGIN_PATH &&
-    //   to.name === PAGE_NOT_FOUND_ROUTE.name &&
-    //   to.fullPath !== (userStore.getUserInfo.homePath || PageEnum.BASE_HOME)
-    // ) {
-    //   next(userStore.getUserInfo.homePath || PageEnum.BASE_HOME);
-    //   return;
-    // }
-
-    // get userinfo while last fetch time is empty
-    // if (userStore.getLastUpdateTime === 0) {
-    //   try {
-    //     await userStore.getUserInfoAction();
-    //   } catch (err) {
-    //     next();
-    //     return;
-    //   }
-    // }
-
     if (permissionStore.getIsDynamicAddedRoute) {
       next();
       return;
@@ -100,11 +43,16 @@ export function createPermissionGuard(router: Router) {
 
     const routes = await permissionStore.buildRoutesAction();
 
-    routes.forEach((route) => {
-      router.addRoute(route as unknown as RouteRecordRaw);
-    });
-
-    router.addRoute(PAGE_NOT_FOUND_ROUTE as unknown as RouteRecordRaw);
+    if (routes.constructor === Array) {
+      routes.forEach((route) => {
+        console.log('route');
+        // console.log(route);
+        console.log(to.fullPath);
+        router.addRoute(route as unknown as RouteRecordRaw);
+      });
+    } else {
+      // router.addRoute(PAGE_NOT_FOUND_ROUTE as unknown as RouteRecordRaw);
+    }
 
     permissionStore.setDynamicAddedRoute(true);
 

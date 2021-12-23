@@ -8,18 +8,13 @@ import { useMessage } from '/@/hooks/web/useMessage';
 export const columns: BasicColumn[] = [
   {
     title: '角色名称',
-    dataIndex: 'roleName',
+    dataIndex: 'name',
     width: 200,
   },
   {
     title: '角色值',
-    dataIndex: 'roleValue',
+    dataIndex: 'code',
     width: 180,
-  },
-  {
-    title: '排序',
-    dataIndex: 'orderNo',
-    width: 50,
   },
   {
     title: '状态',
@@ -55,12 +50,8 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '创建时间',
-    dataIndex: 'createTime',
+    dataIndex: 'createdTime',
     width: 180,
-  },
-  {
-    title: '备注',
-    dataIndex: 'remark',
   },
 ];
 

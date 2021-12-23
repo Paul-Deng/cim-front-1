@@ -1,4 +1,5 @@
 import type { AppRouteRecordRaw, Menu } from '/@/router/types';
+// import type { MenuListGetResultModel, MenuListItem, RoleItem } from '/@/api/demo/model/systemModel';
 
 import { defineStore } from 'pinia';
 import { store } from '/@/store';
@@ -18,11 +19,16 @@ import { ERROR_LOG_ROUTE, PAGE_NOT_FOUND_ROUTE } from '/@/router/routes/basic';
 
 import { filter } from '/@/utils/helper/treeHelper';
 
-import { getMenuList } from '/@/api/sys/menu';
+// import { getMenuListMock } from '/@/api/sys/menu';
+// import { getMenuList, getRoleListByPage } from '/@/api/demo/system';
 import { getPermCode } from '/@/api/sys/user';
 
 import { useMessage } from '/@/hooks/web/useMessage';
 import { PageEnum } from '/@/enums/pageEnum';
+// import { getMenuListMock } from '/@/api/sys/menu';
+import { getMenuList, getRouteList } from '/@/api/demo/system';
+// import { MenuListItem } from '/@/api/demo/model/systemModel';
+// import { getMenuList } from '/@/api/demo/system';
 
 interface PermissionState {
   // Permission code list
@@ -96,6 +102,10 @@ export const usePermissionStore = defineStore({
       const codeList = await getPermCode();
       this.setPermCodeList(codeList);
     },
+    // async menuListGet() {
+    //   return await getMenuList();
+    // },
+
     async buildRoutesAction(): Promise<AppRouteRecordRaw[]> {
       const { t } = useI18n();
       const userStore = useUserStore();
@@ -181,34 +191,28 @@ export const usePermissionStore = defineStore({
             duration: 1,
           });
 
-          // !Simulate to obtain permission codes from the background,
-          // this function may only need to be executed once, and the actual project can be put at the right time by itself
-          let routeList: AppRouteRecordRaw[] = [];
-          try {
-            // this.changePermissionCode();
-            console.log(getMenuList());
-            routeList = (await getMenuList()) as AppRouteRecordRaw[];
-            console.log('routeList');
-            console.log(routeList);
-          } catch (error) {
-            console.log(routeList);
-            console.error(error);
-          }
+          // console.log(routeList);
+          let routeListtest: AppRouteRecordRaw[] = [];
+          routeListtest = (await getRouteList()) as AppRouteRecordRaw[];
+          console.log('routeListtest');
+          console.log(routeListtest);
+          // // Dynamically introduce components
+          routeListtest = transformObjToRoute(routeListtest);
+          console.log('trans');
+          console.log(routeListtest);
 
-          // Dynamically introduce components
-          routeList = transformObjToRoute(routeList);
-
-          //  Background routing to menu structure
-          const backMenuList = transformRouteToMenu(routeList);
+          // //  Background routing to menu structure
+          const backMenuList = transformRouteToMenu(routeListtest);
           this.setBackMenuList(backMenuList);
+          console.log('backMenuList');
           console.log(backMenuList);
 
-          // remove meta.ignoreRoute item
-          routeList = filter(routeList, routeRemoveIgnoreFilter);
-          routeList = routeList.filter(routeRemoveIgnoreFilter);
+          // // remove meta.ignoreRoute item
+          routeListtest = filter(routeListtest, routeRemoveIgnoreFilter);
+          routeListtest = routeListtest.filter(routeRemoveIgnoreFilter);
 
-          routeList = flatMultiLevelRoutes(routeList);
-          routes = [PAGE_NOT_FOUND_ROUTE, ...routeList];
+          routeListtest = flatMultiLevelRoutes(routeListtest);
+          routes = [PAGE_NOT_FOUND_ROUTE, ...routeListtest];
           break;
       }
 

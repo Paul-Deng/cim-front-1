@@ -1,15 +1,15 @@
+import { getMenuListResultModel } from '../sys/model/menuModel';
 import {
   AccountParams,
   DeptListItem,
-  MenuParams,
   RoleParams,
   RolePageParams,
-  MenuListGetResultModel,
   DeptListGetResultModel,
   AccountListGetResultModel,
   RolePageListGetResultModel,
   RoleListGetResultModel,
 } from './model/systemModel';
+
 import { defHttp } from '/@/utils/http/axios';
 
 enum Api {
@@ -17,8 +17,8 @@ enum Api {
   IsAccountExist = '/system/accountExist',
   DeptList = '/system/getDeptList',
   setRoleStatus = '/system/setRoleStatus',
-  MenuList = '/system/getMenuList',
-  // RolePageList = '/system/getRoleListByPage',
+  MenuList = '/api-user/route/admin',
+  RouteList = '/api-user/route/current',
   RolePageList = '/api-user/role/list',
   GetAllRoleList = '/system/getAllRoleList',
 }
@@ -29,9 +29,12 @@ export const getAccountList = (params: AccountParams) =>
 export const getDeptList = (params?: DeptListItem) =>
   defHttp.get<DeptListGetResultModel>({ url: Api.DeptList, params });
 
-export const getMenuList = (params?: MenuParams) =>
-  defHttp.get<MenuListGetResultModel>({ url: Api.MenuList, params });
-
+export const getMenuList = () => {
+  return defHttp.get<getMenuListResultModel>({ url: Api.MenuList });
+};
+export const getRouteList = () => {
+  return defHttp.get<getMenuListResultModel>({ url: Api.RouteList });
+};
 export const getRoleListByPage = (params?: RolePageParams) =>
   defHttp.get<RolePageListGetResultModel>({ url: Api.RolePageList, params });
 

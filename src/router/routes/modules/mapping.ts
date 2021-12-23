@@ -18,7 +18,7 @@ export const mapping: AppRouteModule = {
     {
       path: 'index',
       name: 'MappingDemo',
-      component: () => import('../../../views/mapping/mapping.vue'),
+      component: () => import('../../../views/mapping/index.vue'),
       meta: {
         title: t('routes.dashboard.mapping'),
         icon: 'simple-icons:about-dot-me',

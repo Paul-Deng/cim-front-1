@@ -179,7 +179,7 @@ export default [
     },
   },
   {
-    url: '/api/system/getMenuList',
+    url: '/api/system/',
     timeout: 100,
     method: 'get',
     response: () => {

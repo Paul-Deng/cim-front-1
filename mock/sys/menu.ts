@@ -42,7 +42,6 @@ const kcimRoute = {
       path: 'index',
       name: 'KCIMDemo',
       component: '/kcim/kcim',
-      // component: () => import('/@/views/lxmongo/kcim.vue'),
       meta: {
         title: 'routes.demo.kcim.kcim',
         hideMenu: true,
@@ -225,7 +224,7 @@ const sysRoute = {
 
 export default [
   {
-    url: '/api/getMenuList',
+    url: '/api/getMenuListMock',
     timeout: 1000,
     method: 'get',
     response: (request: requestParams) => {

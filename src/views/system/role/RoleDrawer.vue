@@ -22,13 +22,16 @@
   </BasicDrawer>
 </template>
 <script lang="ts" setup>
-  import { ref, computed, unref } from 'vue';
+  import { ref, computed, unref, toRaw } from 'vue';
   import { BasicForm, useForm } from '/@/components/Form/index';
   import { formSchema } from './role.data';
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
   import { BasicTree, TreeItem } from '/@/components/Tree';
 
   import { getMenuList } from '/@/api/demo/system';
+import { useUserStore } from '/@/store/modules/user';
+import { notification } from 'ant-design-vue';
+import { RoleInfo } from '/@/api/sys/model/userModel';
 
   const isUpdate = ref(true);
   const treeData = ref<TreeItem[]>([]);
@@ -57,11 +60,31 @@
 
   const getTitle = computed(() => (!unref(isUpdate) ? '新增角色' : '编辑角色'));
 
+  const userStore = useUserStore();
   async function handleSubmit() {
     try {
       const values = await validate();
       setDrawerProps({ confirmLoading: true });
       // TODO custom api
+      var params = values;
+      console.log(params);
+      const result = await userStore.saveOrUpdateUser(
+        toRaw<RoleInfo>({
+          roleName: params.roleName,
+          value: params.roleValue,
+        }),
+      );
+      if (result) {
+        notification.success({
+          message: '提交成功',
+          duration: 1,
+        });
+      } else {
+        notification.error({
+          message: '提交失败',
+          duration: 3,
+        });
+      }
       console.log(values);
       closeDrawer();
     } finally {

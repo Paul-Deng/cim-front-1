@@ -104,6 +104,7 @@ specifiers:
   vue-router: ^4.0.12
   vue-tsc: ^0.28.10
   vue-types: ^4.1.1
+  vuex-module-decorators: ^2.0.0
 
 dependencies:
   '@ant-design/colors': 6.0.0
@@ -206,6 +207,7 @@ devDependencies:
   vite-plugin-windicss: 1.4.12_vite@2.6.13
   vue-eslint-parser: 8.0.1_eslint@8.1.0
   vue-tsc: 0.28.10_typescript@4.4.4
+  vuex-module-decorators: 2.0.0_vue@3.2.21
 
 packages:
 
@@ -11618,6 +11620,17 @@ packages:
       '@vue/server-renderer': 3.2.21_vue@3.2.21
       '@vue/shared': 3.2.21
     dev: false
+
+  /vuex-module-decorators/2.0.0_vue@3.2.21:
+    resolution: {integrity: sha512-awfjlJR9PlX2tDNzRk5fUnksO4TC5Z93Q3ZycvROCiLId7MZ1GdY4sHpEvPqm02UZ8jF+BkuyN5ezghOAk3zeQ==}
+    engines: {node: '>= 8', npm: '>= 5', yarn: '>= 1'}
+    requiresBuild: true
+    peerDependencies:
+      vue: '>=3'
+      vuex: '>=4'
+    dependencies:
+      vue: 3.2.21
+    dev: true
 
   /w3c-hr-time/1.0.2:
     resolution: {integrity: sha512-z8P5DvDNjKDoFIHK7q8r8lackT6l+jo/Ye3HOle7l9nICP9lf1Ci25fy9vHd0JOWewkIFzXIEig3TdKT7JQ5fQ==}
