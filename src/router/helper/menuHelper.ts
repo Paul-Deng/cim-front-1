@@ -40,7 +40,7 @@ export function transformMenuModule(menuModule: MenuModule): Menu {
 
 export function transformRouteToMenu(routeModList: AppRouteModule[], routerMapping = false) {
   const cloneRouteModList = cloneDeep(routeModList);
-  const routeList: RouteItem[] = [];
+  const routeList: AppRouteRecordRaw[] = [];
 
   cloneRouteModList.forEach((item) => {
     if (routerMapping && item.meta.hideChildrenInMenu && typeof item.redirect === 'string') {

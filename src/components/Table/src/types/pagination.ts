@@ -2,7 +2,7 @@ import Pagination from 'ant-design-vue/lib/pagination';
 import { VNodeChild } from 'vue';
 
 interface PaginationRenderProps {
-  page: number;
+  pageNo: number;
   type: 'page' | 'prev' | 'next';
   originalElement: any;
 }
@@ -43,6 +43,8 @@ export interface PaginationProps {
    * @type number
    */
   pageSize?: number;
+
+  pageNo?: number;
 
   /**
    * Whether to hide pager on single page

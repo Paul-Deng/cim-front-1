@@ -32,6 +32,23 @@ export function setObjToUrlParams(baseUrl: string, obj: any): string {
   return /\?$/.test(baseUrl) ? baseUrl + parameters : baseUrl.replace(/\/?$/, '?') + parameters;
 }
 
+export function addPageParamUrl(baseUrl: string, obj: any): string {
+  let parameters = '';
+  for (const key in obj) {
+    if (key == 'pageNo') {
+      parameters += 'pn=' + encodeURIComponent(obj[key]) + '&';
+    }
+    if (key == 'pageSize') {
+      parameters += 'ps=' + encodeURIComponent(obj[key]) + '&';
+    }
+  }
+  parameters = parameters.replace(/&$/, '');
+  if (parameters === '') {
+    return baseUrl;
+  }
+  return /\?$/.test(baseUrl) ? baseUrl + parameters : baseUrl.replace(/\/?$/, '?') + parameters;
+}
+
 export function deepMerge<T = any>(src: any = {}, target: any = {}): T {
   let key: string;
   for (key in target) {

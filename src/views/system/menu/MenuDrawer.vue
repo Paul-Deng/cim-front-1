@@ -20,7 +20,6 @@
   import { useMenuStore } from '/@/store/modules/menu';
   import { MenuInfo } from '/@/api/sys/model/menuModel';
   import { notification } from 'ant-design-vue';
-
   const isUpdate = ref(true);
 
   const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
@@ -36,13 +35,17 @@
     isUpdate.value = !!data?.isUpdate;
 
     if (unref(isUpdate)) {
+      console.log(data.record);
+      console.log(data.record.meta);
       setFieldsValue({
         ...data.record,
+        ...data.record.meta,
       });
     }
     const treeData = await getMenuList();
     updateSchema({
       field: 'parentId',
+      // field: 'menuName',
       componentProps: { treeData },
     });
   });
@@ -56,18 +59,18 @@
       // TODO custom api
       var params = values;
       console.log(params);
-      const result = await menuStore.saveOrUpdateMenu(
+      const result = await menuStore.saveOrUpdateRoute(
         toRaw<MenuInfo>({
           parentId: params.parentId,
           meta: {
             orderNo: params.orderNo,
-            title: params.menuName,
+            title: params.name,
             icon: params.icon,
             hideChildrenInMenu: params.hideChildren,
           },
           type: params.type,
-          name: params.menuName,
-          path: params.routePath,
+          name: params.name,
+          path: params.path,
           component: params.component,
           redirect: params.redirect,
         }),
@@ -77,6 +80,9 @@
           message: '提交成功',
           duration: 1,
         });
+        setTimeout(async function () {
+          document.location.reload();
+        }, 500);
       } else {
         notification.error({
           message: '提交失败',
@@ -89,36 +95,4 @@
       setDrawerProps({ confirmLoading: false });
     }
   }
-  // async function handleDelete() {
-  //   try {
-  //     const values = await validate();
-  //     setDrawerProps({ confirmLoading: true });
-  //     // TODO custom api
-  //     var params = values;
-  //     console.log(params);
-  //     const result = await menuStore.deleteMenu(
-  //       toRaw<MenuInfo>({
-  //         type: params.type,
-  //         name: params.menuName,
-  //         path: params.routePath,
-  //         component: params.component,
-  //       }),
-  //     );
-  //     if (result) {
-  //       notification.success({
-  //         message: '删除成功',
-  //         duration: 1,
-  //       });
-  //     } else {
-  //       notification.error({
-  //         message: '删除失败',
-  //         duration: 3,
-  //       });
-  //     }
-  //     console.log(values);
-  //     closeDrawer();
-  //   } finally {
-  //     setDrawerProps({ confirmLoading: false });
-  //   }
-  // }
 </script>

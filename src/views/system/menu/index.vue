@@ -37,6 +37,8 @@
 
   import { columns, searchFormSchema } from './menu.data';
   import { useMessage } from '/@/hooks/web/useMessage';
+  import { notification } from 'ant-design-vue';
+  import { useMenuStore } from '/@/store/modules/menu';
 
   const { createMessage } = useMessage();
   const [registerDrawer, { openDrawer }] = useDrawer();
@@ -87,8 +89,35 @@
     });
   }
 
-  function handleDelete(record: Recordable) {
-    console.log(record);
+  const menuStore = useMenuStore();
+
+  async function handleDelete(record: Recordable) {
+    console.log('record');
+    try {
+      const values = record;
+      var params = values;
+      const id = params.id;
+      var ids: Array<number> = new Array<number>();
+      ids.push(id);
+      const result = await menuStore.deleteRoute(ids);
+      console.log(result);
+      if (result) {
+        notification.success({
+          message: '提交成功',
+          duration: 1,
+        });
+        setTimeout(async function () {
+          document.location.reload();
+        }, 500);
+      } else {
+        notification.error({
+          message: '提交失败',
+          duration: 3,
+        });
+      }
+    } finally {
+      console.log('?');
+    }
   }
 
   async function handleSuccess() {

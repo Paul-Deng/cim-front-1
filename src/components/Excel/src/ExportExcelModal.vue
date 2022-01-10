@@ -15,7 +15,6 @@
 </template>
 <script lang="ts">
   import type { ExportModalResult } from './typing';
-  import {  } from 'vue';
   import { BasicModal, useModalInner } from '/@/components/Modal';
   import { BasicForm, FormSchema, useForm } from '/@/components/Form/index';
 
@@ -62,7 +61,7 @@
       },
     },
   ];
-  export default ({
+  export default {
     components: { BasicModal, BasicForm },
     emits: ['success', 'register'],
     setup(_, { emit }) {
@@ -87,5 +86,5 @@
         t,
       };
     },
-  });
+  };
 </script>

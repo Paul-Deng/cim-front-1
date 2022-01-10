@@ -92,10 +92,13 @@ export const useUserStore = defineStore({
       try {
         const { goHome = true, mode, ...loginParams } = params;
         const data = await loginApi(loginParams, mode);
-        const { token } = data;
-
+        console.log('logindata');
+        console.log(data);
+        // const { token } = data;
+        const { access_token, token_type } = data;
+        console.log(access_token);
         // save token
-        this.setToken(token);
+        this.setToken(token_type + ' ' + access_token);
         return this.afterLoginAction(goHome);
       } catch (error) {
         return Promise.reject(error);
@@ -105,14 +108,15 @@ export const useUserStore = defineStore({
       if (!this.getToken) return null;
       // get user info
       const userInfo = await this.getUserInfoAction();
-
       const sessionTimeout = this.sessionTimeout;
       if (sessionTimeout) {
         this.setSessionTimeout(false);
       } else {
         const permissionStore = usePermissionStore();
         if (!permissionStore.isDynamicAddedRoute) {
+          console.log('nt');
           const routes = await permissionStore.buildRoutesAction();
+
           routes.forEach((route) => {
             router.addRoute(route as unknown as RouteRecordRaw);
           });

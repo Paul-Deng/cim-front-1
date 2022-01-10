@@ -45,13 +45,11 @@ export function createPermissionGuard(router: Router) {
 
     if (routes.constructor === Array) {
       routes.forEach((route) => {
-        console.log('route');
-        // console.log(route);
-        console.log(to.fullPath);
+        // console.log(to.fullPath);
         router.addRoute(route as unknown as RouteRecordRaw);
       });
     } else {
-      // router.addRoute(PAGE_NOT_FOUND_ROUTE as unknown as RouteRecordRaw);
+      router.addRoute(PAGE_NOT_FOUND_ROUTE as unknown as RouteRecordRaw);
     }
 
     permissionStore.setDynamicAddedRoute(true);

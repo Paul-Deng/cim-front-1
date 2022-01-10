@@ -53,8 +53,6 @@ function dynamicImport(
     const lastIndex = endFlag ? k.length : k.lastIndexOf('.');
     return k.substring(startIndex, lastIndex) === component;
   });
-  console.log('component');
-  console.log(component);
   if (matchKeys?.length === 1) {
     const matchKey = matchKeys[0];
     return dynamicViewsModules[matchKey];

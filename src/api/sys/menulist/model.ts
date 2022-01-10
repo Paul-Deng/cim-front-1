@@ -1,5 +1,4 @@
 import { defHttp } from '/@/utils/http/axios';
-// import { ErrorMessageMode } from '/@/utils/http/axios/types';
 import { getMenuListResultModel, RouteItem } from '../model/menuModel';
 import { ErrorMessageMode } from '/#/axios';
 enum Api {
@@ -7,10 +6,10 @@ enum Api {
 
   MENULIST_ADD = '/api-user/route',
   REPOSITORY_LIST = '/api-model/model/repository',
-  REPOSITORY_DELETE = '/api-model/model/repository/delete',
+  ROUTE_DELETE = '/api-user/route/delete',
 }
 
-export function saveOrUpdateMenuListApi(params: RouteItem, mode: ErrorMessageMode = 'message') {
+export function saveOrUpdateRouteApi(params: RouteItem, mode: ErrorMessageMode = 'message') {
   return defHttp.request<getMenuListResultModel>(
     {
       url: Api.MENULIST_ADD,
@@ -19,6 +18,20 @@ export function saveOrUpdateMenuListApi(params: RouteItem, mode: ErrorMessageMod
       headers: {
         // ignoreCancelToken: true,
       },
+    },
+    {
+      errorMessageMode: mode,
+    },
+  );
+}
+
+export function deleteRouteApi(params: number[], mode: ErrorMessageMode = 'message') {
+  return defHttp.request<getMenuListResultModel>(
+    {
+      url: Api.ROUTE_DELETE,
+      method: 'POST',
+      params,
+      // headers: {},
     },
     {
       errorMessageMode: mode,

@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="side">
+      <!-- <a-button type="primary" @click="handleUpload"> Primary </a-button> -->
       <a-menu
         id="dddddd"
         v-model:openKeys="openKeys"
@@ -52,23 +53,25 @@
     </div>
     <div class="abc">
       <a-table :columns="columns1" :data-source="data1" style="margin-right: 1%">
-        <template #name="{ text }">
+        <template #tableName="{ text }">
           <a>{{ text }}</a>
         </template>
         <template #customTitle>
           <span>
             <smile-outlined />
-            Name
+            TableName
           </span>
         </template>
-        <template #tags="{ text: tags }">
+        <template #description="{ text: descriptions }">
           <span>
             <a-tag
-              v-for="tag in tags"
-              :key="tag"
-              :color="tag === 'loser' ? 'volcano' : tag.length > 5 ? 'geekblue' : 'green'"
+              v-for="description in descriptions"
+              :key="description"
+              :color="
+                description === 'loser' ? 'volcano' : description.length > 5 ? 'geekblue' : 'green'
+              "
             >
-              {{ tag.toUpperCase() }}
+              {{ description.toUpperCase() }}
             </a-tag>
           </span>
         </template>
@@ -100,6 +103,50 @@
   const titleClick = (e: Event) => {
     console.log('titleClick', e);
   };
+
+  async function handleUpload() {
+    // try {
+    //   const values = await validate();
+    //   setDrawerProps({ confirmLoading: true });
+    //   // TODO custom api
+    //   var params = values;
+    //   console.log(params);
+    //   const result = await menuStore.saveOrUpdateRoute(
+    //     toRaw<MenuInfo>({
+    //       parentId: params.parentId,
+    //       meta: {
+    //         orderNo: params.orderNo,
+    //         title: params.name,
+    //         icon: params.icon,
+    //         hideChildrenInMenu: params.hideChildren,
+    //       },
+    //       type: params.type,
+    //       name: params.name,
+    //       path: params.path,
+    //       component: params.component,
+    //       redirect: params.redirect,
+    //     }),
+    //   );
+    //   if (result) {
+    //     notification.success({
+    //       message: '提交成功',
+    //       duration: 1,
+    //     });
+    //     setTimeout(async function () {
+    //       document.location.reload();
+    //     }, 500);
+    //   } else {
+    //     notification.error({
+    //       message: '提交失败',
+    //       duration: 3,
+    //     });
+    //   }
+    //   console.log(values);
+    //   closeDrawer();
+    // } finally {
+    //   setDrawerProps({ confirmLoading: false });
+    // }
+  }
   watch(
     () => openKeys,
     (val) => {
@@ -108,25 +155,25 @@
   );
   const columns1 = [
     {
-      dataIndex: 'name',
-      key: 'name',
-      slots: { title: 'customTitle', customRender: 'name' },
+      dataIndex: 'tableName',
+      key: 'tableName',
+      slots: { title: 'customTitle', customRender: 'tableName' },
     },
     {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
+      title: 'tableID',
+      dataIndex: 'tableID',
+      key: 'tableID',
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
+      title: 'Colunm Name',
+      dataIndex: 'colName',
+      key: 'colName',
     },
     {
-      title: 'Tags',
-      key: 'tags',
-      dataIndex: 'tags',
-      slots: { customRender: 'tags' },
+      title: 'description',
+      key: 'description',
+      dataIndex: 'description',
+      slots: { customRender: 'description' },
     },
     {
       title: 'Action',
@@ -135,27 +182,64 @@
     },
   ];
 
+  // const data = [
+  //   {
+  //     key: '1',
+  //     name: 'John Brown',
+  //     age: 32,
+  //     address: 'New York No. 1 Lake Park',
+  //     tags: ['nice', 'developer'],
+  //   },
+  //   {
+  //     key: '2',
+  //     name: 'Jim Green',
+  //     age: 42,
+  //     address: 'London No. 1 Lake Park',
+  //     tags: ['loser'],
+  //   },
+  //   {
+  //     key: '3',
+  //     name: 'Joe Black',
+  //     age: 32,
+  //     address: 'Sidney No. 1 Lake Park',
+  //     tags: ['cool', 'teacher'],
+  //   },
+  // ];
   const data1 = [
     {
       key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      tags: ['nice', 'developer'],
+      tableName: 'PAYMENT_GROUP',
+      tableID: 1,
+      colName: 'ID',
+      description: 'ID',
     },
     {
       key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-      tags: ['loser'],
+      tableName: 'PAYMENT_GROUP',
+      tableID: 1,
+      colName: 'TOTAL_AUTHORIZATION',
+      description: '',
     },
     {
       key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-      tags: ['cool', 'teacher'],
+      tableName: 'PAYMENT_GROUP',
+      tableID: 1,
+      colName: 'PAYMENT_GROUP_NUMBER',
+      description: '',
+    },
+    {
+      key: '4',
+      tableName: 'PAYMENT_GROUP',
+      tableID: 1,
+      colName: 'TOTAL_REVERSAL_AMOUNT',
+      description: '',
+    },
+    {
+      key: '5',
+      tableName: 'PAYMENT_GROUP',
+      tableID: 1,
+      colName: 'TOTAL_PAYMENT_AMOUNT',
+      description: '',
     },
   ];
 </script>

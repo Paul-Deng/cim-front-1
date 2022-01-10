@@ -1,13 +1,15 @@
 import type { RouteMeta } from 'vue-router';
 export interface RouteItem {
-  path: string;
-  component: any;
+  id?: number;
+  path?: string;
+  component?: any;
   meta?: RouteMeta;
   name?: string;
   alias?: string | string[];
   redirect?: string;
   caseSensitive?: boolean;
   children?: RouteItem[];
+  icon?: string | string[];
 }
 
 export interface MenuInfo {

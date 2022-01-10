@@ -71,7 +71,7 @@ export interface SorterResult {
 
 export interface FetchParams {
   searchInfo?: Recordable;
-  page?: number;
+  pageNo?: number;
   sortInfo?: Recordable;
   filterInfo?: Recordable;
 }

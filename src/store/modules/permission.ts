@@ -19,16 +19,12 @@ import { ERROR_LOG_ROUTE, PAGE_NOT_FOUND_ROUTE } from '/@/router/routes/basic';
 
 import { filter } from '/@/utils/helper/treeHelper';
 
-// import { getMenuListMock } from '/@/api/sys/menu';
-// import { getMenuList, getRoleListByPage } from '/@/api/demo/system';
 import { getPermCode } from '/@/api/sys/user';
 
 import { useMessage } from '/@/hooks/web/useMessage';
 import { PageEnum } from '/@/enums/pageEnum';
-// import { getMenuListMock } from '/@/api/sys/menu';
-import { getMenuList, getRouteList } from '/@/api/demo/system';
-// import { MenuListItem } from '/@/api/demo/model/systemModel';
-// import { getMenuList } from '/@/api/demo/system';
+import { getRouteList } from '/@/api/demo/system';
+import { getToken } from '/@/utils/auth';
 
 interface PermissionState {
   // Permission code list
@@ -102,9 +98,6 @@ export const usePermissionStore = defineStore({
       const codeList = await getPermCode();
       this.setPermCodeList(codeList);
     },
-    // async menuListGet() {
-    //   return await getMenuList();
-    // },
 
     async buildRoutesAction(): Promise<AppRouteRecordRaw[]> {
       const { t } = useI18n();
@@ -177,7 +170,7 @@ export const usePermissionStore = defineStore({
             return (a.meta?.orderNo || 0) - (b.meta?.orderNo || 0);
           });
 
-          this.setFrontMenuList(menuList);
+          // this.setFrontMenuList(menuList);
           // Convert multi-level routing to level 2 routing
           routes = flatMultiLevelRoutes(routes);
           break;
@@ -185,7 +178,6 @@ export const usePermissionStore = defineStore({
         //  If you are sure that you do not need to do background dynamic permissions, please comment the entire judgment below
         case PermissionModeEnum.BACK:
           const { createMessage } = useMessage();
-          console.log('backmode..');
           createMessage.loading({
             content: t('sys.app.menuLoading'),
             duration: 1,
@@ -203,9 +195,13 @@ export const usePermissionStore = defineStore({
 
           // //  Background routing to menu structure
           const backMenuList = transformRouteToMenu(routeListtest);
+          backMenuList.sort((a, b) => {
+            return (a.meta?.orderNo || 0) - (b.meta?.orderNo || 0);
+          });
           this.setBackMenuList(backMenuList);
           console.log('backMenuList');
           console.log(backMenuList);
+          console.log(getToken());
 
           // // remove meta.ignoreRoute item
           routeListtest = filter(routeListtest, routeRemoveIgnoreFilter);

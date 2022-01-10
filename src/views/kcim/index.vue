@@ -21,15 +21,16 @@
         </a-sub-menu>
       </a-menu>
     </div>
-    <a-table class="abc" :columns="columns" :data-source="data" bordered>
-      <template #colName="{ text }">
-        <a>{{ text }}</a>
-      </template>
-    </a-table>
+    <div class="abc">
+      <BasicTable @register="registerTable" @fetch-success="onFetchSuccess" />
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
-  import { ref, watch } from 'vue';
+  import { nextTick, ref, watch } from 'vue';
+  import { columns } from './kcim.data';
+  import { TableListApi } from '/@/api/menu/repositories/model';
+  import { useTable, BasicTable } from '/@/components/Table';
 
   const selectedKeys = ref<string[]>(['1']);
   const openKeys = ref<string[]>(['sub1']);
@@ -45,65 +46,28 @@
       console.log('openKeys', val);
     },
   );
+  const [registerTable, { expandAll }] = useTable({
+    title: '模型列表',
+    api: TableListApi,
+    columns,
+    formConfig: {
+      labelWidth: 120,
+      // schemas: searchFormSchema,
+    },
+    isTreeTable: true,
+    pagination: false,
+    striped: false,
+    useSearchForm: true,
+    showTableSetting: true,
+    bordered: true,
+    showIndexColumn: false,
+    canResize: false,
+  });
 
-  const columns = [
-    {
-      title: '业务对象',
-      dataIndex: 'entityGroup',
-    },
-    {
-      title: '表ID',
-      dataIndex: 'tableId',
-    },
-    {
-      title: '表名称',
-      dataIndex: 'tableName',
-    },
-    {
-      title: '字段名',
-      dataIndex: 'colName',
-      slots: { customRender: 'colName' },
-    },
-    {
-      title: '字段类型',
-      className: 'columnType',
-      dataIndex: 'columnType',
-    },
-    {
-      title: '描述',
-      dataIndex: 'description',
-    },
-  ];
-
-  const data = [
-    {
-      key: '1',
-      entityGroup: '凭证',
-      tableId: '1',
-      tableName: 'ENTITY_GROUP',
-      colName: 'FID',
-      columnType: 'INT',
-      description: '字段ID',
-    },
-    {
-      key: '2',
-      entityGroup: '凭证',
-      tableId: '2',
-      tableName: 'ENTITY_GROUP',
-      colName: 'FNAME',
-      columnType: 'VARCHAR',
-      description: '姓名',
-    },
-    {
-      key: '3',
-      entityGroup: '凭证',
-      tableId: '3',
-      tableName: 'ENTITY_GROUP',
-      colName: 'FADDRESS',
-      columnType: 'VARCHAR',
-      description: '地址',
-    },
-  ];
+  function onFetchSuccess() {
+    // 演示默认展开所有表项
+    nextTick(expandAll);
+  }
 </script>
 <style>
   th.column-money,

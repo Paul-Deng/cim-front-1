@@ -29,9 +29,9 @@
   import { BasicTree, TreeItem } from '/@/components/Tree';
 
   import { getMenuList } from '/@/api/demo/system';
-import { useUserStore } from '/@/store/modules/user';
-import { notification } from 'ant-design-vue';
-import { RoleInfo } from '/@/api/sys/model/userModel';
+  import { useUserStore } from '/@/store/modules/user';
+  import { notification } from 'ant-design-vue';
+  import { RoleInfo } from '/@/api/sys/model/userModel';
 
   const isUpdate = ref(true);
   const treeData = ref<TreeItem[]>([]);

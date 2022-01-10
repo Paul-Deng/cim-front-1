@@ -44,6 +44,7 @@ export const useLockStore = defineStore({
             password: password!,
             goHome: false,
             mode: 'none',
+            grantType: '',
           });
           if (res) {
             this.resetLockInfo();

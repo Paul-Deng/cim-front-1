@@ -1,41 +1,22 @@
 import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
-import { h } from 'vue';
-import { Tag } from 'ant-design-vue';
 
 export const columns: BasicColumn[] = [
   {
-    title: '菜单名称',
-    dataIndex: 'name',
+    title: '模型名称',
+    dataIndex: 'repositoryName',
     width: 100,
     align: 'left',
   },
   {
-    title: '组件',
-    dataIndex: 'component',
+    title: '数据库类型',
+    dataIndex: 'repositoryType',
     width: 200,
   },
   {
-    title: '排序',
-    dataIndex: 'meta.orderNo',
+    title: '用户ID',
+    dataIndex: 'usrId',
     width: 50,
-  },
-  {
-    title: '状态',
-    dataIndex: 'status',
-    width: 80,
-    customRender: ({ record }) => {
-      const status = record.status;
-      const enable = ~~status === 0;
-      const color = enable ? 'green' : 'red';
-      const text = enable ? '启用' : '停用';
-      return h(Tag, { color: color }, () => text);
-    },
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'meta.createdTime',
-    width: 180,
   },
 ];
 
@@ -46,13 +27,13 @@ const isButton = (type: string) => type === '2';
 
 export const searchFormSchema: FormSchema[] = [
   {
-    field: 'name',
+    field: 'repositoryName',
     label: '菜单名称',
     component: 'Input',
     colProps: { span: 8 },
   },
   {
-    field: 'status',
+    field: 'repositoryType',
     label: '状态',
     component: 'Select',
     componentProps: {
@@ -91,14 +72,6 @@ export const formSchema: FormSchema[] = [
     label: '上级菜单',
     component: 'Input',
     required: true,
-    // componentProps: {
-    // replaceFields: {
-    //     title: 'menuName',
-    //     key: 'id',
-    //     value: 'id',
-    //   },
-    //   getPopupContainer: () => document.body,
-    // },
   },
   {
     field: 'redirect',
@@ -136,38 +109,6 @@ export const formSchema: FormSchema[] = [
     isAdvanced: true,
     ifShow: ({ values }) => !isButton(values.type),
   },
-  // {
-  //   field: 'permission',
-  //   label: '权限标识',
-  //   component: 'Input',
-  //   ifShow: ({ values }) => !isDir(values.type),
-  // },
-  // {
-  //   field: 'status',
-  //   label: '状态',
-  //   component: 'RadioButtonGroup',
-  //   defaultValue: '0',
-  //   componentProps: {
-  //     options: [
-  //       { label: '启用', value: '0' },
-  //       { label: '禁用', value: '1' },
-  //     ],
-  //   },
-  // },
-
-  // {
-  //   field: 'isExt',
-  //   label: '是否外链',
-  //   component: 'RadioButtonGroup',
-  //   defaultValue: '0',
-  //   componentProps: {
-  //     options: [
-  //       { label: '否', value: '0' },
-  //       { label: '是', value: '1' },
-  //     ],
-  //   },
-  //   ifShow: ({ values }) => !isButton(values.type),
-  // },
 
   {
     field: 'hideChildren',
@@ -182,31 +123,4 @@ export const formSchema: FormSchema[] = [
     },
     ifShow: ({ values }) => isDir(values.type),
   },
-  // {
-  //   field: 'keepalive',
-  //   label: '是否缓存',
-  //   component: 'RadioButtonGroup',
-  //   defaultValue: '0',
-  //   componentProps: {
-  //     options: [
-  //       { label: '否', value: '0' },
-  //       { label: '是', value: '1' },
-  //     ],
-  //   },
-  //   ifShow: ({ values }) => isMenu(values.type),
-  // },
-
-  // {
-  //   field: 'show',
-  //   label: '是否显示',
-  //   component: 'RadioButtonGroup',
-  //   defaultValue: '0',
-  //   componentProps: {
-  //     options: [
-  //       { label: '是', value: '0' },
-  //       { label: '否', value: '1' },
-  //     ],
-  //   },
-  //   ifShow: ({ values }) => !isButton(values.type),
-  // },
 ];
