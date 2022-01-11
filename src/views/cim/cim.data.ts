@@ -13,9 +13,9 @@ export const columns: BasicColumn[] = [
     width: 30,
   },
   {
-    title: '表名称',
+    title: '业务对象',
     dataIndex: 'bizName',
-    width: 100,
+    width: 50,
   },
   {
     title: '领域ID',

@@ -138,6 +138,7 @@ export interface TableSetting {
 export interface BasicTableProps<T = any> {
   // 点击行选中
   clickToRowSelect?: boolean;
+  repositoryId?: number;
   isTreeTable?: boolean;
   // 自定义排序方法
   sortFn?: (sortInfo: SorterResult) => any;

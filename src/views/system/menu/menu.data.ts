@@ -91,14 +91,6 @@ export const formSchema: FormSchema[] = [
     label: '上级菜单',
     component: 'Input',
     required: true,
-    // componentProps: {
-    // replaceFields: {
-    //     title: 'menuName',
-    //     key: 'id',
-    //     value: 'id',
-    //   },
-    //   getPopupContainer: () => document.body,
-    // },
   },
   {
     field: 'redirect',

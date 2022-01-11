@@ -134,7 +134,6 @@ class Model extends VuexModule {
   async getExportDefaultBiz(): Promise<BusinessObjectListResultVO | null> {
     try {
       const data = await getExportDefaultBizApi();
-      console.log(data);
       return data;
     } catch (error) {
       return null;
@@ -260,7 +259,7 @@ class Model extends VuexModule {
   ): Promise<MappingColumnVOResult | null> {
     try {
       const data = await saveOrUpdateMappingColumnApi(params);
-      console.log(data);
+      // console.log(data);
       return data;
     } catch (error) {
       return null;

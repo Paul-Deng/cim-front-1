@@ -82,7 +82,6 @@
 
       const getUserInfo = computed(() => {
         const { realName = '', avatar, desc } = userStore.getUserInfo || {};
-        console.log(avatar);
         return { realName, avatar, desc };
       });
 

@@ -64,6 +64,7 @@ export interface TableItem {
   tableBusinessObjectId?: number;
   updatedTime?: Date;
   createdTime?: Date;
+  repositoryId?: number;
 }
 
 export type TableListResultVO = BasicFetchResult<TableItem>;

@@ -24,7 +24,6 @@ import { getPermCode } from '/@/api/sys/user';
 import { useMessage } from '/@/hooks/web/useMessage';
 import { PageEnum } from '/@/enums/pageEnum';
 import { getRouteList } from '/@/api/demo/system';
-import { getToken } from '/@/utils/auth';
 
 interface PermissionState {
   // Permission code list
@@ -162,7 +161,7 @@ export const usePermissionStore = defineStore({
         case PermissionModeEnum.ROUTE_MAPPING:
           routes = filter(asyncRoutes, routeFilter);
           routes = routes.filter(routeFilter);
-          console.log(routes);
+          // console.log(routes);
           const menuList = transformRouteToMenu(routes, true);
           routes = filter(routes, routeRemoveIgnoreFilter);
           routes = routes.filter(routeRemoveIgnoreFilter);
@@ -185,6 +184,8 @@ export const usePermissionStore = defineStore({
 
           // console.log(routeList);
           let routeListtest: AppRouteRecordRaw[] = [];
+          //mock
+          // routeListtest = (await getMenuListMock()) as AppRouteRecordRaw[];
           routeListtest = (await getRouteList()) as AppRouteRecordRaw[];
           console.log('routeListtest');
           console.log(routeListtest);
@@ -199,9 +200,6 @@ export const usePermissionStore = defineStore({
             return (a.meta?.orderNo || 0) - (b.meta?.orderNo || 0);
           });
           this.setBackMenuList(backMenuList);
-          console.log('backMenuList');
-          console.log(backMenuList);
-          console.log(getToken());
 
           // // remove meta.ignoreRoute item
           routeListtest = filter(routeListtest, routeRemoveIgnoreFilter);

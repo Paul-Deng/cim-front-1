@@ -41,6 +41,7 @@ const transform: AxiosTransform = {
       return res.data;
     }
     // 错误的时候返回
+    //mock修改为result
     const { data } = res;
     if (!data) {
       // return '[HTTP] Request has no return value';
@@ -52,7 +53,7 @@ const transform: AxiosTransform = {
     // 这里逻辑可以根据项目进行修改
     const hasSuccess = data && Reflect.has(data, 'code') && code === ResultEnum.SUCCESS;
     if (hasSuccess) {
-      // return data.data;
+      // return result;
       return data.data;
     }
 
@@ -95,10 +96,7 @@ const transform: AxiosTransform = {
       config.url = `${apiUrl}${config.url}`;
     }
     const params = config.params || {};
-    console.log(config.url);
     config.url = addPageParamUrl(config.url as string, params);
-    console.log('config.url');
-    console.log(config.url);
     if (config.method?.toUpperCase() === RequestEnum.GET) {
       if (!isString(params)) {
         // 给 get 请求加上时间戳参数，避免从缓存中拿数据。

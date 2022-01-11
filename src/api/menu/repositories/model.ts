@@ -281,7 +281,7 @@ export function BizObjKVApi(params: BusinessObjectItem) {
   });
 }
 
-export function TableListApi(params: TableItem) {
+export function TableListApi(params?: TableItem) {
   return defHttp.request<TableListResultVO>({
     url: Api.TABLE_LIST,
     method: 'POST',

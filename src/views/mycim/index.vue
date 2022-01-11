@@ -7,7 +7,7 @@
         search
         :clickRowToExpand="false"
         :treeData="treeData"
-        :replaceFields="{ key: 'id', title: 'deptName' }"
+        :replaceFields="{ key: 'id', title: 'path' }"
       />
       <!-- <a-menu
         id="dddddd"
@@ -43,7 +43,7 @@
   import { TableListApi } from '/@/api/menu/repositories/model';
   import { GlobalEnum } from '/@/enums/globalEnums';
   import { BasicTable, useTable } from '/@/components/Table';
-  import { getDeptList } from '/@/api/demo/system';
+  import { getRouteList } from '/@/api/demo/system';
 
   // const selectedKeys = ref<string[]>(['1']);
   const openKeys = ref<string[]>(['sub1']);
@@ -79,7 +79,7 @@
   const treeData = ref<TreeItem[]>([]);
 
   async function fetch() {
-    treeData.value = (await getDeptList()) as unknown as TreeItem[];
+    treeData.value = (await getRouteList()) as unknown as TreeItem[];
   }
 
   // function handleSelect(keys) {
@@ -105,7 +105,6 @@
     showIndexColumn: false,
     canResize: false,
     pagination: {
-      // pageNo: Number(GlobalEnum.PAGE_SIZE),
       pageSize: Number(GlobalEnum.PAGE_SIZE),
     },
   });

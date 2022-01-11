@@ -46,6 +46,8 @@ export interface PaginationProps {
 
   pageNo?: number;
 
+  repositoryId?: number;
+
   /**
    * Whether to hide pager on single page
    * @default false

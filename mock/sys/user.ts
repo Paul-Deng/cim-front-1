@@ -87,7 +87,6 @@ export default [
     method: 'get',
     response: (request: requestParams) => {
       const token = getRequestToken(request);
-      console.log(token);
       if (!token) return resultError('Invalid token getPermCode');
       const checkUser = createFakeUserList().find((item) => item.token === token);
       if (!checkUser) {

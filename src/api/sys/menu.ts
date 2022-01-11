@@ -2,8 +2,8 @@ import { defHttp } from '/@/utils/http/axios';
 import { getMenuListResultModel } from './model/menuModel';
 
 enum Api {
-  // GetMenuListMock = '/getMenuListMock',
-  GetMenuListMock = '/api-user/route/admin',
+  GetMenuListMock = '/getMenuListMock',
+  // GetMenuListMock = '/api-user/route/admin',
 }
 
 /**
