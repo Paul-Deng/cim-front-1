@@ -34,11 +34,12 @@ export interface AccountListItem {
 }
 
 export interface DeptListItem {
-  id: string;
-  orderNo: string;
-  createTime: string;
-  remark: string;
-  status: number;
+  id?: string;
+  orderNo?: string;
+  createTime?: string;
+  remark?: string;
+  status?: number;
+  pageSize?: number;
 }
 
 export interface MenuListItem {

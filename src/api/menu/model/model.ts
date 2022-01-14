@@ -54,17 +54,27 @@ export type BusinessObjectListResultVO = BasicFetchResult<BusinessObjectItem>;
 
 export interface TableItem {
   id?: number;
-  organizationId?: string;
-  tableCode?: string;
-  tableField?: string;
-  tableUserId?: number;
-  tableVersion?: number;
-  tableUserName?: string;
-  tableDescription?: string;
-  tableBusinessObjectId?: number;
-  updatedTime?: Date;
-  createdTime?: Date;
+  bizCode?: string;
+  bizId?: number;
+  bizName?: string;
+  description?: string;
+  fieldId?: number;
   repositoryId?: number;
+  tableCode?: string;
+  userId?: number;
+  updatedTime?: Date;
+  //column
+  columnName?: string;
+  columnType?: string;
+  columnDefaultValue?: string;
+  columnNull?: Boolean;
+  columnPrimary?: Boolean;
+  columnDescription?: string;
+  belongsTableId?: number;
+  columnUnique?: Boolean;
+  columnUserId?: number;
+  columnContributors?: string;
+  columnStatus?: number;
 }
 
 export type TableListResultVO = BasicFetchResult<TableItem>;

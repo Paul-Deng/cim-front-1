@@ -5,42 +5,42 @@ import { defineStore } from 'pinia';
 import { LOCK_INFO_KEY } from '/@/enums/cacheEnum';
 import { Persistent } from '/@/utils/cache/persistent';
 import { ErrorMessageMode } from '/#/axios';
-import { deleteRouteApi, saveOrUpdateRouteApi } from '/@/api/sys/menulist/model';
-import { RouteItem, getMenuListResultModel } from '/@/api/sys/model/menuModel';
+import { deleteTableApi, saveOrUpdateTableApi } from '/@/api/sys/model/tableModel';
+import { TableItem, TableListResultVO } from '/@/api/menu/model/model';
 interface LockState {
   lockInfo: Nullable<LockInfo>;
 }
 
-export const useMenuStore = defineStore({
-  id: 'menu',
+export const useTableStore = defineStore({
+  id: 'table',
   state: (): LockState => ({
     lockInfo: Persistent.getLocal(LOCK_INFO_KEY),
   }),
   getters: {},
   actions: {
-    async saveOrUpdateRoute(
-      params: RouteItem & {
+    async saveOrUpdateTable(
+      params: TableItem & {
         mode?: ErrorMessageMode;
       },
-    ): Promise<getMenuListResultModel | null> {
+    ): Promise<TableListResultVO | null> {
       try {
-        const { ...menuParams } = params;
-        const data = await saveOrUpdateRouteApi(menuParams);
+        const { ...tableParams } = params;
+        const data = await saveOrUpdateTableApi(tableParams);
         return data;
       } catch (error) {
         return null;
       }
     },
-    async deleteRoute(
+    async deleteTable(
       params: number[] & {
         mode?: ErrorMessageMode;
       },
-    ): Promise<getMenuListResultModel | null> {
+    ): Promise<Boolean> {
       try {
-        const data = await deleteRouteApi(params);
+        const data = await deleteTableApi(params);
         return data;
       } catch (error) {
-        return null;
+        return false;
       }
     },
   },

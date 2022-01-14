@@ -5,7 +5,6 @@ import {
   RepositoryItem,
 } from '../model/model';
 import { defHttp } from '/@/utils/http/axios';
-// import { ErrorMessageMode } from '/@/utils/http/axios/types';
 import { ErrorMessageMode } from '/#/axios';
 import {
   BusinessObjectItem,
@@ -33,11 +32,10 @@ enum Api {
   BUSINESS_OBJECT_EXCEL_EXPORT = '/api-model/model/biz/export',
 
   TABLE_LIST = '/api-model/model/table/list',
-  // TABLE_LIST = 'api-model/model/repository/list',
   TABLE_ADD = '/api-model/model/table/add',
   TABLE_DELETE = '/api-model/model/table/delete',
 
-  MODEL_COLUMN_LIST = '/api-model/model/column',
+  MODEL_COLUMN_LIST = '/api-model/model/column/list',
   MODEL_COLUMN_ADD = '/api-model/model/column/add',
   MODEL_COLUMN_DELETE = '/api-model/model/column/delete',
 
@@ -376,19 +374,14 @@ export function deleteTableColumnApi(params: number[], mode: ErrorMessageMode = 
   );
 }
 
-export function GetTableColumnApi(params: TableColumnItem, mode: ErrorMessageMode = 'message') {
-  return defHttp.request<TableColumnItem>(
-    {
-      url: Api.MODEL_COLUMN_LIST,
-      method: 'POST',
-      params,
-      headers: {
-        // @ts-ignore
-        ignoreCancelToken: true,
-      },
+export function GetTableColumnApi(params?: TableItem) {
+  return defHttp.request<TableListResultVO>({
+    url: Api.MODEL_COLUMN_LIST,
+    method: 'POST',
+    params,
+    headers: {
+      // @ts-ignore
+      ignoreCancelToken: true,
     },
-    {
-      errorMessageMode: mode,
-    },
-  );
+  });
 }

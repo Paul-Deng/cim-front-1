@@ -7,48 +7,30 @@
     </div>
     <div>
       <div class="side">
+        <!-- <BasicTree></BasicTree> -->
         <BasicTree
           title="CIM模型"
           toolbar
           search
-          :clickRowToExpand="false"
+          :clickRowToExpand="true"
           :treeData="treeData"
-          :replaceFields="{ key: 'id', title: 'businessObjectName' }"
+          :replaceFields="{ key: 'id', title: 'code' }"
           @select="handleSelect"
         />
-        <!-- <a-menu
-          id="dddddd"
-          v-model:openKeys="openKeys"
-          v-model:selectedKeys="selectedKeys"
-          mode="inline"
-          @click="handleClick"
-        >
-          <a-sub-menu key="level1-1" @titleClick="titleClick">
-            <template #title>CIM模型</template>
-            <a-sub-menu key="level2-1" title="领域 财务">
-              <a-menu-item @register="registerTable" />
-              <a-menu-item key="1">凭证</a-menu-item>
-              <a-menu-item key="2">科目</a-menu-item>
-              <a-menu-item key="3">支付</a-menu-item>
-              <a-menu-item key="4">支付方式</a-menu-item>
-            </a-sub-menu>
-            <a-sub-menu key="level2-2" title="领域 产品">
-              <a-menu-item key="5">产品</a-menu-item>
-              <a-menu-item key="6">产品分类</a-menu-item>
-              <a-menu-item key="7">产品属性</a-menu-item>
-            </a-sub-menu>
-            <a-sub-menu key="level2-3" title="领域 用户">
-              <a-menu-item key="8">用户角色</a-menu-item>
-              <a-menu-item key="9">用户群体</a-menu-item>
-            </a-sub-menu>
-          </a-sub-menu>
-        </a-menu> -->
       </div>
       <div class="atable">
-        <BasicTable @register="registerTable" @fetch-success="onFetchSuccess">
+        <BasicTable
+          @register="registerTable"
+          @fetch-success="onFetchSuccess"
+          @edit-change="handleEditChange"
+        >
           <template #action="{ record }">
             <TableAction
               :actions="[
+                {
+                  icon: 'clarity:note-edit-line',
+                  onClick: handleEditChange.bind(null, record),
+                },
                 {
                   icon: 'ant-design:delete-outlined',
                   color: 'error',
@@ -61,22 +43,25 @@
             />
           </template>
         </BasicTable>
+        <TableModal @register="registerModal" />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { nextTick, onMounted, ref } from 'vue';
+  import { nextTick, onMounted, ref, toRaw } from 'vue';
   import { watch } from 'vue';
   import { columns } from './cim.data';
-  import { TableListApi } from '/@/api/menu/repositories/model';
+  import { GetTableColumnApi, TableListApi } from '/@/api/menu/repositories/model';
   import { ImpExcel, ExcelData } from '/@/components/Excel';
   import { BasicTable, BasicColumn, useTable, TableAction } from '/@/components/Table';
   import { BasicTree, TreeItem } from '/@/components/Tree';
   import { getBizList } from '/@/api/demo/system';
   import { notification } from 'ant-design-vue';
-  import { useMenuStore } from '/@/store/modules/menu';
+  import { useTableStore } from '/@/store/modules/tableList';
+  import { useModal } from '/@/components/Modal';
+  import TableModal from './TableModal.vue';
 
   const openKeys = ref<string[]>(['sub1']);
 
@@ -86,49 +71,46 @@
       console.log('openKeys', val);
     },
   );
-  
+
   let treeData = ref<TreeItem[]>([]);
-
-  
-
-  const children = ref<TreeItem[]>([]);
-  children.value = (await getBizList()).items as unknown as TreeItem[];
+  let tableListTree = ref<TreeItem[]>([]);
+  const reParam = {
+    pageSize: 100,
+    repositoryId: 1,
+  };
 
   async function fetch() {
-    console.log('ddeptList');
-    console.log((await getBizList()).items);
-    treeData.value = (await getBizList()).items as unknown as TreeItem[];
-
-    const tempData = ref<TreeItem[]>([]);
-    tempData.value = (await TableListApi()).items as unknown as TreeItem[];
-    console.log('tablelist');
-    console.log(tempData.value);
-    treeData = {
-      // children: tempData.value,
-    };
+    treeData.value = await bizList;
+    console.log(treeData.value);
   }
-
   onMounted(() => {
     fetch();
   });
 
   let bizIdnum = ref<number>(1);
+  let tableIdnum = ref<number>(1);
 
   let requestParam = {
     bizId: bizIdnum,
+    tableId: tableIdnum,
   };
+
+  let requestApi = ref<any>(TableListApi);
+  let input = requestApi;
+
+  const [registerModal, { openModal }] = useModal();
 
   let [registerTable, { reload, expandAll }] = useTable({
     title: '模型表',
-    api: TableListApi,
     columns,
+    api: input,
     formConfig: {
       labelWidth: 120,
     },
     isTreeTable: true,
     striped: false,
     useSearchForm: true,
-    showTableSetting: false,
+    showTableSetting: true,
     bordered: true,
     showIndexColumn: false,
     canResize: false,
@@ -142,16 +124,100 @@
     },
   });
 
+  // let reTable = registerTable;
+
+  // let [registerTableColumn, {}] = useTable({
+  //   title: '模型',
+  //   columns,
+  //   formConfig: {
+  //     labelWidth: 120,
+  //   },
+  //   isTreeTable: true,
+  //   striped: false,
+  //   useSearchForm: true,
+  //   showTableSetting: true,
+  //   bordered: true,
+  //   showIndexColumn: false,
+  //   canResize: false,
+  //   searchInfo: requestParam,
+  //   actionColumn: {
+  //     width: 80,
+  //     title: '操作',
+  //     dataIndex: 'action',
+  //     slots: { customRender: 'action' },
+  //     fixed: undefined,
+  //   },
+  // });
+
   function handleSelect(keys) {
-    bizIdnum.value = keys[0];
-    requestParam = {
-      bizId: bizIdnum.value,
-    };
-    console.log('reload');
-    console.log(requestParam);
-    reload();
-    // return repositoryIdnum;
+    console.log(keys[0]);
+    if (keys[0] > 100) {
+      tableIdnum.value = keys[0] - 100;
+      console.log('debug');
+      requestApi = GetTableColumnApi;
+      input = requestApi;
+      // requestParam = {
+      //   tableId: tableIdnum.value,
+      // };
+      reload({
+        api: GetTableColumnApi,
+        pageSize: 5,
+        searchInfo: {
+          tableId: tableIdnum.value,
+        },
+      });
+    } else {
+      bizIdnum.value = keys[0];
+      requestParam = {
+        bizId: bizIdnum.value,
+      };
+      // reTable = registerTableColumn;
+      reload();
+    }
+    // console.log(input);
   }
+
+  function handleEditChange(record: Recordable) {
+    console.log(record);
+    openModal(true, {
+      record,
+      isUpdate: true,
+    });
+  }
+
+  let bizList = (async () => {
+    treeData.value = (await getBizList(reParam)).items as unknown as TreeItem[];
+    let paramsNum = 1;
+    let params = {
+      pageSize: 100,
+      repositoryId: 1,
+      bizId: paramsNum,
+    };
+    tableListTree.value = (await TableListApi(params)).items as unknown as TreeItem[];
+    const temp = toRaw(tableListTree.value);
+    const result: any[] = [];
+    const str = toRaw(treeData.value);
+    const treeLen = str.length;
+    for (let index = 0; index < treeLen; index++) {
+      result.push({
+        code: str[index].businessObjectCode,
+        id: str[index].id,
+        bizName: str[index].bizName,
+        children: (() => {
+          const childrenstr: any[] = [];
+          const length = temp.length;
+          for (let j = 0; j < length; j++) {
+            childrenstr.push({
+              code: temp[j].tableCode,
+              id: temp[j].id + 100,
+            });
+          }
+          return childrenstr;
+        })(),
+      });
+    }
+    return result;
+  })();
 
   const tableListRef = ref<
     {
@@ -161,7 +227,7 @@
     }[]
   >([]);
 
-  const menuStore = useMenuStore();
+  const tableStore = useTableStore();
   async function handleDelete(record: Recordable) {
     console.log('record');
     try {
@@ -170,7 +236,7 @@
       const id = params.id;
       var ids: Array<number> = new Array<number>();
       ids.push(id);
-      const result = await menuStore.deleteRoute(ids);
+      const result = await tableStore.deleteTable(ids);
       console.log(result);
       if (result) {
         notification.success({

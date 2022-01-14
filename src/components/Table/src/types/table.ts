@@ -72,8 +72,10 @@ export interface SorterResult {
 export interface FetchParams {
   searchInfo?: Recordable;
   pageNo?: number;
+  pageSize?: number;
   sortInfo?: Recordable;
   filterInfo?: Recordable;
+  api?: any;
 }
 
 export interface GetColumnsParams {

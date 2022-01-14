@@ -68,6 +68,7 @@ export function useDataSource(
     pagination: PaginationProps,
     filters: Partial<Recordable<string[]>>,
     sorter: SorterResult,
+    api: any,
   ) {
     const { clearSelectOnPageChange, sortFn, filterFn } = unref(propsRef);
     if (clearSelectOnPageChange) {
@@ -88,6 +89,7 @@ export function useDataSource(
       params.filterInfo = filterInfo;
     }
     fetch(params);
+    if (!api || !isFunction(api)) return;
   }
 
   function setTableKey(items: any[]) {
@@ -252,6 +254,7 @@ export function useDataSource(
       pagination,
     } = unref(propsRef);
     if (!api || !isFunction(api)) return;
+    console.log(api);
     try {
       setLoading(true);
       const { pageField, sizeField, listField, totalField } = Object.assign(
@@ -273,6 +276,7 @@ export function useDataSource(
       const { sortInfo = {}, filterInfo } = searchState;
 
       let params: Recordable = {
+        ...api,
         ...pageParams,
         ...(useSearchForm ? getFieldsValue() : {}),
         ...searchInfo,
