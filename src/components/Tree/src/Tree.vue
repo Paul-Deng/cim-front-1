@@ -163,7 +163,6 @@
         if (!contextMenuOptions.items?.length) return;
         createContextMenu(contextMenuOptions);
       }
-
       function setExpandedKeys(keys: Keys) {
         state.expandedKeys = keys;
       }
@@ -319,15 +318,6 @@
           emit('change', v);
         },
       );
-
-      // watchEffect(() => {
-      //   console.log('======================');
-      //   console.log(props.value);
-      //   console.log('======================');
-      //   if (props.value) {
-      //     state.checkedKeys = props.value;
-      //   }
-      // });
 
       watchEffect(() => {
         state.checkStrictly = props.checkStrictly;
@@ -502,6 +492,7 @@
       align-items: center;
       width: 100%;
       padding-right: 10px;
+      text-overflow: ellipsis;
 
       &:hover {
         .@{prefix-cls}__action {

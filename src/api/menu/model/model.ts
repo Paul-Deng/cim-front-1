@@ -59,11 +59,14 @@ export interface TableItem {
   bizName?: string;
   description?: string;
   fieldId?: number;
+  fieldCode?: string;
+  fieldName?: string;
+  fieldRepositoryId?: number;
   repositoryId?: number;
   tableCode?: string;
   userId?: number;
   updatedTime?: Date;
-  //column
+  tableId?: number;
   columnName?: string;
   columnType?: string;
   columnDefaultValue?: string;
@@ -75,6 +78,8 @@ export interface TableItem {
   columnUserId?: number;
   columnContributors?: string;
   columnStatus?: number;
+  columnForeignKey?: Boolean;
+  columnLength?: number;
 }
 
 export type TableListResultVO = BasicFetchResult<TableItem>;

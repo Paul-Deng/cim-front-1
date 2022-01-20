@@ -7,7 +7,7 @@
     </div>
     <div>
       <div class="side">
-        <!-- <BasicTree></BasicTree> -->
+        <!-- <a-tree :load-data="fieldList" :tree-data="treeData" /> -->
         <BasicTree
           title="CIM模型"
           toolbar
@@ -43,7 +43,15 @@
             />
           </template>
         </BasicTable>
-        <TableModal @register="registerModal" />
+        <template v-if="isBiz">
+          <BizModal @register="registerModal" />
+        </template>
+        <template v-if="isTable">
+          <TableModal @register="registerModal" />
+        </template>
+        <template v-if="isCol">
+          <ColModal @register="registerModal" />
+        </template>
       </div>
     </div>
   </div>
@@ -52,8 +60,8 @@
 <script lang="ts" setup>
   import { nextTick, onMounted, ref, toRaw } from 'vue';
   import { watch } from 'vue';
-  import { columns } from './cim.data';
-  import { GetTableColumnApi, TableListApi } from '/@/api/menu/repositories/model';
+  import { TableColumns, ColColumns, BizColumns } from './cim.data';
+  import { FieldListApi, GetTableColumnApi, TableListApi } from '/@/api/menu/repositories/model';
   import { ImpExcel, ExcelData } from '/@/components/Excel';
   import { BasicTable, BasicColumn, useTable, TableAction } from '/@/components/Table';
   import { BasicTree, TreeItem } from '/@/components/Tree';
@@ -62,7 +70,10 @@
   import { useTableStore } from '/@/store/modules/tableList';
   import { useModal } from '/@/components/Modal';
   import TableModal from './TableModal.vue';
-
+  import BizModal from './BizModal.vue';
+  import ColModal from './ColModal.vue';
+  import { useColumnStore } from '/@/store/modules/columnList';
+  import { useBizStore } from '/@/store/modules/bizList';
   const openKeys = ref<string[]>(['sub1']);
 
   watch(
@@ -73,36 +84,44 @@
   );
 
   let treeData = ref<TreeItem[]>([]);
-  let tableListTree = ref<TreeItem[]>([]);
-  const reParam = {
+  let bizListTree = ref<TreeItem[]>([]);
+  // let tableListTree = ref<TreeItem[]>([]);
+  let Params = {
     pageSize: 100,
     repositoryId: 1,
   };
 
+  let isBiz = ref(true);
+  let isTable = ref(false);
+  let isCol = ref(false);
+
   async function fetch() {
-    treeData.value = await bizList;
+    // treeData.value = [...treeData.value];
+    treeData.value = await fieldList;
     console.log(treeData.value);
   }
   onMounted(() => {
     fetch();
   });
 
+  let fieldIdnum = ref<number>(1);
   let bizIdnum = ref<number>(1);
   let tableIdnum = ref<number>(1);
 
   let requestParam = {
+    fieldId: fieldIdnum,
     bizId: bizIdnum,
     tableId: tableIdnum,
   };
 
-  let requestApi = ref<any>(TableListApi);
+  let requestApi = ref<any>(getBizList);
   let input = requestApi;
 
   const [registerModal, { openModal }] = useModal();
 
-  let [registerTable, { reload, expandAll }] = useTable({
-    title: '模型表',
-    columns,
+  let [registerTable, { tableReload, colReload, bizReload, expandAll }] = useTable({
+    title: '模型',
+    columns: BizColumns,
     api: input,
     formConfig: {
       labelWidth: 120,
@@ -124,57 +143,90 @@
     },
   });
 
-  // let reTable = registerTable;
-
-  // let [registerTableColumn, {}] = useTable({
-  //   title: '模型',
-  //   columns,
-  //   formConfig: {
-  //     labelWidth: 120,
-  //   },
-  //   isTreeTable: true,
-  //   striped: false,
-  //   useSearchForm: true,
-  //   showTableSetting: true,
-  //   bordered: true,
-  //   showIndexColumn: false,
-  //   canResize: false,
-  //   searchInfo: requestParam,
-  //   actionColumn: {
-  //     width: 80,
-  //     title: '操作',
-  //     dataIndex: 'action',
-  //     slots: { customRender: 'action' },
-  //     fixed: undefined,
-  //   },
-  // });
-
-  function handleSelect(keys) {
-    console.log(keys[0]);
-    if (keys[0] > 100) {
-      tableIdnum.value = keys[0] - 100;
-      console.log('debug');
-      requestApi = GetTableColumnApi;
-      input = requestApi;
-      // requestParam = {
-      //   tableId: tableIdnum.value,
-      // };
-      reload({
-        api: GetTableColumnApi,
-        pageSize: 5,
+  async function handleSelect(keys) {
+    
+    if(keys[0] > 10000 && keys[0] <= 20000){
+      console.log('????');
+      tableReload({
+        api: TableListApi,
+        columns: TableColumns,
         searchInfo: {
+          tableId: null,
+          bizId: bizIdnum.value,
+        },
+      });
+      nextTick(() => {
+        isTable.value = true;
+        isBiz.value = isCol.value = false;
+      });
+      // console.log(fieldList[0]);
+      let params = {
+        pageSize: 100,
+        repositoryId: 1,
+        bizId: keys[0]-10000,
+      };
+      let arr: any[] = [];
+      arr = await fieldList;
+      let arr2: TreeItem[] = [];
+      arr2 = arr[0].children;
+      let num = keys[0] - 10001;
+      console.log(num);
+      console.log('abc');
+      console.log(arr2);
+      bizListTree.value = (await TableListApi(params)).items as unknown as TreeItem[];
+      const temp = toRaw(bizListTree.value);
+      arr2[num].children = (() => {
+            const childrenstr: any[] = [];
+            const length = temp.length;
+            for (let j = 0; j < length; j++) {
+              childrenstr.push({
+                code: temp[j].tableCode,
+                id: temp[j].id + 20000,
+              });
+            }
+            return childrenstr;
+      })();
+      nextTick(() => {
+        console.log('nextTick');
+        console.log(arr);
+        treeData.value = arr;
+      });
+    } else if (keys[0] > 20000) {
+      console.log('registerModal');
+      console.log(keys[0]);
+      console.log(registerModal);
+      tableIdnum.value = keys[0] - 20000;
+      colReload({
+        api: GetTableColumnApi,
+        columns: ColColumns,
+        searchInfo: {
+          bizId: null,
           tableId: tableIdnum.value,
         },
       });
+      nextTick(() => {
+        isCol.value = true;
+        isBiz.value = isTable.value = false;
+      });
     } else {
-      bizIdnum.value = keys[0];
-      requestParam = {
-        bizId: bizIdnum.value,
-      };
-      // reTable = registerTableColumn;
-      reload();
+      console.log(keys[0]);
+      console.log('debug');
+      fieldIdnum.value = keys[0];
+      bizReload({
+        api: getBizList,
+        columns: BizColumns,
+        searchInfo: {
+          bizId: null,
+          tableId: null,
+          fieldId: fieldIdnum.value,
+        },
+      });
+      nextTick(() => {
+        isBiz.value = true;
+        isTable.value = isCol.value = false;
+      });
     }
-    // console.log(input);
+    
   }
 
   function handleEditChange(record: Recordable) {
@@ -184,39 +236,62 @@
       isUpdate: true,
     });
   }
+  function handleDelete(record: Recordable) {
+    console.log(record);
+    if (isBiz.value) {
+      bizDelete(record);
+    } else if (isTable.value) {
+      tableDelete(record);
+    } else if (isCol.value) {
+      columnDelete(record);
+    } else {
+      bizDelete(record.id);
+      console.log('error');
+    }
+    // if(record.id)
+  }
 
-  let bizList = (async () => {
-    treeData.value = (await getBizList(reParam)).items as unknown as TreeItem[];
-    let paramsNum = 1;
-    let params = {
+  let fieldList = (async () => {
+    treeData.value = (await FieldListApi(Params)).items as unknown as TreeItem[];
+    let fieldnum = 1;
+    let bizParams = {
       pageSize: 100,
       repositoryId: 1,
-      bizId: paramsNum,
+      fieldId: fieldnum,
     };
-    tableListTree.value = (await TableListApi(params)).items as unknown as TreeItem[];
-    const temp = toRaw(tableListTree.value);
-    const result: any[] = [];
-    const str = toRaw(treeData.value);
-    const treeLen = str.length;
-    for (let index = 0; index < treeLen; index++) {
-      result.push({
-        code: str[index].businessObjectCode,
-        id: str[index].id,
-        bizName: str[index].bizName,
+    const fieldResult: any[] = [];
+    const fieldstr = toRaw(treeData.value);
+    const fieldlen = fieldstr.length;
+    for (let index = 0; index < fieldlen; index++) {
+      fieldnum = fieldstr[index].id;
+      bizParams = {
+        pageSize: 100,
+        repositoryId: 1,
+        fieldId: fieldnum,
+      };
+      bizListTree.value = (await getBizList(bizParams)).items as unknown as TreeItem[];
+      const bizTemp = toRaw(bizListTree.value);
+      fieldResult.push({
+        code: fieldstr[index].fieldCode,
+        id: fieldstr[index].id,
+        fieldName: fieldstr[index].fieldName,
         children: (() => {
           const childrenstr: any[] = [];
-          const length = temp.length;
-          for (let j = 0; j < length; j++) {
+          const bizLength = bizTemp.length;
+          for (let j = 0; j < bizLength; j++) {
             childrenstr.push({
-              code: temp[j].tableCode,
-              id: temp[j].id + 100,
+              code: bizTemp[j].businessObjectCode,
+              id: bizTemp[j].id + 10000,
+              fieldId: fieldstr[index].id,
+              bizName: bizTemp[index].businessObjectName,
+              children: (() => {})(),
             });
           }
-          return childrenstr;
+          return childrenstr.sort((a, b) => a.id - b.id);
         })(),
       });
     }
-    return result;
+    return fieldResult.sort((a, b) => a.id - b.id);
   })();
 
   const tableListRef = ref<
@@ -228,8 +303,7 @@
   >([]);
 
   const tableStore = useTableStore();
-  async function handleDelete(record: Recordable) {
-    console.log('record');
+  async function tableDelete(record: Recordable) {
     try {
       const values = record;
       var params = values;
@@ -237,7 +311,6 @@
       var ids: Array<number> = new Array<number>();
       ids.push(id);
       const result = await tableStore.deleteTable(ids);
-      console.log(result);
       if (result) {
         notification.success({
           message: '提交成功',
@@ -253,7 +326,61 @@
         });
       }
     } finally {
-      console.log('?');
+      // console.log('?');
+    }
+  }
+  const colStore = useColumnStore();
+  async function columnDelete(record: Recordable) {
+    try {
+      const values = record;
+      var params = values;
+      const id = params.id;
+      var ids: Array<number> = new Array<number>();
+      ids.push(id);
+      const result = await colStore.deleteColumn(ids);
+      if (result) {
+        notification.success({
+          message: '提交成功',
+          duration: 1,
+        });
+        setTimeout(async function () {
+          document.location.reload();
+        }, 500);
+      } else {
+        notification.error({
+          message: '提交失败',
+          duration: 3,
+        });
+      }
+    } finally {
+      // console.log('?');
+    }
+  }
+  const bizStore = useBizStore();
+  async function bizDelete(record: Recordable) {
+    try {
+      const values = record;
+      var params = values;
+      const id = params.id;
+      var ids: Array<number> = new Array<number>();
+      ids.push(id);
+      const result = await bizStore.deleteBiz(ids);
+      if (result) {
+        notification.success({
+          message: '提交成功',
+          duration: 1,
+        });
+        setTimeout(async function () {
+          document.location.reload();
+        }, 500);
+      } else {
+        notification.error({
+          message: '提交失败',
+          duration: 3,
+        });
+      }
+    } finally {
+      // console.log('?');
     }
   }
 
@@ -281,7 +408,7 @@
 </script>
 <style lang="scss" scoped>
   .side {
-    width: 19%;
+    width: 35%;
     margin-left: 1%;
     float: left;
     text-align: center;

@@ -1,7 +1,7 @@
 import { FormSchema } from '/@/components/Table';
 import { BasicColumn } from '/@/components/Table/src/types/table';
 
-export const columns: BasicColumn[] = [
+export const TableColumns: BasicColumn[] = [
   {
     title: '表编码',
     dataIndex: 'tableCode',
@@ -34,6 +34,94 @@ export const columns: BasicColumn[] = [
     width: 80,
   },
 ];
+export const ColColumns: BasicColumn[] = [
+  {
+    title: '字段名',
+    dataIndex: 'columnName',
+    width: 150,
+    align: 'left',
+  },
+  {
+    title: '字段类型',
+    dataIndex: 'columnType',
+    width: 50,
+  },
+  {
+    title: '字段长度',
+    dataIndex: 'columnLength',
+    width: 50,
+  },
+  {
+    title: '表ID',
+    dataIndex: 'tableId',
+    width: 30,
+  },
+  {
+    title: '业务对象ID',
+    dataIndex: 'bizId',
+    width: 55,
+  },
+  {
+    title: '非空',
+    dataIndex: 'columnNull',
+    width: 40,
+    customRender: ({ text }) => {
+      const boolval = text ? 'true' : 'false';
+      return (text = boolval);
+    },
+  },
+  {
+    title: '主键',
+    dataIndex: 'columnPrimary',
+    width: 40,
+    customRender: ({ text }) => {
+      const boolval = text ? 'true' : 'false';
+      return (text = boolval);
+    },
+  },
+  {
+    title: '唯一',
+    dataIndex: 'columnUnique',
+    width: 40,
+    customRender: ({ text }) => {
+      const boolval = text ? 'true' : 'false';
+      return (text = boolval);
+    },
+  },
+  {
+    title: '外键',
+    dataIndex: 'columnForeignKey',
+    width: 40,
+  },
+];
+export const BizColumns: BasicColumn[] = [
+  {
+    title: '业务对象',
+    dataIndex: 'businessObjectCode',
+    width: 150,
+    align: 'left',
+  },
+  {
+    title: '业务对象名称',
+    dataIndex: 'businessObjectName',
+    width: 50,
+  },
+  {
+    title: '业务对象ID',
+    dataIndex: 'id',
+    width: 55,
+  },
+  {
+    title: '领域ID',
+    dataIndex: 'fieldId',
+    width: 40,
+  },
+  {
+    title: '模型ID',
+    dataIndex: 'repositoryId',
+    width: 40,
+  },
+];
 
 export const tableFormSchema: FormSchema[] = [
   {
@@ -60,7 +148,6 @@ export const tableFormSchema: FormSchema[] = [
     label: '描述',
     component: 'Input',
     required: false,
-    // ifShow: false,
   },
   {
     field: 'bizCode',
@@ -102,5 +189,86 @@ export const tableFormSchema: FormSchema[] = [
     component: 'Input',
     required: true,
     ifShow: false,
+  },
+];
+
+export const colFormSchema: FormSchema[] = [
+  {
+    field: 'columnName',
+    label: '字段名',
+    component: 'Input',
+    rules: [
+      {
+        required: true,
+        message: '请输入字段名',
+      },
+    ],
+  },
+  {
+    field: 'id',
+    label: '字段ID',
+    component: 'Input',
+    required: false,
+  },
+  {
+    field: 'columnType',
+    label: '字段类型',
+    component: 'Input',
+    required: false,
+  },
+  {
+    field: 'columnLength',
+    label: '字段长度',
+    component: 'Input',
+    required: false,
+  },
+  {
+    field: 'columnNull',
+    label: '非空',
+    component: 'Input',
+    required: false,
+  },
+  {
+    field: 'columnPrimary',
+    label: '主键',
+    component: 'Input',
+    required: false,
+  },
+  {
+    field: 'columnUnique',
+    label: '唯一',
+    component: 'Input',
+    required: false,
+  },
+];
+export const bizFormSchema: FormSchema[] = [
+  {
+    field: 'bizCode',
+    label: '业务对象',
+    component: 'Input',
+    rules: [
+      {
+        required: true,
+        message: '请输入业务对象名称',
+      },
+    ],
+  },
+  {
+    field: 'id',
+    label: '业务对象ID',
+    component: 'Input',
+    required: false,
+  },
+  {
+    field: 'bizName',
+    label: '业务对象名称',
+    component: 'Input',
+    required: false,
+  },
+  {
+    field: 'description',
+    label: '业务对象描述',
+    component: 'Input',
+    required: false,
   },
 ];

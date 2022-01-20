@@ -75,7 +75,9 @@ export interface FetchParams {
   pageSize?: number;
   sortInfo?: Recordable;
   filterInfo?: Recordable;
-  api?: any;
+  api?: Recordable;
+  title?: string;
+  columns?: Recordable;
 }
 
 export interface GetColumnsParams {
@@ -87,7 +89,9 @@ export interface GetColumnsParams {
 export type SizeType = 'default' | 'middle' | 'small' | 'large';
 
 export interface TableActionType {
-  reload: (opt?: FetchParams) => Promise<void>;
+  colReload: (opt?: FetchParams) => Promise<void>;
+  bizReload: (opt?: FetchParams) => Promise<void>;
+  tableReload: (opt?: FetchParams) => Promise<void>;
   getSelectRows: <T = Recordable>() => T[];
   clearSelectedRowKeys: () => void;
   expandAll: () => void;

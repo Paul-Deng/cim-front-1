@@ -1,4 +1,4 @@
-import type { BasicTableProps, FetchParams, SorterResult } from '../types/table';
+import type { BasicColumn, BasicTableProps, FetchParams, SorterResult } from '../types/table';
 import type { PaginationProps } from '../types/pagination';
 import {
   ref,
@@ -19,6 +19,7 @@ import { FETCH_SETTING, ROW_KEY, PAGE_SIZE } from '../const';
 
 interface ActionType {
   getPaginationInfo: ComputedRef<boolean | PaginationProps>;
+  // setColumns: (columns: BasicColumn[]) => void;
   setPagination: (info: Partial<PaginationProps>) => void;
   setLoading: (loading: boolean) => void;
   getFieldsValue: () => Recordable;
@@ -34,6 +35,7 @@ export function useDataSource(
   propsRef: ComputedRef<BasicTableProps>,
   {
     getPaginationInfo,
+    // setColumns,
     setPagination,
     setLoading,
     getFieldsValue,
@@ -68,7 +70,6 @@ export function useDataSource(
     pagination: PaginationProps,
     filters: Partial<Recordable<string[]>>,
     sorter: SorterResult,
-    api: any,
   ) {
     const { clearSelectOnPageChange, sortFn, filterFn } = unref(propsRef);
     if (clearSelectOnPageChange) {
@@ -89,7 +90,6 @@ export function useDataSource(
       params.filterInfo = filterInfo;
     }
     fetch(params);
-    if (!api || !isFunction(api)) return;
   }
 
   function setTableKey(items: any[]) {
@@ -232,19 +232,13 @@ export function useDataSource(
       return ret;
     };
 
-    // const row = dataSourceRef.value.find(r => {
-    //   if (typeof rowKeyName === 'function') {
-    //     return (rowKeyName(r) as string) === rowKey
-    //   } else {
-    //     return Reflect.has(r, rowKeyName) && r[rowKeyName] === rowKey
-    //   }
-    // })
     return findRow(dataSourceRef.value);
   }
 
   async function fetch(opt?: FetchParams) {
     const {
       api,
+      columns,
       searchInfo,
       defSort,
       fetchSetting,
@@ -254,7 +248,6 @@ export function useDataSource(
       pagination,
     } = unref(propsRef);
     if (!api || !isFunction(api)) return;
-    console.log(api);
     try {
       setLoading(true);
       const { pageField, sizeField, listField, totalField } = Object.assign(
@@ -269,14 +262,15 @@ export function useDataSource(
       if ((isBoolean(pagination) && !pagination) || isBoolean(getPaginationInfo)) {
         pageParams = {};
       } else {
-        pageParams[pageField] = (opt && opt.page) || current;
+        pageParams[pageField] = (opt && opt.pageNo) || current;
         pageParams[sizeField] = pageSize;
       }
 
       const { sortInfo = {}, filterInfo } = searchState;
 
       let params: Recordable = {
-        ...api,
+        ...(opt?.api ?? {}),
+        ...columns,
         ...pageParams,
         ...(useSearchForm ? getFieldsValue() : {}),
         ...searchInfo,
@@ -290,9 +284,13 @@ export function useDataSource(
       if (beforeFetch && isFunction(beforeFetch)) {
         params = (await beforeFetch(params)) || params;
       }
+      // const api = opt?.api;
+      // console.log('columns not before');
+      // console.log(opt?.columns);
 
-      const res = await api(params);
+      const res = (await opt?.api(params)) || (await api(params));
       rawDataSourceRef.value = res;
+      // console.log(params);
 
       const isArrayResult = Array.isArray(res);
 
@@ -314,12 +312,13 @@ export function useDataSource(
         resultItems = (await afterFetch(resultItems)) || resultItems;
       }
       dataSourceRef.value = resultItems;
+
       setPagination({
         total: resultTotal || 0,
       });
-      if (opt && opt.page) {
+      if (opt && opt.pageNo) {
         setPagination({
-          current: opt.page || 1,
+          current: opt.pageNo || 1,
         });
       }
       emit('fetch-success', {
@@ -350,7 +349,18 @@ export function useDataSource(
     return rawDataSourceRef.value as T;
   }
 
-  async function reload(opt?: FetchParams) {
+  async function bizReload(opt?: FetchParams) {
+    // console.log(opt?.columns);
+    return await fetch(opt);
+  }
+  async function tableReload(opt?: FetchParams) {
+    // console.log(opt?.columns);
+    return await fetch(opt);
+  }
+  async function colReload(opt?: FetchParams) {
+    // console.log('reload?');
+    // console.log(opt?.columns);
+
     return await fetch(opt);
   }
 
@@ -368,7 +378,9 @@ export function useDataSource(
     setTableData,
     getAutoCreateKey,
     fetch,
-    reload,
+    bizReload,
+    tableReload,
+    colReload,
     updateTableData,
     updateTableDataRecord,
     deleteTableDataRecord,

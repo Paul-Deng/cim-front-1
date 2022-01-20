@@ -21,7 +21,7 @@ enum Api {
   REPOSITORY_LIST = '/api-model/model/repository/list',
   REPOSITORY_DELETE = '/api-model/model/repository/delete',
 
-  FIELD_LIST = '/api-model/model/field',
+  FIELD_LIST = '/api-model/model/field/list',
   FILED_ADD = '/api-model/model/field/add',
   FILED_DELETE = '/api-model/model/field/delete',
 
@@ -128,8 +128,8 @@ export function RepositoryKVApi(params: RepositoryItem) {
   });
 }
 
-export function FieldListApi(params: FieldItem, mode: ErrorMessageMode = 'message') {
-  return defHttp.request<FieldVOPageResult>(
+export function FieldListApi(params: TableItem, mode: ErrorMessageMode = 'message') {
+  return defHttp.request<TableListResultVO>(
     {
       url: Api.FIELD_LIST,
       method: 'POST',
@@ -191,7 +191,7 @@ export function FieldKVApi(params: FieldItem) {
   });
 }
 
-export function BizObjListApi(params: BusinessObjectItem) {
+export function BizObjListApi(params?: BusinessObjectItem) {
   return defHttp.request<BusinessObjectListResultVO>({
     url: Api.BUSINESS_OBJECT_LIST,
     method: 'POST',

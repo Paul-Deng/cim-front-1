@@ -13,18 +13,18 @@
 <script lang="ts" setup>
   import { ref, computed, unref, toRaw } from 'vue';
   import { BasicForm, useForm } from '/@/components/Form';
-  import { tableFormSchema } from './cim.data';
+  import { bizFormSchema } from './cim.data';
   import { BasicModal, useModalInner } from '/@/components/Modal';
   import { notification } from 'ant-design-vue';
-  import { useTableStore } from '/@/store/modules/tableList';
   import { TableItem } from '/@/api/menu/model/model';
-  import { TableListApi } from '/@/api/menu/repositories/model';
+  import { BizObjListApi } from '/@/api/menu/repositories/model';
+  import { useBizStore } from '/@/store/modules/bizList';
 
   const isUpdate = ref(true);
 
   const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
     labelWidth: 100,
-    schemas: tableFormSchema,
+    schemas: bizFormSchema,
     showActionButtonGroup: false,
     baseColProps: { lg: 12, md: 24 },
   });
@@ -38,30 +38,30 @@
         ...data.record,
       });
     }
-    const treeData = await TableListApi();
+    const treeData = await BizObjListApi();
     updateSchema({
       field: 'id',
       componentProps: { treeData },
     });
   });
 
-  const getTitle = computed(() => (!unref(isUpdate) ? '新增表' : '编辑表'));
-  const tableStore = useTableStore();
+  const getTitle = computed(() => (!unref(isUpdate) ? '新增业务对象' : '编辑业务对象'));
+  const bizStore = useBizStore();
   async function handleSubmit() {
     try {
       const values = await validate();
       // TODO custom api
       var params = values;
       console.log(params);
-      const result = await tableStore.saveOrUpdateTable(
+      const result = await bizStore.saveOrUpdateBiz(
         toRaw<TableItem>({
           id: params.id,
+          bizCode: params.businessObjectCode,
           bizId: params.bizId,
-          bizName: params.bizName,
-          description: params.description,
+          bizName: params.businessObjectName,
+          description: params.businessObjectDescription,
           fieldId: params.fieldId,
           repositoryId: params.repositoryId,
-          tableCode: params.tableCode,
           userId: params.userId,
         }),
       );
@@ -70,6 +70,7 @@
           message: '提交成功',
           duration: 1,
         });
+        // reload();
         setTimeout(async function () {
           document.location.reload();
         }, 500);

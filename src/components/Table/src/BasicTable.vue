@@ -146,7 +146,9 @@
         findTableDataRecord,
         fetch,
         getRowKey,
-        reload,
+        tableReload,
+        bizReload,
+        colReload,
         getAutoCreateKey,
         updateTableData,
       } = useDataSource(
@@ -272,7 +274,9 @@
       }
 
       const tableAction: TableActionType = {
-        reload,
+        tableReload,
+        bizReload,
+        colReload,
         getSelectRows,
         clearSelectedRowKeys,
         getSelectRowKeys,

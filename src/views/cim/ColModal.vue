@@ -13,18 +13,18 @@
 <script lang="ts" setup>
   import { ref, computed, unref, toRaw } from 'vue';
   import { BasicForm, useForm } from '/@/components/Form';
-  import { tableFormSchema } from './cim.data';
+  import { colFormSchema } from './cim.data';
   import { BasicModal, useModalInner } from '/@/components/Modal';
   import { notification } from 'ant-design-vue';
-  import { useTableStore } from '/@/store/modules/tableList';
   import { TableItem } from '/@/api/menu/model/model';
-  import { TableListApi } from '/@/api/menu/repositories/model';
+  import { GetTableColumnApi } from '/@/api/menu/repositories/model';
+  import { useColumnStore } from '/@/store/modules/columnList';
 
   const isUpdate = ref(true);
 
   const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
     labelWidth: 100,
-    schemas: tableFormSchema,
+    schemas: colFormSchema,
     showActionButtonGroup: false,
     baseColProps: { lg: 12, md: 24 },
   });
@@ -38,30 +38,41 @@
         ...data.record,
       });
     }
-    const treeData = await TableListApi();
+    const treeData = await GetTableColumnApi();
     updateSchema({
       field: 'id',
       componentProps: { treeData },
     });
   });
 
-  const getTitle = computed(() => (!unref(isUpdate) ? '新增表' : '编辑表'));
-  const tableStore = useTableStore();
+  const getTitle = computed(() => (!unref(isUpdate) ? '新增字段' : '编辑字段'));
+  const columnStore = useColumnStore();
   async function handleSubmit() {
     try {
       const values = await validate();
       // TODO custom api
       var params = values;
       console.log(params);
-      const result = await tableStore.saveOrUpdateTable(
+      const result = await columnStore.saveOrUpdateColumn(
         toRaw<TableItem>({
+          columnDefaultValue: params.columnDefaultValue,
+          columnDescription: params.columnDescription,
+          columnForeignKey: params.columnForeignKey,
+          columnLength: params.columnLength,
+          columnName: params.columnName,
+          columnNull: params.columnNull,
+          columnPrimary: params.columnPrimary,
+          columnStatus: params.columnStatus,
+          columnType: params.columnType,
+          columnUnique: params.columnUnique,
           id: params.id,
+          tableId: params.tableId,
+          bizCode: params.bizCode,
           bizId: params.bizId,
           bizName: params.bizName,
           description: params.description,
           fieldId: params.fieldId,
           repositoryId: params.repositoryId,
-          tableCode: params.tableCode,
           userId: params.userId,
         }),
       );
@@ -70,6 +81,7 @@
           message: '提交成功',
           duration: 1,
         });
+        // reload();
         setTimeout(async function () {
           document.location.reload();
         }, 500);
