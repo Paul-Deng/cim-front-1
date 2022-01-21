@@ -96,7 +96,6 @@
   let isCol = ref(false);
 
   async function fetch() {
-    // treeData.value = [...treeData.value];
     treeData.value = await fieldList;
     console.log(treeData.value);
   }
@@ -144,9 +143,7 @@
   });
 
   async function handleSelect(keys) {
-    
-    if(keys[0] > 10000 && keys[0] <= 20000){
-      console.log('????');
+    if (keys[0] > 10000 && keys[0] <= 20000) {
       tableReload({
         api: TableListApi,
         columns: TableColumns,
@@ -155,46 +152,41 @@
           bizId: bizIdnum.value,
         },
       });
-      nextTick(() => {
+      nextTick(async () => {
         isTable.value = true;
         isBiz.value = isCol.value = false;
-      });
-      // console.log(fieldList[0]);
-      let params = {
-        pageSize: 100,
-        repositoryId: 1,
-        bizId: keys[0]-10000,
-      };
-      let arr: any[] = [];
-      arr = await fieldList;
-      let arr2: TreeItem[] = [];
-      arr2 = arr[0].children;
-      let num = keys[0] - 10001;
-      console.log(num);
-      console.log('abc');
-      console.log(arr2);
-      bizListTree.value = (await TableListApi(params)).items as unknown as TreeItem[];
-      const temp = toRaw(bizListTree.value);
-      arr2[num].children = (() => {
-            const childrenstr: any[] = [];
-            const length = temp.length;
-            for (let j = 0; j < length; j++) {
-              childrenstr.push({
-                code: temp[j].tableCode,
-                id: temp[j].id + 20000,
-              });
-            }
-            return childrenstr;
-      })();
-      nextTick(() => {
-        console.log('nextTick');
-        console.log(arr);
+        // });
+        let params = {
+          pageSize: 100,
+          repositoryId: 1,
+          bizId: keys[0] - 10000,
+        };
+        let arr: any[] = [];
+        arr = await fieldList;
+        let arr2: TreeItem[] = [];
+        arr2 = arr[0].children;
+        let num = keys[0] - 10001;
+        bizListTree.value = (await TableListApi(params)).items as unknown as TreeItem[];
+        const temp = toRaw(bizListTree.value);
+        arr2[num].children = (() => {
+          const childrenstr: any[] = [];
+          const length = temp.length;
+          for (let j = 0; j < length; j++) {
+            childrenstr.push({
+              code: temp[j].tableCode,
+              id: temp[j].id + 20000,
+            });
+          }
+          return childrenstr;
+        })();
+        // nextTick(() => {
         treeData.value = arr;
+        setImmediate(nextTick);
       });
     } else if (keys[0] > 20000) {
-      console.log('registerModal');
-      console.log(keys[0]);
-      console.log(registerModal);
+      // console.log('registerModal');
+      // console.log(keys[0]);
+      // console.log(registerModal);
       tableIdnum.value = keys[0] - 20000;
       colReload({
         api: GetTableColumnApi,
@@ -207,26 +199,49 @@
       nextTick(() => {
         isCol.value = true;
         isBiz.value = isTable.value = false;
+        // setImmediate(nextTick);
       });
     } else {
-      console.log(keys[0]);
-      console.log('debug');
+      // console.log(keys[0]);
+      // console.log('debug');
       fieldIdnum.value = keys[0];
-      bizReload({
-        api: getBizList,
-        columns: BizColumns,
-        searchInfo: {
-          bizId: null,
-          tableId: null,
-          fieldId: fieldIdnum.value,
-        },
-      });
-      nextTick(() => {
+      // bizReload({
+      //   api: getBizList,
+      //   columns: BizColumns,
+      //   searchInfo: {
+      //     bizId: null,
+      //     tableId: null,
+      //     fieldId: fieldIdnum.value,
+      //   },
+      // });
+      nextTick(async () => {
+        console.log('tick');
         isBiz.value = true;
         isTable.value = isCol.value = false;
+        // setImmediate(nextTick);
+        console.log(treeData);
+        console.log('arr');
+        let arr: any[] = [];
+        console.log(testList);
+        arr = await testList;
+        let arr2 = arr[0];
+        console.log(arr2);
+        // treeData.value = arr;
+
+        // bizListTree.value = (await TableListApi(params)).items as unknown as TreeItem[];
+        // const temp = toRaw(bizListTree.value);
+        arr2.children = (() => {
+          const childrenstr: any[] = [];
+          childrenstr.push({
+            code: 888,
+            id: 888,
+          });
+          return childrenstr;
+        })();
+        treeData.value = arr;
+        // return await fetch();
       });
     }
-    
   }
 
   function handleEditChange(record: Recordable) {
@@ -251,6 +266,27 @@
     // if(record.id)
   }
 
+  let testList = (async () => {
+    let testparams = {
+      pageSize: 100,
+      repositoryId: 55,
+      // fieldId: 55,
+    };
+    let tempTree = ref<TreeItem[]>([]);
+    tempTree.value = (await FieldListApi(testparams)).items as unknown as TreeItem[];
+    const temp = toRaw(tempTree.value);
+    const result: any[] = [];
+    for (let index = 0; index < temp.length; index++) {
+      result.push({
+        code: temp[index].fieldCode,
+        id: temp[index].id,
+        fieldName: temp[index].fieldName,
+        children: (() => {})(),
+      });
+    }
+    return result.sort((a, b) => a.id - b.id);
+  })();
+
   let fieldList = (async () => {
     treeData.value = (await FieldListApi(Params)).items as unknown as TreeItem[];
     let fieldnum = 1;
@@ -269,25 +305,25 @@
         repositoryId: 1,
         fieldId: fieldnum,
       };
-      bizListTree.value = (await getBizList(bizParams)).items as unknown as TreeItem[];
-      const bizTemp = toRaw(bizListTree.value);
+      // bizListTree.value = (await getBizList(bizParams)).items as unknown as TreeItem[];
+      // const bizTemp = toRaw(bizListTree.value);
       fieldResult.push({
         code: fieldstr[index].fieldCode,
         id: fieldstr[index].id,
         fieldName: fieldstr[index].fieldName,
         children: (() => {
-          const childrenstr: any[] = [];
-          const bizLength = bizTemp.length;
-          for (let j = 0; j < bizLength; j++) {
-            childrenstr.push({
-              code: bizTemp[j].businessObjectCode,
-              id: bizTemp[j].id + 10000,
-              fieldId: fieldstr[index].id,
-              bizName: bizTemp[index].businessObjectName,
-              children: (() => {})(),
-            });
-          }
-          return childrenstr.sort((a, b) => a.id - b.id);
+          // const childrenstr: any[] = [];
+          // const bizLength = bizTemp.length;
+          // for (let j = 0; j < bizLength; j++) {
+          // childrenstr.push({
+          // code: bizTemp[j].businessObjectCode,
+          // id: bizTemp[j].id + 10000,
+          // fieldId: fieldstr[index].id,
+          // bizName: bizTemp[index].businessObjectName,
+          // children: (() => {})(),
+          // });
+          // }
+          // return childrenstr.sort((a, b) => a.id - b.id);
         })(),
       });
     }

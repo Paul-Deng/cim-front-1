@@ -360,7 +360,6 @@ export function useDataSource(
   async function colReload(opt?: FetchParams) {
     // console.log('reload?');
     // console.log(opt?.columns);
-
     return await fetch(opt);
   }
 
