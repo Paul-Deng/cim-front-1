@@ -14,7 +14,7 @@ import {
 import { useTimeoutFn } from '/@/hooks/core/useTimeout';
 import { buildUUID } from '/@/utils/uuid';
 import { isFunction, isBoolean } from '/@/utils/is';
-import { get, cloneDeep } from 'lodash-es';
+import { get, cloneDeep, merge } from 'lodash-es';
 import { FETCH_SETTING, ROW_KEY, PAGE_SIZE } from '../const';
 
 interface ActionType {
@@ -234,9 +234,9 @@ export function useDataSource(
   }
 
   async function fetch(opt?: FetchParams) {
+    console.log('trigger');
     const {
       api,
-      columns,
       searchInfo,
       defSort,
       fetchSetting,
@@ -267,8 +267,6 @@ export function useDataSource(
       const { sortInfo = {}, filterInfo } = searchState;
 
       let params: Recordable = {
-        ...(opt?.api ?? {}),
-        ...columns,
         ...pageParams,
         ...(useSearchForm ? getFieldsValue() : {}),
         ...searchInfo,
@@ -282,13 +280,9 @@ export function useDataSource(
       if (beforeFetch && isFunction(beforeFetch)) {
         params = (await beforeFetch(params)) || params;
       }
-      // const api = opt?.api;
-      // console.log('columns not before');
-      // console.log(opt?.columns);
 
       const res = (await opt?.api(params)) || (await api(params));
       rawDataSourceRef.value = res;
-      // console.log(params);
 
       const isArrayResult = Array.isArray(res);
 
@@ -314,9 +308,9 @@ export function useDataSource(
       setPagination({
         total: resultTotal || 0,
       });
-      if (opt && opt.page) {
+      if (opt && opt?.page) {
         setPagination({
-          current: opt.page || 1,
+          current: opt?.page || 1,
         });
       }
       emit('fetch-success', {
@@ -326,10 +320,12 @@ export function useDataSource(
       return resultItems;
     } catch (error) {
       emit('fetch-error', error);
-      dataSourceRef.value = [];
-      setPagination({
-        total: 0,
-      });
+      // dataSourceRef.value = [];
+      reload();
+      // setPagination({
+      //   current: opt?.page,
+      // });
+      console.log('catcherror');
     } finally {
       setLoading(false);
     }

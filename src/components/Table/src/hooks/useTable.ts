@@ -67,9 +67,12 @@ export function useTable(tableProps?: Props): [
   const methods: TableActionType & {
     getForm: () => FormActionType;
   } = {
-    reload: (opt?: FetchParams) => {
-      getTableInstance().setColumns(opt?.columns);
-      return getTableInstance().reload(opt);
+    reload: async (opt?: FetchParams) => {
+      if (opt?.columns) {
+        console.log('canshu');
+        getTableInstance().setColumns(opt?.columns);
+      }
+      return await getTableInstance().reload(opt);
     },
     setProps: (props: Partial<BasicTableProps>) => {
       getTableInstance().setProps(props);

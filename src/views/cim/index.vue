@@ -54,7 +54,7 @@
 <script lang="ts" setup>
   import { nextTick, onMounted, ref, toRaw } from 'vue';
   import { watch } from 'vue';
-  import { TableColumns, ColColumns, BizColumns, FieldColumns } from './cim.data';
+  import { TableColumns, ColColumns, BizColumns } from './cim.data';
   import { FieldListApi, GetTableColumnApi, TableListApi } from '/@/api/menu/repositories/model';
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
   import { BasicTree, TreeItem } from '/@/components/Tree';
