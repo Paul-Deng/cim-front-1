@@ -33,13 +33,14 @@ export interface AccountListItem {
   status: number;
 }
 
-export interface DeptListItem {
+export interface BizListItem {
   id?: string;
   orderNo?: string;
   createTime?: string;
   remark?: string;
   status?: number;
   pageSize?: number;
+  page?: number;
 }
 
 export interface MenuListItem {

@@ -62,7 +62,7 @@ export function ModelWelcomeApi(params: ModelAll, mode: ErrorMessageMode = 'mess
   );
 }
 
-export function repositoryListApi(params: RepositoryItem, mode: ErrorMessageMode = 'message') {
+export function repositoryListApi(params?: RepositoryItem, mode: ErrorMessageMode = 'message') {
   return defHttp.request<ModelAllResultVO>(
     {
       url: Api.REPOSITORY_LIST,

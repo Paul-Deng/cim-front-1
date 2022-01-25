@@ -9,7 +9,7 @@
   import { BasicForm, useForm } from '/@/components/Form/index';
   import { formSchema } from './dept.data';
 
-  import { getDeptList } from '/@/api/demo/system';
+  // import { getDeptList } from '/@/api/demo/system';
 
   const isUpdate = ref(true);
 
@@ -29,7 +29,8 @@
         ...data.record,
       });
     }
-    const treeData = await getDeptList();
+    // const treeData = await getDeptList();
+    const treeData = [];
     updateSchema({
       field: 'parentDept',
       componentProps: { treeData },

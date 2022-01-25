@@ -1,13 +1,13 @@
 import { getMenuListResultModel } from '../sys/model/menuModel';
 import {
   AccountParams,
-  DeptListItem,
   RoleParams,
   RolePageParams,
   DeptListGetResultModel,
   AccountListGetResultModel,
   RolePageListGetResultModel,
   RoleListGetResultModel,
+  BizListItem,
 } from './model/systemModel';
 
 import { defHttp } from '/@/utils/http/axios';
@@ -27,10 +27,10 @@ enum Api {
 export const getAccountList = (params: AccountParams) =>
   defHttp.get<AccountListGetResultModel>({ url: Api.AccountList, params });
 
-export const getBizList = (params?: DeptListItem) =>
+export const getBizList = (params?: BizListItem) =>
   defHttp.post<DeptListGetResultModel>({ url: Api.BizList, params });
 
-export const getTreeList = (params?: DeptListItem) =>
+export const getTreeList = (params?: BizListItem) =>
   defHttp.post<DeptListGetResultModel>({ url: Api.TreeList, params });
 
 export const getMenuList = () => {

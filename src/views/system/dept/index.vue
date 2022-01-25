@@ -28,17 +28,18 @@
 </template>
 <script lang="ts" setup>
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import { getDeptList } from '/@/api/demo/system';
+  // import { getDeptList } from '/@/api/demo/system';
 
   import { useModal } from '/@/components/Modal';
   import DeptModal from './DeptModal.vue';
 
   import { columns, searchFormSchema } from './dept.data';
+  import { getBizList } from '/@/api/demo/system';
 
   const [registerModal, { openModal }] = useModal();
-  const [registerTable, { reload }] = useTable({
+  const [registerTable, {}] = useTable({
     title: '部门列表',
-    api: getDeptList,
+    api: getBizList,
     columns,
     formConfig: {
       labelWidth: 120,
@@ -78,6 +79,6 @@
   }
 
   function handleSuccess() {
-    reload();
+    // reload();
   }
 </script>

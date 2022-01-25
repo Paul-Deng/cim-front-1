@@ -19,7 +19,6 @@ import { FETCH_SETTING, ROW_KEY, PAGE_SIZE } from '../const';
 
 interface ActionType {
   getPaginationInfo: ComputedRef<boolean | PaginationProps>;
-  // setColumns: (columns: BasicColumn[]) => void;
   setPagination: (info: Partial<PaginationProps>) => void;
   setLoading: (loading: boolean) => void;
   getFieldsValue: () => Recordable;
@@ -35,7 +34,6 @@ export function useDataSource(
   propsRef: ComputedRef<BasicTableProps>,
   {
     getPaginationInfo,
-    // setColumns,
     setPagination,
     setLoading,
     getFieldsValue,
@@ -262,7 +260,7 @@ export function useDataSource(
       if ((isBoolean(pagination) && !pagination) || isBoolean(getPaginationInfo)) {
         pageParams = {};
       } else {
-        pageParams[pageField] = (opt && opt.pageNo) || current;
+        pageParams[pageField] = (opt && opt.page) || current;
         pageParams[sizeField] = pageSize;
       }
 
@@ -316,9 +314,9 @@ export function useDataSource(
       setPagination({
         total: resultTotal || 0,
       });
-      if (opt && opt.pageNo) {
+      if (opt && opt.page) {
         setPagination({
-          current: opt.pageNo || 1,
+          current: opt.page || 1,
         });
       }
       emit('fetch-success', {
@@ -349,17 +347,9 @@ export function useDataSource(
     return rawDataSourceRef.value as T;
   }
 
-  async function bizReload(opt?: FetchParams) {
-    // console.log(opt?.columns);
-    return await fetch(opt);
-  }
-  async function tableReload(opt?: FetchParams) {
-    // console.log(opt?.columns);
-    return await fetch(opt);
-  }
-  async function colReload(opt?: FetchParams) {
-    // console.log('reload?');
-    // console.log(opt?.columns);
+  async function reload(opt?: FetchParams) {
+    const num = opt?.page;
+    console.log(num);
     return await fetch(opt);
   }
 
@@ -377,9 +367,7 @@ export function useDataSource(
     setTableData,
     getAutoCreateKey,
     fetch,
-    bizReload,
-    tableReload,
-    colReload,
+    reload,
     updateTableData,
     updateTableDataRecord,
     deleteTableDataRecord,

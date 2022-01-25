@@ -1,13 +1,7 @@
 <template>
   <div>
-    <div class="uploadbtn" width="100%">
-      <ImpExcel class="m-3" @success="loadDataSuccess" dateFormat="YYYY-MM-DD">
-        <a-button> 导入Excel </a-button>
-      </ImpExcel>
-    </div>
     <div>
       <div class="side">
-        <!-- <a-tree :load-data="fieldList" :tree-data="treeData" /> -->
         <BasicTree
           title="CIM模型"
           toolbar
@@ -60,10 +54,9 @@
 <script lang="ts" setup>
   import { nextTick, onMounted, ref, toRaw } from 'vue';
   import { watch } from 'vue';
-  import { TableColumns, ColColumns, BizColumns } from './cim.data';
+  import { TableColumns, ColColumns, BizColumns, FieldColumns } from './cim.data';
   import { FieldListApi, GetTableColumnApi, TableListApi } from '/@/api/menu/repositories/model';
-  import { ImpExcel, ExcelData } from '/@/components/Excel';
-  import { BasicTable, BasicColumn, useTable, TableAction } from '/@/components/Table';
+  import { BasicTable, useTable, TableAction } from '/@/components/Table';
   import { BasicTree, TreeItem } from '/@/components/Tree';
   import { getBizList } from '/@/api/demo/system';
   import { notification } from 'ant-design-vue';
@@ -74,6 +67,7 @@
   import ColModal from './ColModal.vue';
   import { useColumnStore } from '/@/store/modules/columnList';
   import { useBizStore } from '/@/store/modules/bizList';
+
   const openKeys = ref<string[]>(['sub1']);
 
   watch(
@@ -85,7 +79,6 @@
 
   let treeData = ref<TreeItem[]>([]);
   let bizListTree = ref<TreeItem[]>([]);
-  // let tableListTree = ref<TreeItem[]>([]);
   let Params = {
     pageSize: 100,
     repositoryId: 1,
@@ -98,6 +91,7 @@
   async function fetch() {
     treeData.value = await fieldList;
     console.log(treeData.value);
+    // console.log(treeData.value);
   }
   onMounted(() => {
     fetch();
@@ -118,7 +112,7 @@
 
   const [registerModal, { openModal }] = useModal();
 
-  let [registerTable, { tableReload, colReload, bizReload, expandAll }] = useTable({
+  let [registerTable, { reload, expandAll }] = useTable({
     title: '模型',
     columns: BizColumns,
     api: input,
@@ -142,20 +136,23 @@
     },
   });
 
-  async function handleSelect(keys) {
+  let fieldIdMap = new Map();
+  let bizIdMap = new Map();
+  // let tableIdMap = new Map();
+  function handleSelect(keys) {
     if (keys[0] > 10000 && keys[0] <= 20000) {
-      tableReload({
-        api: TableListApi,
-        columns: TableColumns,
-        searchInfo: {
-          tableId: null,
-          bizId: bizIdnum.value,
-        },
-      });
+      bizIdnum.value = keys[0] - 10000;
       nextTick(async () => {
         isTable.value = true;
         isBiz.value = isCol.value = false;
-        // });
+        reload({
+          api: TableListApi,
+          columns: TableColumns,
+          searchInfo: {
+            tableId: null,
+            bizId: bizIdnum.value,
+          },
+        });
         let params = {
           pageSize: 100,
           repositoryId: 1,
@@ -165,7 +162,8 @@
         arr = await fieldList;
         let arr2: TreeItem[] = [];
         arr2 = arr[0].children;
-        let num = keys[0] - 10001;
+        console.log('bizid');
+        let num = bizIdMap.get(keys[0]);
         bizListTree.value = (await TableListApi(params)).items as unknown as TreeItem[];
         const temp = toRaw(bizListTree.value);
         arr2[num].children = (() => {
@@ -179,16 +177,15 @@
           }
           return childrenstr;
         })();
-        // nextTick(() => {
         treeData.value = arr;
-        setImmediate(nextTick);
+        for (let i = 0; i < arr[0].children.length; i++) {
+          let child = arr[0].children;
+          bizIdMap.set(child[i].id, i);
+        }
       });
     } else if (keys[0] > 20000) {
-      // console.log('registerModal');
-      // console.log(keys[0]);
-      // console.log(registerModal);
       tableIdnum.value = keys[0] - 20000;
-      colReload({
+      reload({
         api: GetTableColumnApi,
         columns: ColColumns,
         searchInfo: {
@@ -199,53 +196,56 @@
       nextTick(() => {
         isCol.value = true;
         isBiz.value = isTable.value = false;
-        // setImmediate(nextTick);
       });
     } else {
-      // console.log(keys[0]);
-      // console.log('debug');
       fieldIdnum.value = keys[0];
-      // bizReload({
-      //   api: getBizList,
-      //   columns: BizColumns,
-      //   searchInfo: {
-      //     bizId: null,
-      //     tableId: null,
-      //     fieldId: fieldIdnum.value,
-      //   },
-      // });
       nextTick(async () => {
-        console.log('tick');
+        const idnum = fieldIdMap.get(keys[0]);
         isBiz.value = true;
         isTable.value = isCol.value = false;
-        // setImmediate(nextTick);
-        console.log(treeData);
-        console.log('arr');
         let arr: any[] = [];
-        console.log(testList);
-        arr = await testList;
-        let arr2 = arr[0];
-        console.log(arr2);
-        // treeData.value = arr;
-
-        // bizListTree.value = (await TableListApi(params)).items as unknown as TreeItem[];
-        // const temp = toRaw(bizListTree.value);
+        arr = await fieldList;
+        let arr2 = arr[idnum];
+        let bizParams = {
+          pageSize: 100,
+          repositoryId: 1,
+          fieldIdnum: fieldIdnum.value,
+        };
+        bizListTree.value = (await getBizList(bizParams)).items as unknown as TreeItem[];
+        const bizTemp = toRaw(bizListTree.value);
         arr2.children = (() => {
           const childrenstr: any[] = [];
-          childrenstr.push({
-            code: 888,
-            id: 888,
-          });
-          return childrenstr;
+          const bizLength = bizTemp.length;
+          for (let index = 0; index < bizLength; index++) {
+            childrenstr.push({
+              code: bizTemp[index].businessObjectCode,
+              id: bizTemp[index].id + 10000,
+              bizName: bizTemp[index].businessObjectName,
+              children: (() => {})(),
+            });
+          }
+          return childrenstr.sort((a, b) => a.id - b.id);
         })();
         treeData.value = arr;
-        // return await fetch();
+        for (let i = 0; i < arr[0].children.length; i++) {
+          let child = arr[0].children;
+          bizIdMap.set(child[i].id, i);
+        }
+      });
+      reload({
+        api: getBizList,
+        columns: BizColumns,
+        searchInfo: {
+          bizId: null,
+          tableId: null,
+          fieldId: fieldIdnum.value,
+        },
       });
     }
   }
 
   function handleEditChange(record: Recordable) {
-    console.log(record);
+    // console.log(record);
     openModal(true, {
       record,
       isUpdate: true,
@@ -266,17 +266,13 @@
     // if(record.id)
   }
 
-  let testList = (async () => {
-    let testparams = {
-      pageSize: 100,
-      repositoryId: 55,
-      // fieldId: 55,
-    };
+  let fieldList = (async () => {
     let tempTree = ref<TreeItem[]>([]);
-    tempTree.value = (await FieldListApi(testparams)).items as unknown as TreeItem[];
+    tempTree.value = (await FieldListApi(Params)).items as unknown as TreeItem[];
     const temp = toRaw(tempTree.value);
     const result: any[] = [];
     for (let index = 0; index < temp.length; index++) {
+      fieldIdMap.set(temp[index].id, index);
       result.push({
         code: temp[index].fieldCode,
         id: temp[index].id,
@@ -284,59 +280,10 @@
         children: (() => {})(),
       });
     }
+    console.log('fieldmap');
+    console.log(fieldIdMap);
     return result.sort((a, b) => a.id - b.id);
   })();
-
-  let fieldList = (async () => {
-    treeData.value = (await FieldListApi(Params)).items as unknown as TreeItem[];
-    let fieldnum = 1;
-    let bizParams = {
-      pageSize: 100,
-      repositoryId: 1,
-      fieldId: fieldnum,
-    };
-    const fieldResult: any[] = [];
-    const fieldstr = toRaw(treeData.value);
-    const fieldlen = fieldstr.length;
-    for (let index = 0; index < fieldlen; index++) {
-      fieldnum = fieldstr[index].id;
-      bizParams = {
-        pageSize: 100,
-        repositoryId: 1,
-        fieldId: fieldnum,
-      };
-      // bizListTree.value = (await getBizList(bizParams)).items as unknown as TreeItem[];
-      // const bizTemp = toRaw(bizListTree.value);
-      fieldResult.push({
-        code: fieldstr[index].fieldCode,
-        id: fieldstr[index].id,
-        fieldName: fieldstr[index].fieldName,
-        children: (() => {
-          // const childrenstr: any[] = [];
-          // const bizLength = bizTemp.length;
-          // for (let j = 0; j < bizLength; j++) {
-          // childrenstr.push({
-          // code: bizTemp[j].businessObjectCode,
-          // id: bizTemp[j].id + 10000,
-          // fieldId: fieldstr[index].id,
-          // bizName: bizTemp[index].businessObjectName,
-          // children: (() => {})(),
-          // });
-          // }
-          // return childrenstr.sort((a, b) => a.id - b.id);
-        })(),
-      });
-    }
-    return fieldResult.sort((a, b) => a.id - b.id);
-  })();
-
-  const tableListRef = ref<
-    {
-      title: string;
-      columns?: any[];
-      dataSource?: any[];
-    }[]
-  >([]);
 
   const tableStore = useTableStore();
   async function tableDelete(record: Recordable) {
@@ -417,23 +364,6 @@
       }
     } finally {
       // console.log('?');
-    }
-  }
-
-  function loadDataSuccess(excelDataList: ExcelData[]) {
-    tableListRef.value = [];
-    console.log(excelDataList);
-    for (const excelData of excelDataList) {
-      const {
-        header,
-        results,
-        meta: { sheetName },
-      } = excelData;
-      const columns: BasicColumn[] = [];
-      for (const title of header) {
-        columns.push({ title, dataIndex: title });
-      }
-      tableListRef.value.push({ title: sheetName, dataSource: results, columns });
     }
   }
 

@@ -71,7 +71,7 @@ export interface SorterResult {
 
 export interface FetchParams {
   searchInfo?: Recordable;
-  pageNo?: number;
+  page?: number;
   pageSize?: number;
   sortInfo?: Recordable;
   filterInfo?: Recordable;
@@ -89,9 +89,7 @@ export interface GetColumnsParams {
 export type SizeType = 'default' | 'middle' | 'small' | 'large';
 
 export interface TableActionType {
-  colReload: (opt?: FetchParams) => Promise<void>;
-  bizReload: (opt?: FetchParams) => Promise<void>;
-  tableReload: (opt?: FetchParams) => Promise<void>;
+  reload: (opt?: FetchParams) => Promise<void>;
   getSelectRows: <T = Recordable>() => T[];
   clearSelectedRowKeys: () => void;
   expandAll: () => void;

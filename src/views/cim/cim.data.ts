@@ -123,29 +123,48 @@ export const BizColumns: BasicColumn[] = [
   },
 ];
 
+export const FieldColumns: BasicColumn[] = [
+  {
+    title: '领域编码',
+    dataIndex: 'fieldCode',
+    width: 150,
+    align: 'left',
+  },
+  {
+    title: '领域名称',
+    dataIndex: 'fieldName',
+    width: 50,
+  },
+  {
+    title: '领域ID',
+    dataIndex: 'id',
+    width: 55,
+  },
+  {
+    title: '模型ID',
+    dataIndex: 'repositoryId',
+    width: 40,
+  },
+];
 export const tableFormSchema: FormSchema[] = [
   {
     field: 'tableCode',
     label: '表编码',
     component: 'Input',
-    // helpMessage: ['修改失败'],
-    rules: [
-      {
-        required: true,
-        message: '请输入表编码',
-      },
-    ],
+    required: true,
   },
   {
     field: 'id',
     label: '表ID',
     component: 'Input',
     required: true,
-    ifShow: false,
+    //readonly
+    dynamicDisabled: true,
+    // ifShow: false,
   },
   {
     field: 'description',
-    label: '描述',
+    label: '表描述',
     component: 'Input',
     required: false,
   },
@@ -209,6 +228,7 @@ export const colFormSchema: FormSchema[] = [
     label: '字段ID',
     component: 'Input',
     required: false,
+    dynamicDisabled: true,
   },
   {
     field: 'columnType',
@@ -243,7 +263,7 @@ export const colFormSchema: FormSchema[] = [
 ];
 export const bizFormSchema: FormSchema[] = [
   {
-    field: 'bizCode',
+    field: 'businessObjectCode',
     label: '业务对象',
     component: 'Input',
     rules: [
@@ -256,11 +276,12 @@ export const bizFormSchema: FormSchema[] = [
   {
     field: 'id',
     label: '业务对象ID',
+    dynamicDisabled: true,
     component: 'Input',
     required: false,
   },
   {
-    field: 'bizName',
+    field: 'businessObjectName',
     label: '业务对象名称',
     component: 'Input',
     required: false,

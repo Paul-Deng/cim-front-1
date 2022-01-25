@@ -35,7 +35,7 @@ export function setObjToUrlParams(baseUrl: string, obj: any): string {
 export function addPageParamUrl(baseUrl: string, obj: any): string {
   let parameters = '';
   for (const key in obj) {
-    if (key == 'pageNo') {
+    if (key == 'page') {
       parameters += 'pn=' + encodeURIComponent(obj[key]) + '&';
     }
     if (key == 'pageSize') {

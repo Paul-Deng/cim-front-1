@@ -2,7 +2,7 @@ import Pagination from 'ant-design-vue/lib/pagination';
 import { VNodeChild } from 'vue';
 
 interface PaginationRenderProps {
-  pageNo: number;
+  page: number;
   type: 'page' | 'prev' | 'next';
   originalElement: any;
 }
@@ -44,7 +44,7 @@ export interface PaginationProps {
    */
   pageSize?: number;
 
-  pageNo?: number;
+  page?: number;
 
   repositoryId?: number;
 

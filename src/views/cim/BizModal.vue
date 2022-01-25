@@ -56,10 +56,8 @@
       const result = await bizStore.saveOrUpdateBiz(
         toRaw<TableItem>({
           id: params.id,
-          bizCode: params.businessObjectCode,
-          bizId: params.bizId,
-          bizName: params.businessObjectName,
-          description: params.businessObjectDescription,
+          bizId: params.id,
+          description: params.description,
           fieldId: params.fieldId,
           repositoryId: params.repositoryId,
           userId: params.userId,

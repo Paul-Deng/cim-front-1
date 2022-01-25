@@ -35,8 +35,8 @@ export function resultError(message = 'Request failed', { code = -1, result = nu
   };
 }
 
-export function pagination<T = any>(pageNo: number, pageSize: number, array: T[]): T[] {
-  const offset = (pageNo - 1) * Number(pageSize);
+export function pagination<T = any>(page: number, pageSize: number, array: T[]): T[] {
+  const offset = (page - 1) * Number(pageSize);
   const ret =
     offset + Number(pageSize) >= array.length
       ? array.slice(offset, array.length)

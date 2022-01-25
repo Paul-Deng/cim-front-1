@@ -123,6 +123,7 @@ export interface FormProps {
 }
 export interface FormSchema {
   // Field name
+  // readonly?: boolean;
   field: string;
   // Event name triggered by internal value change, default change
   changeEvent?: string;
