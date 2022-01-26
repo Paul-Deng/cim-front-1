@@ -6,7 +6,7 @@ import { mainOutRoutes } from './mainOut';
 import { PageEnum } from '/@/enums/pageEnum';
 import { t } from '/@/hooks/web/useI18n';
 import { dashboard } from '/@/router/routes/modules/dashboard';
-import { mapping } from '/@/router/routes/modules/mapping';
+// import { mapping } from '/@/router/routes/modules/mapping';
 
 const modules = import.meta.globEager('./modules/**/*.ts');
 
@@ -42,7 +42,6 @@ export const LoginRoute: AppRouteRecordRaw = {
 export const basicRoutes = [
   LoginRoute,
   dashboard,
-  mapping,
   RootRoute,
   ...mainOutRoutes,
   REDIRECT_ROUTE,

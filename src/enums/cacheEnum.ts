@@ -19,6 +19,9 @@ export const MULTIPLE_TABS_KEY = 'MULTIPLE_TABS__KEY__';
 
 export const APP_DARK_MODE_KEY_ = '__APP__DARK__MODE__';
 
+//USERID
+export const USER_ID_KEY = 'USER__ID__';
+
 // base global local key
 export const APP_LOCAL_CACHE_KEY = 'COMMON__LOCAL__KEY__';
 

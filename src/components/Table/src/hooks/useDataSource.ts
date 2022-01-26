@@ -234,7 +234,6 @@ export function useDataSource(
   }
 
   async function fetch(opt?: FetchParams) {
-    console.log('trigger');
     const {
       api,
       searchInfo,

@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="translateArea">
     <div class="leftCol">
       <a-tabs class="leftTab" default-active-key="1" @change="callback">
@@ -175,4 +175,9 @@
     width: 40%;
     overflow: hidden;
   }
-</style>
+</style> -->
+
+
+<template>
+  <div> hello </div>
+</template>
