@@ -79,6 +79,7 @@
       });
 
       const getBindValues = computed(() => {
+        console.log('selectedKeyUpdate');
         let propsData = {
           blockNode: true,
           ...attrs,
@@ -93,10 +94,27 @@
             emit('update:expandedKeys', v);
           },
           'onUpdate:selectedKeys': (v: Keys) => {
-            state.selectedKeys = v;
-            emit('update:selectedKeys', v);
+            console.log('check2');
+            console.log(v);
+            console.log(state.selectedKeys);
+            // state.selectedKeys = v;
+            if (v.length < 1) {
+              console.log('replace');
+              v[0] = state.selectedKeys[0];
+              state.selectedKeys = v;
+              emit('update:selectedKeys', [2]);
+            } else {
+              console.log('updateKey');
+              state.selectedKeys = v;
+              emit('update:selectedKeys', v);
+            }
+            // state.selectedKeys = v;
+            console.log('check1');
+            console.log(state.selectedKeys);
+            console.log(v);
           },
           onCheck: (v: CheckKeys, e: CheckEvent) => {
+            console.log('oncheck');
             let currentValue = toRaw(state.checkedKeys) as Keys;
             if (isArray(currentValue) && searchState.startSearch) {
               const { key } = unref(getReplaceFields);
@@ -115,6 +133,9 @@
           },
           onRightClick: handleRightClick,
         };
+        console.log('KeyUpdate');
+        console.log(propsData.checkedKeys);
+        console.log(propsData.selectedKeys);
         return omit(propsData, 'treeData', 'class');
       });
 
@@ -296,6 +317,7 @@
       });
 
       watchEffect(() => {
+        console.log('effect');
         state.selectedKeys = props.selectedKeys;
       });
 

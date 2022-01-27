@@ -1,4 +1,4 @@
-import type { BasicColumn, BasicTableProps, FetchParams, SorterResult } from '../types/table';
+import type { BasicTableProps, FetchParams, SorterResult } from '../types/table';
 import type { PaginationProps } from '../types/pagination';
 import {
   ref,
@@ -14,10 +14,11 @@ import {
 import { useTimeoutFn } from '/@/hooks/core/useTimeout';
 import { buildUUID } from '/@/utils/uuid';
 import { isFunction, isBoolean } from '/@/utils/is';
-import { get, cloneDeep, merge } from 'lodash-es';
+import { get, cloneDeep } from 'lodash-es';
 import { FETCH_SETTING, ROW_KEY, PAGE_SIZE } from '../const';
 
 interface ActionType {
+  apitemp: (...arg: any) => Promise<any>;
   getPaginationInfo: ComputedRef<boolean | PaginationProps>;
   setPagination: (info: Partial<PaginationProps>) => void;
   setLoading: (loading: boolean) => void;
@@ -33,6 +34,7 @@ interface SearchState {
 export function useDataSource(
   propsRef: ComputedRef<BasicTableProps>,
   {
+    apitemp,
     getPaginationInfo,
     setPagination,
     setLoading,
@@ -48,6 +50,7 @@ export function useDataSource(
   });
   const dataSourceRef = ref<Recordable[]>([]);
   const rawDataSourceRef = ref<Recordable>({});
+  // let api = ref<Function>();
 
   watchEffect(() => {
     tableData.value = unref(dataSourceRef);
@@ -232,7 +235,7 @@ export function useDataSource(
 
     return findRow(dataSourceRef.value);
   }
-
+  // let apiTemp;
   async function fetch(opt?: FetchParams) {
     const {
       api,
@@ -244,6 +247,10 @@ export function useDataSource(
       useSearchForm,
       pagination,
     } = unref(propsRef);
+    // apitemp = api;
+    console.log('apireturn');
+    console.log(api);
+    console.log(apitemp);
     if (!api || !isFunction(api)) return;
     try {
       setLoading(true);
@@ -279,8 +286,19 @@ export function useDataSource(
       if (beforeFetch && isFunction(beforeFetch)) {
         params = (await beforeFetch(params)) || params;
       }
+      let res;
 
-      const res = (await opt?.api(params)) || (await api(params));
+      if (opt?.api) {
+        res = await opt?.api(params);
+        apitemp = opt?.api;
+        // console.log('apinow');
+        // console.log(opt?.api);
+        // console.log(apitemp);
+      } else if (apitemp) {
+        res = await apitemp(params);
+      } else {
+        res = await api(params);
+      }
       rawDataSourceRef.value = res;
 
       const isArrayResult = Array.isArray(res);
@@ -288,7 +306,6 @@ export function useDataSource(
       let resultItems: Recordable[] = isArrayResult ? res : get(res, listField);
       const resultTotal: number = isArrayResult ? 0 : get(res, totalField);
 
-      // 假如数据变少，导致总页数变少并小于当前选中页码，通过getPaginationRef获取到的页码是不正确的，需获取正确的页码再次执行
       if (resultTotal) {
         const currentTotalPage = Math.ceil(resultTotal / pageSize);
         if (current > currentTotalPage) {
@@ -308,22 +325,23 @@ export function useDataSource(
         total: resultTotal || 0,
       });
       if (opt && opt?.page) {
+        console.log('pagecheck1');
         setPagination({
           current: opt?.page || 1,
         });
       }
+      console.log('pagecheck2');
       emit('fetch-success', {
         items: unref(resultItems),
         total: resultTotal,
       });
+      console.log('return?');
+      console.log(resultItems);
       return resultItems;
     } catch (error) {
       emit('fetch-error', error);
-      // dataSourceRef.value = [];
       reload();
-      // setPagination({
-      //   current: opt?.page,
-      // });
+      console.log(error);
       console.log('catcherror');
     } finally {
       setLoading(false);
@@ -343,11 +361,15 @@ export function useDataSource(
   }
 
   async function reload(opt?: FetchParams) {
-    const num = opt?.page;
-    console.log(num);
+    console.log('reloadfunction');
+    console.log(opt?.api);
     return await fetch(opt);
   }
 
+  async function tableReload(opt?: FetchParams) {
+    console.log('tableReload');
+    return await fetch(opt);
+  }
   onMounted(() => {
     useTimeoutFn(() => {
       unref(propsRef).immediate && fetch();
@@ -363,6 +385,7 @@ export function useDataSource(
     getAutoCreateKey,
     fetch,
     reload,
+    tableReload,
     updateTableData,
     updateTableDataRecord,
     deleteTableDataRecord,

@@ -1,37 +1,39 @@
-<!-- <template>
-  <div class="translateArea">
-    <div class="leftCol">
-      <a-tabs class="leftTab" default-active-key="1" @change="callback">
-        <a-tab-pane key="1" tab="KIS" />
-        <a-tab-pane key="2" tab="JDY" force-render />
-        <a-tab-pane key="3" tab="CIM" />
-      </a-tabs>
-      <a-cascader
-        class="leftCas"
-        :options="options"
-        :show-search="{ filter }"
-        placeholder="Please select"
-        @change="onChange"
-      />
+<template>
+  <div>
+    <div class="translateArea">
+      <div class="leftCol">
+        <a-tabs class="leftTab" default-active-key="1" @change="callback">
+          <a-tab-pane key="1" tab="KIS" />
+          <a-tab-pane key="2" tab="JDY" force-render />
+          <a-tab-pane key="3" tab="CIM" />
+        </a-tabs>
+        <a-cascader
+          class="leftCas"
+          :options="options"
+          :show-search="{ filter }"
+          placeholder="Please select"
+          @change="onChange"
+        />
+      </div>
+      <div class="rightCol">
+        <a-tabs default-active-key="1" @change="callback">
+          <a-tab-pane key="1" tab="CIM" />
+          <a-tab-pane key="2" tab="KIS" force-render />
+          <a-tab-pane key="3" tab="JDY" />
+        </a-tabs>
+      </div>
     </div>
-    <div class="rightCol">
-      <a-tabs default-active-key="1" @change="callback">
-        <a-tab-pane key="1" tab="CIM" />
-        <a-tab-pane key="2" tab="KIS" force-render />
-        <a-tab-pane key="3" tab="JDY" />
-      </a-tabs>
+    <div class="textarea">
+      <a-textarea placeholder="字段" :rows="10" class="colArea" />
+      <a-textarea placeholder="目标字段" :rows="10" class="colTarget" />
     </div>
-  </div>
-  <div class="textarea">
-    <a-textarea placeholder="字段" :rows="10" class="colArea" />
-    <a-textarea placeholder="目标字段" :rows="10" class="colTarget" />
-  </div>
 
-  <a-table class="mapping-abc" :columns="columns" :data-source="data" bordered>
-    <template #colName="{ text }">
-      <a>{{ text }}</a>
-    </template>
-  </a-table>
+    <a-table class="mapping-abc" :columns="columns" :data-source="data" bordered>
+      <template #colName="{ text }">
+        <a>{{ text }}</a>
+      </template>
+    </a-table>
+  </div>
 </template>
 <script lang="ts" setup>
   var today = new Date();
@@ -175,9 +177,4 @@
     width: 40%;
     overflow: hidden;
   }
-</style> -->
-
-
-<template>
-  <div> hello </div>
-</template>
+</style>

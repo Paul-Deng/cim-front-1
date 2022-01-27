@@ -184,8 +184,6 @@ export const usePermissionStore = defineStore({
 
           // console.log(routeList);
           let routeListtest: AppRouteRecordRaw[] = [];
-          //mock
-          // routeListtest = (await getMenuListMock()) as AppRouteRecordRaw[];
           routeListtest = (await getRouteList()) as AppRouteRecordRaw[];
           console.log('routeListtest');
           console.log(routeListtest);

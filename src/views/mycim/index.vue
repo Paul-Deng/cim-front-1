@@ -1,30 +1,4 @@
 <template>
-  <!-- <div v-if="isRepo">
-    <BasicTable
-      @register="registerRepoTable"
-      @fetch-success="onFetchSuccess"
-      @edit-change="handleEditChange"
-    >
-      <template #action="{ record }">
-        <TableAction
-          :actions="[
-            {
-              icon: 'clarity:note-edit-line',
-              onClick: handleEditChange.bind(null, record),
-            },
-            {
-              icon: 'ant-design:delete-outlined',
-              color: 'error',
-              popConfirm: {
-                title: '是否确认删除',
-                confirm: handleDelete.bind(null, record),
-              },
-            },
-          ]"
-        />
-      </template>
-    </BasicTable>
-  </div> -->
   <div>
     <div class="uploadbtn" width="100%">
       <ImpExcel class="m-3" @success="loadDataSuccess" dateFormat="YYYY-MM-DD">
@@ -33,7 +7,6 @@
     </div>
     <div>
       <div class="side">
-        <!-- <a-tree :load-data="fieldList" :tree-data="treeData" /> -->
         <BasicTree
           title="CIM模型"
           toolbar
@@ -139,12 +112,6 @@
 
   async function fetch() {
     treeData.value = await RepoList;
-    console.log(treeData.value);
-    console.log(treeData.value[0].userId);
-    userIdnum.value = treeData.value[0].userId;
-    requestParam = {
-      userId: userIdnum.value,
-    };
   }
   onMounted(() => {
     fetch();
