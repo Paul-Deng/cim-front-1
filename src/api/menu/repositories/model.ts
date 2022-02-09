@@ -128,7 +128,7 @@ export function RepositoryKVApi(params: RepositoryItem) {
   });
 }
 
-export function FieldListApi(params: TableItem, mode: ErrorMessageMode = 'message') {
+export function FieldListApi(params?: TableItem, mode: ErrorMessageMode = 'message') {
   return defHttp.request<TableListResultVO>(
     {
       url: Api.FIELD_LIST,

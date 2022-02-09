@@ -13,18 +13,18 @@
 <script lang="ts" setup>
   import { ref, computed, unref, toRaw } from 'vue';
   import { BasicForm, useForm } from '/@/components/Form';
-  import { bizFormSchema } from './cim.data';
+  import { fieldFormSchema } from './mycim.data';
   import { BasicModal, useModalInner } from '/@/components/Modal';
   import { notification } from 'ant-design-vue';
   import { TableItem } from '/@/api/menu/model/model';
-  import { BizObjListApi } from '/@/api/menu/repositories/model';
-  import { useBizStore } from '/@/store/modules/bizList';
+  import { FieldListApi } from '/@/api/menu/repositories/model';
+  import { useFieldStore } from '/@/store/modules/fieldList';
 
   const isUpdate = ref(true);
 
   const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
     labelWidth: 100,
-    schemas: bizFormSchema,
+    schemas: fieldFormSchema,
     showActionButtonGroup: false,
     baseColProps: { lg: 12, md: 24 },
   });
@@ -38,29 +38,27 @@
         ...data.record,
       });
     }
-    const treeData = await BizObjListApi();
+    const treeData = await FieldListApi();
     updateSchema({
       field: 'id',
       componentProps: { treeData },
     });
   });
 
-  const getTitle = computed(() => (!unref(isUpdate) ? '新增业务对象' : '编辑业务对象'));
-  const bizStore = useBizStore();
+  const getTitle = computed(() => (!unref(isUpdate) ? '新增领域' : '编辑领域'));
+  const fieldStore = useFieldStore();
   async function handleSubmit(this: any) {
     try {
       const values = await validate();
       // TODO custom api
       var params = values;
       console.log(params);
-      const result = await bizStore.saveOrUpdateBiz(
+      const result = await fieldStore.saveOrUpdateField(
         toRaw<TableItem>({
+          fieldCode: params.fieldCode,
+          fieldName: params.fieldName,
           id: params.id,
-          bizId: params.id,
-          description: params.description,
-          fieldId: params.fieldId,
           repositoryId: params.repositoryId,
-          userId: params.userId,
         }),
       );
       if (result) {

@@ -328,7 +328,6 @@ export const fieldFormSchema: FormSchema[] = [
     field: 'fieldCode',
     label: '领域编码',
     component: 'Input',
-    // required: false,
   },
   {
     field: 'fieldName',
@@ -353,7 +352,6 @@ export const repoFormSchema: FormSchema[] = [
     field: 'repositoryName',
     label: '模型名称',
     component: 'Input',
-    // required: false,
   },
   {
     field: 'repositoryType',

@@ -23,6 +23,9 @@
           @fetch-success="onFetchSuccess"
           @edit-change="handleEditChange"
         >
+          <template #toolbar>
+            <a-button type="primary" @click="handleCreate"> 新增 </a-button>
+          </template>
           <template #action="{ record }">
             <TableAction
               :actions="[
@@ -43,10 +46,10 @@
           </template>
         </BasicTable>
         <template v-if="isRepo">
-          <BizModal @register="registerModal" />
+          <RepoModal @register="registerModal" />
         </template>
         <template v-if="isField">
-          <BizModal @register="registerModal" />
+          <FieldModal @register="registerModal" />
         </template>
         <template v-if="isBiz">
           <BizModal @register="registerModal" />
@@ -82,13 +85,19 @@
   import TableModal from '/@/views/cim/TableModal.vue';
   import BizModal from '/@/views/cim/BizModal.vue';
   import ColModal from '/@/views/cim/ColModal.vue';
+  import RepoModal from '/@/views/mycim/RepoModal.vue';
+  import FieldModal from '/@/views/mycim/FieldModal.vue';
   import { useColumnStore } from '/@/store/modules/columnList';
   import { useBizStore } from '/@/store/modules/bizList';
   import { UserInfo } from '/#/store';
   import { getAuthCache } from '/@/utils/auth';
   import { USER_INFO_KEY } from '/@/enums/cacheEnum';
+  import { useFieldStore } from '/@/store/modules/fieldList';
+  import { useRepoStore } from '/@/store/modules/repoList';
+  import { useMessage } from '/@/hooks/web/useMessage';
 
   const openKeys = ref<string[]>(['sub1']);
+  const { createMessage } = useMessage();
 
   watch(
     () => openKeys,
@@ -96,6 +105,7 @@
       console.log('openKeys', val);
     },
   );
+  
 
   let treeData = ref<TreeItem[]>([]);
   let fieldListTree = ref<TreeItem[]>([]);
@@ -108,14 +118,18 @@
   let isRepo = ref(true);
   let userIdnum = ref<number>(1);
   userIdnum.value = getAuthCache<UserInfo>(USER_INFO_KEY).userId;
+  if (userIdnum.value == 1) {
+    //@ts-ignore
+    userIdnum.value = null;
+  }
   let requestParam = {
     userId: userIdnum.value,
   };
 
   async function fetch() {
     treeData.value = await RepoList;
-    // console.log('repolist');
-    // console.log(treeData.value);
+    console.log('user id');
+    console.log(userIdnum.value);
   }
   onMounted(() => {
     fetch();
@@ -157,7 +171,7 @@
       fixed: undefined,
     },
   });
-
+  
   function handleSelect(keys) {
     console.log(keys[0]);
     let indexR = keys[0].indexOf('R');
@@ -184,6 +198,7 @@
         let arr2: TreeItem[] = [];
         let arr3: TreeItem[] = [];
         arr2 = arr[0].children;
+        //@ts-ignore
         arr3 = arr2[0].children;
         let num = bizIdMap.get(bizIdnum.value + 'B');
         bizListTree.value = (await TableListApi(params)).items as unknown as TreeItem[];
@@ -360,6 +375,56 @@
     }[]
   >([]);
 
+  const repoStore = useRepoStore();
+  async function repoDelete(record: Recordable) {
+    try {
+      const values = record;
+      var params = values;
+      const id = params.id;
+      var ids: Array<number> = new Array<number>();
+      ids.push(id);
+      const result = await repoStore.deleteRepo(ids);
+      if (result) {
+        notification.success({
+          message: '提交成功',
+          duration: 1,
+        });
+        tableReload();
+      } else {
+        notification.error({
+          message: '提交失败',
+          duration: 3,
+        });
+      }
+    } finally {
+    }
+  }
+  const fieldStore = useFieldStore();
+  async function fieldDelete(record: Recordable) {
+    try {
+      const values = record;
+      var params = values;
+      const id = params.id;
+      var ids: Array<number> = new Array<number>();
+      ids.push(id);
+      const result = await fieldStore.deleteField(ids);
+      if (result) {
+        notification.success({
+          message: '提交成功',
+          duration: 1,
+        });
+        setTimeout(async function () {
+          document.location.reload();
+        }, 500);
+      } else {
+        notification.error({
+          message: '提交失败',
+          duration: 3,
+        });
+      }
+    } finally {
+    }
+  }
   const tableStore = useTableStore();
   async function tableDelete(record: Recordable) {
     try {
@@ -436,6 +501,20 @@
         });
       }
     } finally {
+    }
+  }
+
+  async function handleCreate(this: any, record: Recordable) {
+    openModal(true, {
+      record,
+      isUpdate: false,
+    });
+    console.log('newmenu');
+    try {
+      var params = record;
+      console.log(params);
+    } catch (error) {
+      createMessage.error('失败');
     }
   }
 

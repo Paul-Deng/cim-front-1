@@ -13,18 +13,18 @@
 <script lang="ts" setup>
   import { ref, computed, unref, toRaw } from 'vue';
   import { BasicForm, useForm } from '/@/components/Form';
-  import { bizFormSchema } from './cim.data';
+  import { repoFormSchema } from './mycim.data';
   import { BasicModal, useModalInner } from '/@/components/Modal';
   import { notification } from 'ant-design-vue';
   import { TableItem } from '/@/api/menu/model/model';
-  import { BizObjListApi } from '/@/api/menu/repositories/model';
-  import { useBizStore } from '/@/store/modules/bizList';
+  import { repositoryListApi } from '/@/api/menu/repositories/model';
+  import { useRepoStore } from '/@/store/modules/repoList';
 
   const isUpdate = ref(true);
 
   const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
     labelWidth: 100,
-    schemas: bizFormSchema,
+    schemas: repoFormSchema,
     showActionButtonGroup: false,
     baseColProps: { lg: 12, md: 24 },
   });
@@ -38,29 +38,27 @@
         ...data.record,
       });
     }
-    const treeData = await BizObjListApi();
+    const treeData = await repositoryListApi();
     updateSchema({
       field: 'id',
       componentProps: { treeData },
     });
   });
 
-  const getTitle = computed(() => (!unref(isUpdate) ? '新增业务对象' : '编辑业务对象'));
-  const bizStore = useBizStore();
-  async function handleSubmit(this: any) {
+  const getTitle = computed(() => (!unref(isUpdate) ? '新增模型' : '编辑模型'));
+  const repoStore = useRepoStore();
+  async function handleSubmit() {
     try {
       const values = await validate();
       // TODO custom api
       var params = values;
       console.log(params);
-      const result = await bizStore.saveOrUpdateBiz(
+      const result = await repoStore.saveOrUpdateRepo(
         toRaw<TableItem>({
           id: params.id,
-          bizId: params.id,
           description: params.description,
-          fieldId: params.fieldId,
-          repositoryId: params.repositoryId,
-          userId: params.userId,
+          repositoryType: params.repositoryType,
+          repositoryName: params.repositoryName,
         }),
       );
       if (result) {
@@ -68,20 +66,9 @@
           message: '提交成功',
           duration: 1,
         });
-        localStorage.setItem('state', JSON.stringify(this.$store.state));
-        localStorage.getItem('state') &&
-          this.$store.replaceState(JSON.parse(localStorage.getItem('state')));
         // reload();
-        setTimeout(async () => {
+        setTimeout(async function () {
           document.location.reload();
-          if (sessionStorage.getItem('state')) {
-            this.$store.replaceState(
-              Object.assign({}, this.$store.state, JSON.parse(sessionStorage.getItem('state'))),
-            );
-          }
-          window.addEventListener('beforeunload', () => {
-            sessionStorage.setItem('state', JSON.stringify(this.$store.state));
-          });
         }, 500);
       } else {
         notification.error({

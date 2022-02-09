@@ -54,10 +54,10 @@ export interface BusinessObjectItem {
 export type BusinessObjectListResultVO = BasicFetchResult<BusinessObjectItem>;
 
 export interface TableItem {
+  repositoryName?: string;
+  repositoryType?: string;
   id?: number;
   bizCode?: string;
-  // businessObjectCode?: string;
-  // businessObjectName?: string;
   bizId?: number;
   bizName?: string;
   description?: string;
