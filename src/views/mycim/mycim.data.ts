@@ -145,9 +145,9 @@ export const FieldColumns: BasicColumn[] = [
     width: 55,
   },
   {
-    title: '更新时间',
-    dataIndex: 'updatedTime',
-    width: 60,
+    title: '介绍',
+    dataIndex: 'description',
+    width: 55,
   },
 ];
 export const RepoColumns: BasicColumn[] = [

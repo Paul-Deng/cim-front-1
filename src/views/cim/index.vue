@@ -3,7 +3,6 @@
     <div v-cloak>
       <div v-cloak class="side">
         <BasicTree
-          v-if="isReloadData"
           title="CIM模型"
           toolbar
           search
@@ -78,8 +77,6 @@
   //   },
   // );
 
-  // app.use(syncData);
-
   let treeData = ref<TreeItem[]>([]);
   let bizListTree = ref<TreeItem[]>([]);
   let Params = {
@@ -148,7 +145,7 @@
     },
     isTreeTable: true,
     striped: false,
-    useSearchForm: true,
+    useSearchForm: false,
     showTableSetting: true,
     bordered: true,
     showIndexColumn: false,
@@ -428,12 +425,15 @@
   .side {
     width: 35%;
     margin-left: 1%;
+    margin-right: 1%;
+    margin-top: 1px;
     float: left;
     text-align: center;
   }
   .atable {
     overflow: hidden;
     margin-right: 1%;
+    margin-top: 10px;
   }
   .ant-dropdown-link {
     width: 10%;
