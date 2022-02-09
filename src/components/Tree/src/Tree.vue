@@ -42,6 +42,7 @@
     inheritAttrs: false,
     props: basicProps,
     emits: [
+      'update:treeData',
       'update:expandedKeys',
       'update:selectedKeys',
       'update:value',
@@ -79,7 +80,7 @@
       });
 
       const getBindValues = computed(() => {
-        console.log('selectedKeyUpdate');
+        // console.log('selectedKeyUpdate');
         let propsData = {
           blockNode: true,
           ...attrs,
@@ -90,31 +91,34 @@
           checkStrictly: state.checkStrictly,
           replaceFields: unref(getReplaceFields),
           'onUpdate:expandedKeys': (v: Keys) => {
+            // console.log('expandedkey');
+            // console.log(v);
+            // console.log(state.expandedKeys);
             state.expandedKeys = v;
             emit('update:expandedKeys', v);
           },
           'onUpdate:selectedKeys': (v: Keys) => {
-            console.log('check2');
-            console.log(v);
-            console.log(state.selectedKeys);
+            // console.log('check2');
+            // console.log(v);
+            // console.log(state.selectedKeys);
             // state.selectedKeys = v;
             if (v.length < 1) {
               console.log('replace');
               v[0] = state.selectedKeys[0];
               state.selectedKeys = v;
-              emit('update:selectedKeys', [2]);
+              emit('update:selectedKeys', v);
             } else {
               console.log('updateKey');
+              // console.log('expandedkeyafter');
+              // console.log(v);
+              // console.log(state.expandedKeys);
+              // state.expandedKeys = v;
               state.selectedKeys = v;
               emit('update:selectedKeys', v);
             }
-            // state.selectedKeys = v;
-            console.log('check1');
-            console.log(state.selectedKeys);
-            console.log(v);
           },
           onCheck: (v: CheckKeys, e: CheckEvent) => {
-            console.log('oncheck');
+            // console.log('oncheck');
             let currentValue = toRaw(state.checkedKeys) as Keys;
             if (isArray(currentValue) && searchState.startSearch) {
               const { key } = unref(getReplaceFields);
@@ -133,9 +137,6 @@
           },
           onRightClick: handleRightClick,
         };
-        console.log('KeyUpdate');
-        console.log(propsData.checkedKeys);
-        console.log(propsData.selectedKeys);
         return omit(propsData, 'treeData', 'class');
       });
 
@@ -230,11 +231,24 @@
           immediate: true,
         },
       );
-
+      watch(
+        () => getTreeData.value,
+        (val, prev) => {
+          if (val) {
+            // console.log('treeData changed');
+            console.log(val, prev);
+          }
+        },
+        {
+          immediate: true,
+          deep: true,
+        },
+      );
       watch(
         () => props.treeData,
         (val) => {
           if (val) {
+            // console.log('???');
             handleSearch(searchState.searchText);
           }
         },
@@ -286,7 +300,39 @@
       }
 
       function handleClickNode(key: string, children: TreeItem[]) {
-        if (!props.clickRowToExpand || !children || children.length === 0) return;
+        // console.log('click trigger');
+        // watch(
+        //   () => getTreeData.value,
+        //   (val, prev) => {
+        //     if (val) {
+        //       console.log('inside click');
+        //       console.log(val, prev);
+        //     }
+        //   },
+        //   {
+        //     immediate: true,
+        //     deep: true,
+        //   },
+        // );
+        // console.log(getTreeData.value);
+        // console.log(treeDataRef.value);
+        // console.log(props.treeData);
+        // watchEffect(() => {
+        //   console.log('update tree effect');
+        //   console.log(getTreeData.value);
+        //   console.log('update ref effect');
+        //   console.log(treeDataRef.value);
+        //   treeDataRef.value = props.treeData as TreeItem[];
+        // });
+        if (!props.clickRowToExpand || !children || children.length === 0) {
+          // console.log('return la');
+          return;
+        }
+        // if (!props.clickRowToExpand) {
+        //   console.log('return la');
+        //   return;
+        // }
+        emit('update: treeData', getTreeData.value);
         if (!state.expandedKeys.includes(key)) {
           setExpandedKeys([...state.expandedKeys, key]);
         } else {
@@ -297,10 +343,24 @@
           }
           setExpandedKeys(keys);
         }
+        // watchEffect(() => {
+        //   console.log('update getTree effect');
+        //   console.log(getTreeData.value);
+        //   treeDataRef.value = getTreeData.value as TreeItem[];
+        // });
       }
 
       watchEffect(() => {
+        // console.log('update getTree effect2');
+        // console.log(getTreeData.value);
         treeDataRef.value = props.treeData as TreeItem[];
+      });
+
+      watchEffect(() => {
+        // console.log('update treeValue');
+        // console.log(treeDataRef.value);
+        // console.log(getTreeData.value);
+        treeDataRef.value = treeDataRef.value as TreeItem[];
       });
 
       onMounted(() => {
@@ -317,7 +377,7 @@
       });
 
       watchEffect(() => {
-        console.log('effect');
+        // console.log('effect');
         state.selectedKeys = props.selectedKeys;
       });
 

@@ -72,7 +72,6 @@ export function useTable(tableProps?: Props): [
     },
     tableReload: async (opt?: FetchParams) => {
       if (opt?.columns) {
-        console.log('canshu');
         getTableInstance().setColumns(opt?.columns);
       }
       return await getTableInstance().tableReload(opt);

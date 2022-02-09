@@ -1,8 +1,9 @@
-<template>
-  <div>
-    <div>
-      <div class="side">
+<template v-cloak>
+  <div v-cloak>
+    <div v-cloak>
+      <div v-cloak class="side">
         <BasicTree
+          v-if="isReloadData"
           title="CIM模型"
           toolbar
           search
@@ -12,7 +13,7 @@
           @select="handleSelect"
         />
       </div>
-      <div class="atable">
+      <div class="atable" v-cloak>
         <BasicTable
           @register="registerTable"
           @fetch-success="onFetchSuccess"
@@ -67,15 +68,17 @@
   import ColModal from './ColModal.vue';
   import { useColumnStore } from '/@/store/modules/columnList';
   import { useBizStore } from '/@/store/modules/bizList';
+  // import App from './App.vue';
+  // const openKeys = ref<string[]>(['sub1']);
 
-  const openKeys = ref<string[]>(['sub1']);
+  // watch(
+  //   () => openKeys,
+  //   (val) => {
+  //     console.log('openKeys', val);
+  //   },
+  // );
 
-  watch(
-    () => openKeys,
-    (val) => {
-      console.log('openKeys', val);
-    },
-  );
+  // app.use(syncData);
 
   let treeData = ref<TreeItem[]>([]);
   let bizListTree = ref<TreeItem[]>([]);
@@ -87,16 +90,39 @@
   let isBiz = ref(true);
   let isTable = ref(false);
   let isCol = ref(false);
+  let isReloadData = ref(true);
+
+  // function forceUpdate(this: any) {
+  //   this.$forceUpdate();
+  // }
 
   async function fetch() {
     treeData.value = await fieldList;
-    console.log(treeData.value);
+    // console.log('fetch?');
     // console.log(treeData.value);
   }
+  // let { ctx: _this } = handleSelect(keys) as any;
+  watch(
+    () => [...treeData.value],
+    (treeData, prevTreeData) => {
+      console.log('dataupdated');
+      console.log(treeData, prevTreeData);
+    },
+    {
+      immediate: true,
+      // deep: true,
+    },
+  );
+
   onMounted(() => {
-    // handleSelect(keys);
+    // await fieldList;
     fetch();
   });
+  // onUpdated(() => {
+  //   console.log('updated?');
+  //   console.log(treeData.value);
+  //   fetch();
+  // });
 
   let fieldIdnum = ref<number>(1);
   let bizIdnum = ref<number>(1);
@@ -139,27 +165,30 @@
 
   let fieldIdMap = new Map();
   let bizIdMap = new Map();
-  // let tableIdMap = new Map();
   function handleSelect(keys) {
-    if (keys[0] > 10000 && keys[0] <= 20000) {
-      bizIdnum.value = keys[0] - 10000;
+    console.log(keys[0]);
+    let indexF = keys[0].indexOf('F');
+    let indexB = keys[0].indexOf('B');
+    let indexT = keys[0].indexOf('T');
+    fieldIdnum.value = keys[0].substring(0, indexF);
+    bizIdnum.value = keys[0].substring(indexF + 1, indexB);
+    tableIdnum.value = keys[0].substring(indexB + 1, indexT);
+    if (indexB > 1 && indexT < 1) {
+      isReloadData.value = false;
       nextTick(async () => {
         isTable.value = true;
         isBiz.value = isCol.value = false;
-        console.log('checkFieldID');
-        console.log(fieldIdnum.value);
         let params = {
           pageSize: 100,
           repositoryId: 1,
-          bizId: keys[0] - 10000,
+          bizId: bizIdnum.value,
           fieldIdnum: fieldIdnum.value,
         };
         let arr: any[] = [];
         arr = await fieldList;
         let arr2: TreeItem[] = [];
         arr2 = arr[0].children;
-        console.log('bizid');
-        let num = bizIdMap.get(keys[0]);
+        let num = bizIdMap.get(bizIdnum.value + 'B');
         bizListTree.value = (await TableListApi(params)).items as unknown as TreeItem[];
         const temp = toRaw(bizListTree.value);
         arr2[num].children = (() => {
@@ -168,50 +197,52 @@
           for (let j = 0; j < length; j++) {
             childrenstr.push({
               code: temp[j].tableCode,
-              id: temp[j].id + 20000,
+              id: keys[0] + temp[j].id + 'T',
             });
           }
           return childrenstr;
         })();
         treeData.value = arr;
-        for (let i = 0; i < arr[0].children.length; i++) {
-          let child = arr[0].children;
-          bizIdMap.set(child[i].id, i);
-        }
+        // console.log('getlistagain');
+        // console.log(fieldList);
+        isReloadData.value = true;
       });
       tableReload({
         api: TableListApi,
         columns: TableColumns,
         searchInfo: {
+          fieldId: fieldIdnum.value,
           bizId: bizIdnum.value,
         },
       });
-      return;
-    } else if (keys[0] > 20000) {
-      tableIdnum.value = keys[0] - 20000;
+    } else if (indexT > 1) {
+      isReloadData.value = false;
       tableReload({
         api: GetTableColumnApi,
         columns: ColColumns,
         searchInfo: {
+          bizId: bizIdnum.value,
+          fieldId: fieldIdnum.value,
           tableId: tableIdnum.value,
         },
       });
       nextTick(() => {
         isCol.value = true;
         isBiz.value = isTable.value = false;
+        // console.log('getlistagain');
+        // console.log(fieldList);
+        isReloadData.value = true;
       });
-      return;
     } else {
-      console.log('fenye');
-      console.log(keys[0]);
-      fieldIdnum.value = keys[0];
+      isReloadData.value = false;
+      // console.log('fenye');
+      // console.log(keys[0]);
       nextTick(async () => {
-        // const idnum = fieldIdMap.get(keys[0]);
         isBiz.value = true;
         isTable.value = isCol.value = false;
         let arr: any[] = [];
         arr = await fieldList;
-        let num = fieldIdMap.get(keys[0]);
+        let num = fieldIdMap.get(fieldIdnum.value + 'F');
         let bizParams = {
           pageSize: 100,
           repositoryId: 1,
@@ -219,15 +250,16 @@
         };
         bizListTree.value = (await getBizList(bizParams)).items as unknown as TreeItem[];
         const bizTemp = toRaw(bizListTree.value);
-        console.log('bizlength');
-        console.log(num);
+        // console.log('bizlength');
+        // console.log(num);
         arr[num].children = (() => {
           const childrenstr: any[] = [];
           const bizLength = bizTemp.length;
           for (let index = 0; index < bizLength; index++) {
+            bizIdMap.set(bizTemp[index].id + 'B', index);
             childrenstr.push({
               code: bizTemp[index].businessObjectCode,
-              id: bizTemp[index].id + 10000,
+              id: keys[0] + bizTemp[index].id + 'B',
               bizName: bizTemp[index].businessObjectName,
               fieldIdnum: fieldIdnum.value,
               children: (() => {})(),
@@ -235,12 +267,16 @@
           }
           return childrenstr.sort((a, b) => a.id - b.id);
         })();
-
-        treeData.value = arr;
-        for (let i = 0; i < arr[0].children.length; i++) {
-          let child = arr[0].children;
-          bizIdMap.set(child[i].id, i);
-        }
+        // _this.$forceUpdate();
+        treeData.value = [];
+        // treeData.value = await fieldList;
+        treeData.value = Object.assign(arr);
+        // treeData.value.set(treeData.value, arr);
+        // this.$set(treeData, arr);
+        // console.log('getlistagain');
+        // console.log(treeData.value);
+        // console.log(BasicTree);
+        isReloadData.value = true;
       });
       tableReload({
         api: getBizList,
@@ -249,9 +285,14 @@
           fieldId: fieldIdnum.value,
         },
       });
-      return keys;
     }
+    // console.log('outside func');
   }
+  // onUpdated(() => {
+  //   console.log('updated?');
+  //   console.log(treeData.value);
+  //   fetch();
+  // });
 
   function handleEditChange(record: Recordable) {
     openModal(true, {
@@ -280,16 +321,16 @@
     const temp = toRaw(tempTree.value);
     const result: any[] = [];
     for (let index = 0; index < temp.length; index++) {
-      fieldIdMap.set(temp[index].id, index);
+      fieldIdMap.set(temp[index].id + 'F', index);
       result.push({
         code: temp[index].fieldCode,
-        id: temp[index].id,
+        id: temp[index].id + 'F',
         fieldName: temp[index].fieldName,
         children: (() => {})(),
       });
     }
-    console.log('fieldmap');
-    console.log(fieldIdMap);
+    // console.log('fieldmap');
+    // console.log(fieldIdMap);
     return result.sort((a, b) => a.id - b.id);
   })();
 
@@ -381,6 +422,9 @@
   }
 </script>
 <style lang="scss" scoped>
+  [v-cloak] {
+    display: none !important;
+  }
   .side {
     width: 35%;
     margin-left: 1%;

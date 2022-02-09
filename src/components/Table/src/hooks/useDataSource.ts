@@ -248,9 +248,6 @@ export function useDataSource(
       pagination,
     } = unref(propsRef);
     // apitemp = api;
-    console.log('apireturn');
-    console.log(api);
-    console.log(apitemp);
     if (!api || !isFunction(api)) return;
     try {
       setLoading(true);
@@ -330,13 +327,13 @@ export function useDataSource(
           current: opt?.page || 1,
         });
       }
-      console.log('pagecheck2');
+      // console.log('pagecheck2');
       emit('fetch-success', {
         items: unref(resultItems),
         total: resultTotal,
       });
-      console.log('return?');
-      console.log(resultItems);
+      // console.log('return?');
+      // console.log(resultItems);
       return resultItems;
     } catch (error) {
       emit('fetch-error', error);
@@ -362,7 +359,7 @@ export function useDataSource(
 
   async function reload(opt?: FetchParams) {
     console.log('reloadfunction');
-    console.log(opt?.api);
+    // console.log(opt?.api);
     return await fetch(opt);
   }
 

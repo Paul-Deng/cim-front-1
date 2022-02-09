@@ -47,7 +47,7 @@ export function useAMenu(
       {
         immediate: true,
         deep: true,
-      }
+      },
     );
   }
 
@@ -66,6 +66,9 @@ export function useAMenu(
   } = {
     reload: async (opt?: FetchParams) => {
       getTableInstance().reload(opt);
+    },
+    tableReload: async (opt?: FetchParams) => {
+      getTableInstance().tableReload(opt);
     },
     setProps: (props: Partial<BasicTableProps>) => {
       getTableInstance().setProps(props);
@@ -123,7 +126,7 @@ export function useAMenu(
       return getTableInstance().getCacheColumns();
     },
     getForm: () => {
-      return (unref(formRef) as unknown) as FormActionType;
+      return unref(formRef) as unknown as FormActionType;
     },
     setShowPagination: async (show: boolean) => {
       getTableInstance().setShowPagination(show);

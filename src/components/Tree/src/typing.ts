@@ -21,21 +21,21 @@ export type CheckKeys =
   | { checked: (string | number)[]; halfChecked: (string | number)[] };
 
 export interface TreeActionType {
-  checkAll: (checkAll: boolean) => void;
-  expandAll: (expandAll: boolean) => void;
-  setExpandedKeys: (keys: Keys) => void;
-  getExpandedKeys: () => Keys;
-  setSelectedKeys: (keys: Keys) => void;
-  getSelectedKeys: () => Keys;
-  setCheckedKeys: (keys: CheckKeys) => void;
-  getCheckedKeys: () => CheckKeys;
-  filterByLevel: (level: number) => void;
-  insertNodeByKey: (opt: InsertNodeParams) => void;
-  insertNodesByKey: (opt: InsertNodeParams) => void;
-  deleteNodeByKey: (key: string) => void;
-  updateNodeByKey: (key: string, node: Omit<TreeDataItem, 'key'>) => void;
-  setSearchValue: (value: string) => void;
-  getSearchValue: () => string;
+  checkAll?: (checkAll: boolean) => void;
+  expandAll?: (expandAll: boolean) => void;
+  setExpandedKeys?: (keys: Keys) => void;
+  getExpandedKeys?: () => Keys;
+  setSelectedKeys?: (keys: Keys) => void;
+  getSelectedKeys?: () => Keys;
+  setCheckedKeys?: (keys: CheckKeys) => void;
+  getCheckedKeys?: () => CheckKeys;
+  filterByLevel?: (level: number) => void;
+  insertNodeByKey?: (opt: InsertNodeParams) => void;
+  insertNodesByKey?: (opt: InsertNodeParams) => void;
+  deleteNodeByKey?: (key: string) => void;
+  updateNodeByKey?: (key: string, node: Omit<TreeDataItem, 'key'>) => void;
+  setSearchValue?: (value: string) => void;
+  getSearchValue?: () => string;
 }
 
 export interface InsertNodeParams {
