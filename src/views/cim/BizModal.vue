@@ -68,20 +68,8 @@
           message: '提交成功',
           duration: 1,
         });
-        localStorage.setItem('state', JSON.stringify(this.$store.state));
-        localStorage.getItem('state') &&
-          this.$store.replaceState(JSON.parse(localStorage.getItem('state')));
-        // reload();
         setTimeout(async () => {
           document.location.reload();
-          if (sessionStorage.getItem('state')) {
-            this.$store.replaceState(
-              Object.assign({}, this.$store.state, JSON.parse(sessionStorage.getItem('state'))),
-            );
-          }
-          window.addEventListener('beforeunload', () => {
-            sessionStorage.setItem('state', JSON.stringify(this.$store.state));
-          });
         }, 500);
       } else {
         notification.error({

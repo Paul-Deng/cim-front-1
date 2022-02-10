@@ -105,7 +105,6 @@
       console.log('openKeys', val);
     },
   );
-  
 
   let treeData = ref<TreeItem[]>([]);
   let fieldListTree = ref<TreeItem[]>([]);
@@ -122,10 +121,6 @@
     //@ts-ignore
     userIdnum.value = null;
   }
-  let requestParam = {
-    userId: userIdnum.value,
-  };
-
   async function fetch() {
     treeData.value = await RepoList;
     console.log('user id');
@@ -135,13 +130,28 @@
     fetch();
   });
 
+  //@ts-ignore
   let repoIdnum = ref<number>(1);
+  //@ts-ignore
   let fieldIdnum = ref<number>(1);
+  //@ts-ignore
   let bizIdnum = ref<number>(1);
+  //@ts-ignore
   let tableIdnum = ref<number>(1);
   let repoIdMap = new Map();
   let fieldIdMap = new Map();
   let bizIdMap = new Map();
+
+  let requestParam = {
+    userId: userIdnum,
+    fieldId: fieldIdnum,
+    bizId: bizIdnum,
+    tableId: tableIdnum,
+    repositoryId: repoIdnum,
+  };
+  let param = {
+    userId: userIdnum.value,
+  };
 
   let requestApi = ref<any>(repositoryListApi);
   let input = requestApi;
@@ -171,7 +181,7 @@
       fixed: undefined,
     },
   });
-  
+
   function handleSelect(keys) {
     console.log(keys[0]);
     let indexR = keys[0].indexOf('R');
@@ -182,6 +192,13 @@
     fieldIdnum.value = keys[0].substring(indexR + 1, indexF);
     bizIdnum.value = keys[0].substring(indexF + 1, indexB);
     tableIdnum.value = keys[0].substring(indexB + 1, indexT);
+    // requestParam = {
+    //   userId: userIdnum.value,
+    //   fieldId: fieldIdnum.value,
+    //   bizId: bizIdnum.value,
+    //   tableId: tableIdnum.value,
+    //   repositoryId: repoIdnum.value,
+    // };
     if (indexB > 1 && indexT < 1) {
       console.log('B - T');
       nextTick(async () => {
@@ -189,7 +206,7 @@
         isRepo.value = isField.value = isBiz.value = isCol.value = false;
         let params = {
           pageSize: 100,
-          repositoryId: 1,
+          repositoryId: repoIdnum.value,
           bizId: bizIdnum.value,
           fieldIdnum: fieldIdnum.value,
         };
@@ -223,6 +240,7 @@
         searchInfo: {
           fieldId: fieldIdnum.value,
           bizId: bizIdnum.value,
+          repositoryId: repoIdnum.value,
         },
       });
     } else if (indexT > 1) {
@@ -234,6 +252,7 @@
           bizId: bizIdnum.value,
           fieldId: fieldIdnum.value,
           tableId: tableIdnum.value,
+          repositoryId: repoIdnum.value,
         },
       });
       nextTick(() => {
@@ -280,6 +299,7 @@
         columns: BizColumns,
         searchInfo: {
           fieldId: fieldIdnum.value,
+          repositoryId: repoIdnum.value,
         },
       });
     } else {
@@ -294,6 +314,8 @@
           pageSize: 100,
           repositoryId: repoIdnum.value,
         };
+        console.log('repo num');
+        console.log(repoIdnum.value);
         fieldListTree.value = (await FieldListApi(fieldParams)).items as unknown as TreeItem[];
         const fieldTemp = toRaw(fieldListTree.value);
         arr[num].children = (() => {
@@ -305,6 +327,7 @@
               code: fieldTemp[index].fieldCode,
               id: keys[0] + fieldTemp[index].id + 'F',
               fieldName: fieldTemp[index].fieldName,
+              repositoryId: repoIdnum.value,
               children: (() => {})(),
             });
           }
@@ -351,7 +374,7 @@
 
   let RepoList = (async () => {
     let tempTree = ref<TreeItem[]>([]);
-    tempTree.value = (await repositoryListApi(requestParam)).items as unknown as TreeItem[];
+    tempTree.value = (await repositoryListApi(param)).items as unknown as TreeItem[];
     const temp = toRaw(tempTree.value);
     const result: any[] = [];
     for (let index = 0; index < temp.length; index++) {

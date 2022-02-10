@@ -200,8 +200,6 @@
           return childrenstr;
         })();
         treeData.value = arr;
-        // console.log('getlistagain');
-        // console.log(fieldList);
         isReloadData.value = true;
       });
       tableReload({
@@ -226,8 +224,6 @@
       nextTick(() => {
         isCol.value = true;
         isBiz.value = isTable.value = false;
-        // console.log('getlistagain');
-        // console.log(fieldList);
         isReloadData.value = true;
       });
     } else {
@@ -285,12 +281,6 @@
     }
     // console.log('outside func');
   }
-  // onUpdated(() => {
-  //   console.log('updated?');
-  //   console.log(treeData.value);
-  //   fetch();
-  // });
-
   function handleEditChange(record: Recordable) {
     openModal(true, {
       record,
