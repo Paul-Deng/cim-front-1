@@ -13,19 +13,18 @@
 <script lang="ts" setup>
   import { ref, computed, unref, toRaw } from 'vue';
   import { BasicForm, useForm } from '/@/components/Form';
-  import { fieldFormSchema } from './mycim.data';
+  import { bizFormSchema } from './mycim.data';
   import { BasicModal, useModalInner } from '/@/components/Modal';
   import { notification } from 'ant-design-vue';
   import { TableItem } from '/@/api/menu/model/model';
-  import { FieldListApi } from '/@/api/menu/repositories/model';
-  import { useFieldStore } from '/@/store/modules/fieldList';
+  import { BizObjListApi } from '/@/api/menu/repositories/model';
+  import { useBizStore } from '/@/store/modules/bizList';
 
   const isUpdate = ref(true);
-  const fieldStore = useFieldStore();
 
   const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
     labelWidth: 100,
-    schemas: fieldFormSchema,
+    schemas: bizFormSchema,
     showActionButtonGroup: false,
     baseColProps: { lg: 12, md: 24 },
   });
@@ -35,36 +34,38 @@
     isUpdate.value = !!data?.isUpdate;
 
     if (unref(isUpdate)) {
-      console.log('is update');
-      console.log(data.record);
       setFieldsValue({
         ...data.record,
       });
     } else {
       setFieldsValue({
         repositoryId: data.record.repositoryId,
+        fieldId: data.record.fieldId,
       });
     }
-    const treeData = await FieldListApi();
+    const treeData = await BizObjListApi();
     updateSchema({
       field: 'id',
       componentProps: { treeData },
     });
   });
 
-  const getTitle = computed(() => (!unref(isUpdate) ? '新增领域' : '编辑领域'));
+  const getTitle = computed(() => (!unref(isUpdate) ? '新增业务对象' : '编辑业务对象'));
+  const bizStore = useBizStore();
   async function handleSubmit(this: any) {
     try {
       const values = await validate();
       // TODO custom api
       var params = values;
       console.log(params);
-      const result = await fieldStore.saveOrUpdateField(
+      const result = await bizStore.saveOrUpdateBiz(
         toRaw<TableItem>({
-          fieldCode: params.fieldCode,
-          fieldName: params.fieldName,
           id: params.id,
+          bizId: params.id,
+          description: params.description,
+          fieldId: params.fieldId,
           repositoryId: params.repositoryId,
+          userId: params.userId,
         }),
       );
       if (result) {

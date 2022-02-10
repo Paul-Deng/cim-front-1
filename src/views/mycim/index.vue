@@ -23,8 +23,15 @@
           @fetch-success="onFetchSuccess"
           @edit-change="handleEditChange"
         >
-          <template #toolbar>
+          <!-- <template #toolbar>
             <a-button type="primary" @click="handleCreate"> 新增 </a-button>
+          </template> -->
+          <template #toolbar>
+            <a-button v-if="isRepo" type="primary" @click="handleCreate"> 新增模型 </a-button>
+            <a-button v-if="isField" type="primary" @click="handleCreate"> 新增领域 </a-button>
+            <a-button v-if="isBiz" type="primary" @click="handleCreate"> 新增业务对象 </a-button>
+            <a-button v-if="isTable" type="primary" @click="handleCreate"> 新增表 </a-button>
+            <a-button v-if="isCol" type="primary" @click="handleCreate"> 新增字段 </a-button>
           </template>
           <template #action="{ record }">
             <TableAction
@@ -82,9 +89,9 @@
   import { notification } from 'ant-design-vue';
   import { useTableStore } from '/@/store/modules/tableList';
   import { useModal } from '/@/components/Modal';
-  import TableModal from '/@/views/cim/TableModal.vue';
-  import BizModal from '/@/views/cim/BizModal.vue';
-  import ColModal from '/@/views/cim/ColModal.vue';
+  import TableModal from '/@/views/mycim/TableModal.vue';
+  import BizModal from '/@/views/mycim/BizModal.vue';
+  import ColModal from '/@/views/mycim/ColModal.vue';
   import RepoModal from '/@/views/mycim/RepoModal.vue';
   import FieldModal from '/@/views/mycim/FieldModal.vue';
   import { useColumnStore } from '/@/store/modules/columnList';
@@ -123,8 +130,8 @@
   }
   async function fetch() {
     treeData.value = await RepoList;
-    console.log('user id');
-    console.log(userIdnum.value);
+    // console.log('user id');
+    // console.log(userIdnum.value);
   }
   onMounted(() => {
     fetch();
@@ -192,13 +199,6 @@
     fieldIdnum.value = keys[0].substring(indexR + 1, indexF);
     bizIdnum.value = keys[0].substring(indexF + 1, indexB);
     tableIdnum.value = keys[0].substring(indexB + 1, indexT);
-    // requestParam = {
-    //   userId: userIdnum.value,
-    //   fieldId: fieldIdnum.value,
-    //   bizId: bizIdnum.value,
-    //   tableId: tableIdnum.value,
-    //   repositoryId: repoIdnum.value,
-    // };
     if (indexB > 1 && indexT < 1) {
       console.log('B - T');
       nextTick(async () => {
@@ -314,8 +314,8 @@
           pageSize: 100,
           repositoryId: repoIdnum.value,
         };
-        console.log('repo num');
-        console.log(repoIdnum.value);
+        // console.log('repo num');
+        // console.log(repoIdnum.value);
         fieldListTree.value = (await FieldListApi(fieldParams)).items as unknown as TreeItem[];
         const fieldTemp = toRaw(fieldListTree.value);
         arr[num].children = (() => {
@@ -344,8 +344,6 @@
         },
       });
     }
-    console.log('arr');
-    console.log(treeData.value);
   }
   function handleEditChange(record: Recordable) {
     console.log(record);
@@ -527,15 +525,36 @@
     }
   }
 
-  async function handleCreate(this: any, record: Recordable) {
+  async function handleCreate(record: Recordable) {
+    if (isRepo.value) {
+      record.userId = userIdnum.value;
+    } else if (isField.value) {
+      record.repositoryId = repoIdnum.value;
+    } else if (isBiz.value) {
+      record.fieldId = fieldIdnum.value;
+      record.repositoryId = repoIdnum.value;
+    } else if (isTable.value) {
+      record.bizId = bizIdnum.value;
+      record.fieldId = fieldIdnum.value;
+      record.repositoryId = repoIdnum.value;
+    } else if (isCol.value) {
+      record.tableId = tableIdnum.value;
+      record.bizId = bizIdnum.value;
+      record.fieldId = fieldIdnum.value;
+      record.repositoryId = repoIdnum.value;
+    }
+
     openModal(true, {
       record,
       isUpdate: false,
     });
-    console.log('newmenu');
     try {
-      var params = record;
-      console.log(params);
+      const values = record;
+      var params = values;
+      const id = params.id;
+      console.log('openmodal');
+      console.log(values);
+      console.log(id);
     } catch (error) {
       createMessage.error('失败');
     }

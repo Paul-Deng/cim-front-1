@@ -13,19 +13,18 @@
 <script lang="ts" setup>
   import { ref, computed, unref, toRaw } from 'vue';
   import { BasicForm, useForm } from '/@/components/Form';
-  import { fieldFormSchema } from './mycim.data';
+  import { colFormSchema } from './mycim.data';
   import { BasicModal, useModalInner } from '/@/components/Modal';
   import { notification } from 'ant-design-vue';
   import { TableItem } from '/@/api/menu/model/model';
-  import { FieldListApi } from '/@/api/menu/repositories/model';
-  import { useFieldStore } from '/@/store/modules/fieldList';
+  import { GetTableColumnApi } from '/@/api/menu/repositories/model';
+  import { useColumnStore } from '/@/store/modules/columnList';
 
   const isUpdate = ref(true);
-  const fieldStore = useFieldStore();
 
   const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
     labelWidth: 100,
-    schemas: fieldFormSchema,
+    schemas: colFormSchema,
     showActionButtonGroup: false,
     baseColProps: { lg: 12, md: 24 },
   });
@@ -35,36 +34,53 @@
     isUpdate.value = !!data?.isUpdate;
 
     if (unref(isUpdate)) {
-      console.log('is update');
-      console.log(data.record);
       setFieldsValue({
         ...data.record,
       });
     } else {
       setFieldsValue({
         repositoryId: data.record.repositoryId,
+        fieldId: data.record.fieldId,
+        bizId: data.record.bizId,
+        tableId: data.record.tableId,
       });
     }
-    const treeData = await FieldListApi();
+    const treeData = await GetTableColumnApi();
     updateSchema({
       field: 'id',
       componentProps: { treeData },
     });
   });
 
-  const getTitle = computed(() => (!unref(isUpdate) ? '新增领域' : '编辑领域'));
-  async function handleSubmit(this: any) {
+  const getTitle = computed(() => (!unref(isUpdate) ? '新增字段' : '编辑字段'));
+  const columnStore = useColumnStore();
+  async function handleSubmit() {
     try {
       const values = await validate();
       // TODO custom api
       var params = values;
       console.log(params);
-      const result = await fieldStore.saveOrUpdateField(
+      const result = await columnStore.saveOrUpdateColumn(
         toRaw<TableItem>({
-          fieldCode: params.fieldCode,
-          fieldName: params.fieldName,
+          columnDefaultValue: params.columnDefaultValue,
+          columnDescription: params.columnDescription,
+          columnForeignKey: params.columnForeignKey,
+          columnLength: params.columnLength,
+          columnName: params.columnName,
+          columnNull: params.columnNull,
+          columnPrimary: params.columnPrimary,
+          columnStatus: params.columnStatus,
+          columnType: params.columnType,
+          columnUnique: params.columnUnique,
           id: params.id,
+          tableId: params.tableId,
+          bizCode: params.bizCode,
+          bizId: params.bizId,
+          bizName: params.bizName,
+          description: params.description,
+          fieldId: params.fieldId,
           repositoryId: params.repositoryId,
+          userId: params.userId,
         }),
       );
       if (result) {
@@ -72,7 +88,8 @@
           message: '提交成功',
           duration: 1,
         });
-        setTimeout(async () => {
+        // reload();
+        setTimeout(async function () {
           document.location.reload();
         }, 500);
       } else {

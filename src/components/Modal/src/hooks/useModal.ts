@@ -125,6 +125,9 @@ export const useModalInner = (callbackFn?: Fn): UseModalInnerReturnType => {
 
   watchEffect(() => {
     const data = dataTransfer[unref(uidRef)];
+    // console.log('called fn');
+    // console.log(data);
+    // console.log(callbackFn(true));
     if (!data) return;
     if (!callbackFn || !isFunction(callbackFn)) return;
     nextTick(() => {

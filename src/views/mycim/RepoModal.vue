@@ -37,6 +37,10 @@
       setFieldsValue({
         ...data.record,
       });
+    } else {
+      setFieldsValue({
+        userId: data.record.userId,
+      });
     }
     const treeData = await repositoryListApi();
     updateSchema({
