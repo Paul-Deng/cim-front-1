@@ -231,19 +231,19 @@
           immediate: true,
         },
       );
-      watch(
-        () => getTreeData.value,
-        (val, prev) => {
-          if (val) {
-            // console.log('treeData changed');
-            console.log(val, prev);
-          }
-        },
-        {
-          immediate: true,
-          deep: true,
-        },
-      );
+      // watch(
+      //   () => getTreeData.value,
+      //   (val, prev) => {
+      //     if (val) {
+      //       // console.log('treeData changed');
+      //       console.log(val, prev);
+      //     }
+      //   },
+      //   {
+      //     immediate: true,
+      //     deep: true,
+      //   },
+      // );
       watch(
         () => props.treeData,
         (val) => {

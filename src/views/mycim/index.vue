@@ -205,7 +205,7 @@
         isTable.value = true;
         isRepo.value = isField.value = isBiz.value = isCol.value = false;
         let params = {
-          pageSize: 100,
+          pageSize: 1000,
           repositoryId: repoIdnum.value,
           bizId: bizIdnum.value,
           fieldIdnum: fieldIdnum.value,
@@ -270,7 +270,7 @@
         arr2 = arr[0].children;
         let num = fieldIdMap.get(fieldIdnum.value + 'F');
         let bizParams = {
-          pageSize: 100,
+          pageSize: 1000,
           repositoryId: repoIdnum.value,
           fieldIdnum: fieldIdnum.value,
         };
@@ -311,7 +311,7 @@
         arr = await RepoList;
         let num = repoIdMap.get(repoIdnum.value + 'R');
         let fieldParams = {
-          pageSize: 100,
+          pageSize: 1000,
           repositoryId: repoIdnum.value,
         };
         // console.log('repo num');

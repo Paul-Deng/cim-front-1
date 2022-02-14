@@ -67,7 +67,6 @@
   import ColModal from './ColModal.vue';
   import { useColumnStore } from '/@/store/modules/columnList';
   import { useBizStore } from '/@/store/modules/bizList';
-  // import App from './App.vue';
   // const openKeys = ref<string[]>(['sub1']);
 
   // watch(
@@ -80,7 +79,7 @@
   let treeData = ref<TreeItem[]>([]);
   let bizListTree = ref<TreeItem[]>([]);
   let Params = {
-    pageSize: 100,
+    pageSize: 1000,
     repositoryId: 1,
   };
 
@@ -98,7 +97,6 @@
     // console.log('fetch?');
     // console.log(treeData.value);
   }
-  // let { ctx: _this } = handleSelect(keys) as any;
   watch(
     () => [...treeData.value],
     (treeData, prevTreeData) => {
@@ -112,14 +110,8 @@
   );
 
   onMounted(() => {
-    // await fieldList;
     fetch();
   });
-  // onUpdated(() => {
-  //   console.log('updated?');
-  //   console.log(treeData.value);
-  //   fetch();
-  // });
 
   let fieldIdnum = ref<number>(1);
   let bizIdnum = ref<number>(1);
@@ -176,7 +168,7 @@
         isTable.value = true;
         isBiz.value = isCol.value = false;
         let params = {
-          pageSize: 100,
+          pageSize: 1000,
           repositoryId: 1,
           bizId: bizIdnum.value,
           fieldIdnum: fieldIdnum.value,
@@ -237,7 +229,7 @@
         arr = await fieldList;
         let num = fieldIdMap.get(fieldIdnum.value + 'F');
         let bizParams = {
-          pageSize: 100,
+          pageSize: 1000,
           repositoryId: 1,
           fieldIdnum: fieldIdnum.value,
         };
