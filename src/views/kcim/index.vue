@@ -1,15 +1,9 @@
-<template>
-  <div>
-    <div class="uploadbtn" width="100%">
-      <ImpExcel class="m-3" @success="loadDataSuccess" dateFormat="YYYY-MM-DD">
-        <a-button> 导入Excel </a-button>
-      </ImpExcel>
-    </div>
-    <div>
-      <div class="side">
-        <!-- <a-tree :load-data="fieldList" :tree-data="treeData" /> -->
+<template v-cloak>
+  <div v-cloak>
+    <div v-cloak>
+      <div v-cloak class="side">
         <BasicTree
-          title="数据模型"
+          title="KCIM模型"
           toolbar
           search
           :clickRowToExpand="true"
@@ -18,7 +12,7 @@
           @select="handleSelect"
         />
       </div>
-      <div class="atable">
+      <div class="atable" v-cloak>
         <BasicTable
           @register="registerTable"
           @fetch-success="onFetchSuccess"
@@ -60,45 +54,47 @@
 <script lang="ts" setup>
   import { nextTick, onMounted, ref, toRaw } from 'vue';
   import { watch } from 'vue';
-  import { TableColumns, ColColumns, BizColumns } from './kcim.data';
+  import { TableColumns, ColColumns, BizColumns } from '../cim/cim.data';
   import { FieldListApi, GetTableColumnApi, TableListApi } from '/@/api/menu/repositories/model';
-  import { ImpExcel, ExcelData } from '/@/components/Excel';
-  import { BasicTable, BasicColumn, useTable, TableAction } from '/@/components/Table';
+  import { BasicTable, useTable, TableAction } from '/@/components/Table';
   import { BasicTree, TreeItem } from '/@/components/Tree';
   import { getBizList } from '/@/api/demo/system';
   import { notification } from 'ant-design-vue';
   import { useTableStore } from '/@/store/modules/tableList';
   import { useModal } from '/@/components/Modal';
-  import TableModal from '/@/views/cim/TableModal.vue';
-  import BizModal from '/@/views/cim/BizModal.vue';
-  import ColModal from '/@/views/cim/ColModal.vue';
+  import TableModal from '../cim/TableModal.vue';
+  import BizModal from '../cim/BizModal.vue';
+  import ColModal from '../cim/ColModal.vue';
   import { useColumnStore } from '/@/store/modules/columnList';
   import { useBizStore } from '/@/store/modules/bizList';
-
-  const openKeys = ref<string[]>(['sub1']);
-
-  watch(
-    () => openKeys,
-    (val) => {
-      console.log('openKeys', val);
-    },
-  );
 
   let treeData = ref<TreeItem[]>([]);
   let bizListTree = ref<TreeItem[]>([]);
   let Params = {
     pageSize: 1000,
-    repositoryId: 2,
+    repositoryId: 1,
   };
 
   let isBiz = ref(true);
   let isTable = ref(false);
   let isCol = ref(false);
+  let isReloadData = ref(true);
 
   async function fetch() {
     treeData.value = await fieldList;
-    console.log(treeData.value);
   }
+  watch(
+    () => [...treeData.value],
+    (treeData, prevTreeData) => {
+      console.log('dataupdated');
+      console.log(treeData, prevTreeData);
+    },
+    {
+      immediate: true,
+      // deep: true,
+    },
+  );
+
   onMounted(() => {
     fetch();
   });
@@ -118,8 +114,8 @@
 
   const [registerModal, { openModal }] = useModal();
 
-  let [registerTable, { reload, expandAll }] = useTable({
-    title: '模型',
+  let [registerTable, { tableReload, expandAll }] = useTable({
+    title: 'KCIM模型',
     columns: BizColumns,
     api: input,
     formConfig: {
@@ -127,7 +123,7 @@
     },
     isTreeTable: true,
     striped: false,
-    useSearchForm: true,
+    useSearchForm: false,
     showTableSetting: true,
     bordered: true,
     showIndexColumn: false,
@@ -142,30 +138,32 @@
     },
   });
 
-  async function handleSelect(keys) {
-    if (keys[0] > 10000 && keys[0] <= 20000) {
-      bizIdnum.value = keys[0] - 10000;
-      reload({
-        api: TableListApi,
-        columns: TableColumns,
-        searchInfo: {
-          tableId: null,
-          bizId: bizIdnum.value,
-        },
-      });
+  let fieldIdMap = new Map();
+  let bizIdMap = new Map();
+  function handleSelect(keys) {
+    console.log(keys[0]);
+    let indexF = keys[0].indexOf('F');
+    let indexB = keys[0].indexOf('B');
+    let indexT = keys[0].indexOf('T');
+    fieldIdnum.value = keys[0].substring(0, indexF);
+    bizIdnum.value = keys[0].substring(indexF + 1, indexB);
+    tableIdnum.value = keys[0].substring(indexB + 1, indexT);
+    if (indexB > 1 && indexT < 1) {
+      isReloadData.value = false;
       nextTick(async () => {
         isTable.value = true;
         isBiz.value = isCol.value = false;
         let params = {
           pageSize: 1000,
-          repositoryId: 2,
-          bizId: keys[0] - 10000,
+          repositoryId: 1,
+          bizId: bizIdnum.value,
+          fieldIdnum: fieldIdnum.value,
         };
         let arr: any[] = [];
         arr = await fieldList;
         let arr2: TreeItem[] = [];
         arr2 = arr[0].children;
-        let num = keys[0] - 10001;
+        let num = bizIdMap.get(bizIdnum.value + 'B');
         bizListTree.value = (await TableListApi(params)).items as unknown as TreeItem[];
         const temp = toRaw(bizListTree.value);
         arr2[num].children = (() => {
@@ -174,73 +172,88 @@
           for (let j = 0; j < length; j++) {
             childrenstr.push({
               code: temp[j].tableCode,
-              id: temp[j].id + 20000,
+              id: keys[0] + temp[j].id + 'T',
             });
           }
           return childrenstr;
         })();
         treeData.value = arr;
+        isReloadData.value = true;
       });
-    } else if (keys[0] > 20000) {
-      tableIdnum.value = keys[0] - 20000;
-      reload({
+      tableReload({
+        api: TableListApi,
+        columns: TableColumns,
+        searchInfo: {
+          fieldId: fieldIdnum.value,
+          bizId: bizIdnum.value,
+        },
+      });
+    } else if (indexT > 1) {
+      isReloadData.value = false;
+      tableReload({
         api: GetTableColumnApi,
         columns: ColColumns,
         searchInfo: {
-          bizId: null,
+          bizId: bizIdnum.value,
+          fieldId: fieldIdnum.value,
           tableId: tableIdnum.value,
         },
       });
       nextTick(() => {
         isCol.value = true;
         isBiz.value = isTable.value = false;
+        isReloadData.value = true;
       });
     } else {
-      fieldIdnum.value = keys[0];
-      console.log(keys[0]);
-      reload({
-        api: getBizList,
-        columns: BizColumns,
-        searchInfo: {
-          bizId: null,
-          tableId: null,
-          fieldId: fieldIdnum.value,
-        },
-      });
+      isReloadData.value = false;
+      // console.log('fenye');
+      // console.log(keys[0]);
       nextTick(async () => {
-        const idnum = keys[0] - 1;
         isBiz.value = true;
         isTable.value = isCol.value = false;
         let arr: any[] = [];
         arr = await fieldList;
-        let arr2 = arr[idnum];
+        let num = fieldIdMap.get(fieldIdnum.value + 'F');
         let bizParams = {
           pageSize: 1000,
-          repositoryId: 2,
+          repositoryId: 1,
           fieldIdnum: fieldIdnum.value,
         };
         bizListTree.value = (await getBizList(bizParams)).items as unknown as TreeItem[];
         const bizTemp = toRaw(bizListTree.value);
-        arr2.children = (() => {
+        // console.log('bizlength');
+        // console.log(num);
+        arr[num].children = (() => {
           const childrenstr: any[] = [];
           const bizLength = bizTemp.length;
           for (let index = 0; index < bizLength; index++) {
+            bizIdMap.set(bizTemp[index].id + 'B', index);
             childrenstr.push({
               code: bizTemp[index].businessObjectCode,
-              id: bizTemp[index].id + 10000,
+              id: keys[0] + bizTemp[index].id + 'B',
               bizName: bizTemp[index].businessObjectName,
+              fieldIdnum: fieldIdnum.value,
               children: (() => {})(),
             });
           }
           return childrenstr.sort((a, b) => a.id - b.id);
         })();
-        treeData.value = arr;
+        // _this.$forceUpdate();
+        treeData.value = [];
+        treeData.value = Object.assign(arr);
+        isReloadData.value = true;
+      });
+      tableReload({
+        api: getBizList,
+        columns: BizColumns,
+        searchInfo: {
+          fieldId: fieldIdnum.value,
+        },
       });
     }
+    // console.log('outside func');
   }
-
   function handleEditChange(record: Recordable) {
-    console.log(record);
     openModal(true, {
       record,
       isUpdate: true,
@@ -258,6 +271,7 @@
       bizDelete(record.id);
       console.log('error');
     }
+    // if(record.id)
   }
 
   let fieldList = (async () => {
@@ -266,23 +280,18 @@
     const temp = toRaw(tempTree.value);
     const result: any[] = [];
     for (let index = 0; index < temp.length; index++) {
+      fieldIdMap.set(temp[index].id + 'F', index);
       result.push({
         code: temp[index].fieldCode,
-        id: temp[index].id,
+        id: temp[index].id + 'F',
         fieldName: temp[index].fieldName,
         children: (() => {})(),
       });
     }
+    // console.log('fieldmap');
+    // console.log(fieldIdMap);
     return result.sort((a, b) => a.id - b.id);
   })();
-
-  const tableListRef = ref<
-    {
-      title: string;
-      columns?: any[];
-      dataSource?: any[];
-    }[]
-  >([]);
 
   const tableStore = useTableStore();
   async function tableDelete(record: Recordable) {
@@ -308,6 +317,7 @@
         });
       }
     } finally {
+      // console.log('?');
     }
   }
   const colStore = useColumnStore();
@@ -334,6 +344,7 @@
         });
       }
     } finally {
+      // console.log('?');
     }
   }
   const bizStore = useBizStore();
@@ -360,40 +371,31 @@
         });
       }
     } finally {
-    }
-  }
-
-  function loadDataSuccess(excelDataList: ExcelData[]) {
-    tableListRef.value = [];
-    console.log(excelDataList);
-    for (const excelData of excelDataList) {
-      const {
-        header,
-        results,
-        meta: { sheetName },
-      } = excelData;
-      const columns: BasicColumn[] = [];
-      for (const title of header) {
-        columns.push({ title, dataIndex: title });
-      }
-      tableListRef.value.push({ title: sheetName, dataSource: results, columns });
+      // console.log('?');
     }
   }
 
   function onFetchSuccess() {
+    // 演示默认展开所有表项
     nextTick(expandAll);
   }
 </script>
 <style lang="scss" scoped>
+  [v-cloak] {
+    display: none !important;
+  }
   .side {
-    width: 28%;
+    width: 35%;
     margin-left: 1%;
+    margin-right: 1%;
+    margin-top: 1px;
     float: left;
     text-align: center;
   }
   .atable {
     overflow: hidden;
     margin-right: 1%;
+    margin-top: 10px;
   }
   .ant-dropdown-link {
     width: 10%;

@@ -35,6 +35,7 @@
           </template> -->
           <template #toolbar>
             <CustomBasicUpload
+              :width="200"
               :maxSize="20"
               :maxNumber="10"
               title="模型"
@@ -191,7 +192,7 @@
     isTreeTable: true,
     striped: false,
     useSearchForm: false,
-    showTableSetting: true,
+    showTableSetting: false,
     bordered: true,
     showIndexColumn: false,
     canResize: false,
