@@ -1,14 +1,21 @@
 <template>
   <div>
     <div class="uploadbtn" width="100%">
-      <ImpExcel class="m-3" @success="loadDataSuccess" dateFormat="YYYY-MM-DD">
+      <!-- <ImpExcel class="m-3" @success="loadDataSuccess" dateFormat="YYYY-MM-DD">
         <a-button> 导入Excel </a-button>
-      </ImpExcel>
+      </ImpExcel> -->
+      <!-- <CustomBasicUpload
+        :maxSize="20"
+        :maxNumber="10"
+        title="模型"
+        :api="uploadModelApi"
+        :exampleApi="exportDefaultModel"
+      /> -->
     </div>
     <div>
       <div class="side">
         <BasicTree
-          title="CIM模型"
+          title="模型"
           toolbar
           search
           :clickRowToExpand="true"
@@ -27,6 +34,13 @@
             <a-button type="primary" @click="handleCreate"> 新增 </a-button>
           </template> -->
           <template #toolbar>
+            <CustomBasicUpload
+              :maxSize="20"
+              :maxNumber="10"
+              title="模型"
+              :api="uploadModelApi"
+              :exampleApi="exportDefaultModel"
+            />
             <a-button v-if="isRepo" type="primary" @click="handleCreate"> 新增模型 </a-button>
             <a-button v-if="isField" type="primary" @click="handleCreate"> 新增领域 </a-button>
             <a-button v-if="isBiz" type="primary" @click="handleCreate"> 新增业务对象 </a-button>
@@ -82,8 +96,9 @@
     repositoryListApi,
     TableListApi,
   } from '/@/api/menu/repositories/model';
-  import { ImpExcel, ExcelData } from '/@/components/Excel';
-  import { BasicTable, BasicColumn, useTable, TableAction } from '/@/components/Table';
+  import { uploadModelApi } from '/@/api/sys/file/upload';
+  import { CustomBasicUpload } from '/@/components/Upload';
+  import { BasicTable, useTable, TableAction } from '/@/components/Table';
   import { BasicTree, TreeItem } from '/@/components/Tree';
   import { getBizList } from '/@/api/demo/system';
   import { notification } from 'ant-design-vue';
@@ -102,6 +117,7 @@
   import { useFieldStore } from '/@/store/modules/fieldList';
   import { useRepoStore } from '/@/store/modules/repoList';
   import { useMessage } from '/@/hooks/web/useMessage';
+  import { downloadDefaultModelApi } from '/@/api/sys/file/file';
 
   const openKeys = ref<string[]>(['sub1']);
   const { createMessage } = useMessage();
@@ -388,13 +404,13 @@
     return result.sort((a, b) => a.id - b.id);
   })();
 
-  const tableListRef = ref<
-    {
-      title: string;
-      columns?: any[];
-      dataSource?: any[];
-    }[]
-  >([]);
+  // const tableListRef = ref<
+  //   {
+  //     title: string;
+  //     columns?: any[];
+  //     dataSource?: any[];
+  //   }[]
+  // >([]);
 
   const repoStore = useRepoStore();
   async function repoDelete(record: Recordable) {
@@ -560,21 +576,8 @@
     }
   }
 
-  function loadDataSuccess(excelDataList: ExcelData[]) {
-    tableListRef.value = [];
-    console.log(excelDataList);
-    for (const excelData of excelDataList) {
-      const {
-        header,
-        results,
-        meta: { sheetName },
-      } = excelData;
-      const columns: BasicColumn[] = [];
-      for (const title of header) {
-        columns.push({ title, dataIndex: title });
-      }
-      tableListRef.value.push({ title: sheetName, dataSource: results, columns });
-    }
+  function exportDefaultModel() {
+    downloadDefaultModelApi();
   }
 
   function onFetchSuccess() {
