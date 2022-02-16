@@ -1,8 +1,13 @@
 <template>
-  <div>
+  <div class="upload">
     <a-button-group>
-      <a-button @click="openUploadModal" preIcon="carbon:cloud-upload" size="small">
-        {{ bindValue.title }}
+      <a-button
+        class="uploadbtn"
+        @click="openUploadModal"
+        preIcon="carbon:cloud-upload"
+        size="medium"
+      >
+        {{ bindValue.name }}
       </a-button>
       <Tooltip placement="bottom" v-if="showPreview">
         <template #title>
@@ -90,3 +95,14 @@
     },
   });
 </script>
+<style>
+  .upload {
+    /* width: 100px; */
+    margin-right: 15px;
+  }
+  .uploadbtn {
+    color: white;
+    background-color: #0960bd;
+    /* width: 200px; */
+  }
+</style>

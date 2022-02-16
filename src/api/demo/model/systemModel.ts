@@ -11,6 +11,7 @@ export type RoleParams = {
 };
 
 export type RolePageParams = BasicPageParams & RoleParams;
+// export type RolePageParams = {};
 
 export type DeptParams = {
   deptName?: string;
@@ -72,7 +73,7 @@ export interface RoleItem {
  */
 export type AccountListGetResultModel = BasicFetchResult<AccountListItem>;
 
-export type DeptListGetResultModel = BasicFetchResult<DeptListItem>;
+export type DeptListGetResultModel = BasicFetchResult<BizListItem>;
 
 export type MenuListGetResultModel = MenuListItem[];
 

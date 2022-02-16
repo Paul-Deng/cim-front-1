@@ -34,7 +34,7 @@
   import RoleDrawer from './RoleDrawer.vue';
 
   import { columns, searchFormSchema } from './role.data';
-
+  let params = {};
   const [registerDrawer, { openDrawer }] = useDrawer();
   const [registerTable, { reload }] = useTable({
     title: '角色列表',
@@ -48,6 +48,7 @@
     showTableSetting: true,
     bordered: true,
     showIndexColumn: false,
+    searchInfo: params,
     actionColumn: {
       width: 80,
       title: '操作',

@@ -72,7 +72,12 @@ export function useTable(tableProps?: Props): [
     },
     tableReload: async (opt?: FetchParams) => {
       if (opt?.columns) {
+        //@ts-ignore
         getTableInstance().setColumns(opt?.columns);
+      }
+      if (opt?.title) {
+        //@ts-ignore
+        getTableInstance().setColumns(opt?.title);
       }
       return await getTableInstance().tableReload(opt);
     },

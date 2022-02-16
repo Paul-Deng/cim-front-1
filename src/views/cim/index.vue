@@ -138,7 +138,7 @@
     isTreeTable: true,
     striped: false,
     useSearchForm: false,
-    showTableSetting: true,
+    showTableSetting: false,
     bordered: true,
     showIndexColumn: false,
     canResize: false,

@@ -4,13 +4,6 @@
       <!-- <ImpExcel class="m-3" @success="loadDataSuccess" dateFormat="YYYY-MM-DD">
         <a-button> 导入Excel </a-button>
       </ImpExcel> -->
-      <!-- <CustomBasicUpload
-        :maxSize="20"
-        :maxNumber="10"
-        title="模型"
-        :api="uploadModelApi"
-        :exampleApi="exportDefaultModel"
-      /> -->
     </div>
     <div>
       <div class="side">
@@ -30,15 +23,11 @@
           @fetch-success="onFetchSuccess"
           @edit-change="handleEditChange"
         >
-          <!-- <template #toolbar>
-            <a-button type="primary" @click="handleCreate"> 新增 </a-button>
-          </template> -->
           <template #toolbar>
             <CustomBasicUpload
-              :width="200"
               :maxSize="20"
               :maxNumber="10"
-              title="模型"
+              name="上传模型"
               :api="uploadModelApi"
               :exampleApi="exportDefaultModel"
             />
@@ -147,8 +136,8 @@
   }
   async function fetch() {
     treeData.value = await RepoList;
-    // console.log('user id');
-    // console.log(userIdnum.value);
+    // console.log('treeData');
+    // console.log(treeData.value);
   }
   onMounted(() => {
     fetch();
@@ -165,6 +154,11 @@
   let repoIdMap = new Map();
   let fieldIdMap = new Map();
   let bizIdMap = new Map();
+  // Title Map
+  let repoTitleMap = new Map();
+  let fieldTitleMap = new Map();
+  let bizTitleMap = new Map();
+  let tableTitleMap = new Map();
 
   let requestParam = {
     userId: userIdnum,
@@ -179,11 +173,12 @@
 
   let requestApi = ref<any>(repositoryListApi);
   let input = requestApi;
+  let titlestr = ref<string>('模型');
 
   const [registerModal, { openModal }] = useModal();
 
   let [registerTable, { tableReload, expandAll }] = useTable({
-    title: '模型',
+    title: titlestr,
     columns: RepoColumns,
     api: input,
     formConfig: {
@@ -217,6 +212,8 @@
     bizIdnum.value = keys[0].substring(indexF + 1, indexB);
     tableIdnum.value = keys[0].substring(indexB + 1, indexT);
     if (indexB > 1 && indexT < 1) {
+      let num = bizIdMap.get(bizIdnum.value + 'B');
+      titlestr.value = bizTitleMap.get(bizIdnum.value + 'B');
       console.log('B - T');
       nextTick(async () => {
         isTable.value = true;
@@ -234,24 +231,29 @@
         arr2 = arr[0].children;
         //@ts-ignore
         arr3 = arr2[0].children;
-        let num = bizIdMap.get(bizIdnum.value + 'B');
         bizListTree.value = (await TableListApi(params)).items as unknown as TreeItem[];
         const temp = toRaw(bizListTree.value);
-        arr3[num].children = (() => {
-          const childrenstr: any[] = [];
-          const length = temp.length;
-          for (let j = 0; j < length; j++) {
-            childrenstr.push({
-              code: temp[j].tableCode,
-              id: keys[0] + temp[j].id + 'T',
-              children: (() => {})(),
-            });
-          }
-          return childrenstr;
-        })();
+        if (arr3[num].id == keys[0]) {
+          arr3[num].children = (() => {
+            const childrenstr: any[] = [];
+            const length = temp.length;
+            for (let j = 0; j < length; j++) {
+              tableTitleMap.set(temp[j].id + 'T', titlestr.value + '/' + temp[j].tableCode);
+              childrenstr.push({
+                code: temp[j].tableCode,
+                id: keys[0] + temp[j].id + 'T',
+                children: (() => {})(),
+              });
+            }
+            return childrenstr;
+          })();
+        }
         treeData.value = arr;
+        console.log(treeData.value);
       });
       tableReload({
+        //@ts-ignore
+        title: titlestr,
         api: TableListApi,
         columns: TableColumns,
         searchInfo: {
@@ -261,8 +263,11 @@
         },
       });
     } else if (indexT > 1) {
+      titlestr.value = tableTitleMap.get(tableIdnum.value + 'T');
       console.log('T - ');
       tableReload({
+        //@ts-ignore
+        title: titlestr,
         api: GetTableColumnApi,
         columns: ColColumns,
         searchInfo: {
@@ -277,7 +282,10 @@
         isBiz.value = isTable.value = false;
       });
     } else if (indexF > 1 && indexB < 1) {
+      let num = fieldIdMap.get(fieldIdnum.value + 'F');
+      titlestr.value = fieldTitleMap.get(fieldIdnum.value + 'F');
       console.log('F - B');
+      console.log(num);
       nextTick(async () => {
         isBiz.value = true;
         isRepo.value = isField.value = isTable.value = isCol.value = false;
@@ -285,7 +293,6 @@
         arr = await RepoList;
         let arr2: TreeItem[] = [];
         arr2 = arr[0].children;
-        let num = fieldIdMap.get(fieldIdnum.value + 'F');
         let bizParams = {
           pageSize: 1000,
           repositoryId: repoIdnum.value,
@@ -293,25 +300,34 @@
         };
         bizListTree.value = (await getBizList(bizParams)).items as unknown as TreeItem[];
         const bizTemp = toRaw(bizListTree.value);
-        arr2[num].children = (() => {
-          const childrenstr: any[] = [];
-          const bizLength = bizTemp.length;
-          for (let index = 0; index < bizLength; index++) {
-            bizIdMap.set(bizTemp[index].id + 'B', index);
-            childrenstr.push({
-              code: bizTemp[index].businessObjectCode,
-              id: keys[0] + bizTemp[index].id + 'B',
-              bizName: bizTemp[index].businessObjectName,
-              fieldIdnum: fieldIdnum.value,
-              children: (() => {})(),
-            });
-          }
-          return childrenstr.sort((a, b) => a.id - b.id);
-        })();
+        if (arr2[num].id == keys[0]) {
+          arr2[num].children = (() => {
+            const childrenstr: any[] = [];
+            const bizLength = bizTemp.length;
+            for (let index = 0; index < bizLength; index++) {
+              bizIdMap.set(bizTemp[index].id + 'B', index);
+              bizTitleMap.set(
+                bizTemp[index].id + 'B',
+                titlestr.value + '/' + bizTemp[index].businessObjectCode,
+              );
+              childrenstr.push({
+                code: bizTemp[index].businessObjectCode,
+                id: keys[0] + bizTemp[index].id + 'B',
+                bizName: bizTemp[index].businessObjectName,
+                fieldIdnum: fieldIdnum.value,
+                children: (() => {})(),
+              });
+            }
+            return childrenstr.sort((a, b) => a.id - b.id);
+          })();
+        }
         treeData.value = [];
         treeData.value = Object.assign(arr);
+        console.log(treeData.value);
       });
       tableReload({
+        //@ts-ignore
+        title: titlestr,
         api: getBizList,
         columns: BizColumns,
         searchInfo: {
@@ -320,40 +336,49 @@
         },
       });
     } else {
+      let num = repoIdMap.get(repoIdnum.value + 'R');
+      titlestr.value = repoTitleMap.get(repoIdnum.value + 'R');
       console.log('fieldclick');
       nextTick(async () => {
         isField.value = true;
         isRepo.value = isTable.value = isBiz.value = isCol.value = false;
         let arr: any[] = [];
         arr = await RepoList;
-        let num = repoIdMap.get(repoIdnum.value + 'R');
         let fieldParams = {
           pageSize: 1000,
           repositoryId: repoIdnum.value,
         };
-        // console.log('repo num');
-        // console.log(repoIdnum.value);
         fieldListTree.value = (await FieldListApi(fieldParams)).items as unknown as TreeItem[];
         const fieldTemp = toRaw(fieldListTree.value);
-        arr[num].children = (() => {
-          const result: any[] = [];
-          const fieldLength = fieldTemp.length;
-          for (let index = 0; index < fieldLength; index++) {
-            fieldIdMap.set(fieldTemp[index].id + 'F', index);
-            result.push({
-              code: fieldTemp[index].fieldCode,
-              id: keys[0] + fieldTemp[index].id + 'F',
-              fieldName: fieldTemp[index].fieldName,
-              repositoryId: repoIdnum.value,
-              children: (() => {})(),
-            });
-          }
-          return result.sort((a, b) => a.id - b.id);
-        })();
+        console.log(arr[num].id);
+        if (arr[num].id == keys[0]) {
+          arr[num].children = (() => {
+            const result: any[] = [];
+            const fieldLength = fieldTemp.length;
+            for (let index = 0; index < fieldLength; index++) {
+              fieldIdMap.set(fieldTemp[index].id + 'F', index);
+              fieldTitleMap.set(
+                fieldTemp[index].id + 'F',
+                titlestr.value + '/' + fieldTemp[index].fieldCode,
+              );
+              result.push({
+                code: fieldTemp[index].fieldCode,
+                id: keys[0] + fieldTemp[index].id + 'F',
+                fieldName: fieldTemp[index].fieldName,
+                repositoryId: repoIdnum.value,
+                children: (() => {})(),
+              });
+            }
+            return result.sort((a, b) => a.id - b.id);
+          })();
+        }
         treeData.value = [];
         treeData.value = Object.assign(arr);
+        console.log(fieldTitleMap);
       });
       tableReload({
+        //@ts-ignore
+        title: titlestr,
         api: FieldListApi,
         columns: FieldColumns,
         searchInfo: {
@@ -394,6 +419,7 @@
     const result: any[] = [];
     for (let index = 0; index < temp.length; index++) {
       repoIdMap.set(temp[index].id + 'R', index);
+      repoTitleMap.set(temp[index].id + 'R', temp[index].repositoryName);
       result.push({
         code: temp[index].repositoryName,
         id: temp[index].id + 'R',
@@ -404,14 +430,6 @@
     }
     return result.sort((a, b) => a.id - b.id);
   })();
-
-  // const tableListRef = ref<
-  //   {
-  //     title: string;
-  //     columns?: any[];
-  //     dataSource?: any[];
-  //   }[]
-  // >([]);
 
   const repoStore = useRepoStore();
   async function repoDelete(record: Recordable) {
