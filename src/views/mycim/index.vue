@@ -8,7 +8,7 @@
     <div>
       <div class="side">
         <BasicTree
-          title="模型"
+          title="模型列表"
           toolbar
           search
           :clickRowToExpand="true"
@@ -24,6 +24,7 @@
           @edit-change="handleEditChange"
         >
           <template #toolbar>
+            <a-button v-if="notRepo" type="primary" @click="backtomain"> 模型列表 </a-button>
             <CustomBasicUpload
               :maxSize="20"
               :maxNumber="10"
@@ -128,6 +129,7 @@
   let isTable = ref(false);
   let isCol = ref(false);
   let isRepo = ref(true);
+  let notRepo = ref(false);
   let userIdnum = ref<number>(1);
   userIdnum.value = getAuthCache<UserInfo>(USER_INFO_KEY).userId;
   if (userIdnum.value == 1) {
@@ -173,7 +175,7 @@
 
   let requestApi = ref<any>(repositoryListApi);
   let input = requestApi;
-  let titlestr = ref<string>('模型');
+  let titlestr = ref<string>('我的模型');
 
   const [registerModal, { openModal }] = useModal();
 
@@ -216,7 +218,7 @@
       titlestr.value = bizTitleMap.get(bizIdnum.value + 'B');
       console.log('B - T');
       nextTick(async () => {
-        isTable.value = true;
+        isTable.value = notRepo.value = true;
         isRepo.value = isField.value = isBiz.value = isCol.value = false;
         let params = {
           pageSize: 1000,
@@ -278,8 +280,8 @@
         },
       });
       nextTick(() => {
-        isCol.value = true;
-        isBiz.value = isTable.value = false;
+        isCol.value = notRepo.value = true;
+        isRepo.value = isField.value = isBiz.value = isTable.value = false;
       });
     } else if (indexF > 1 && indexB < 1) {
       let num = fieldIdMap.get(fieldIdnum.value + 'F');
@@ -287,7 +289,7 @@
       console.log('F - B');
       console.log(num);
       nextTick(async () => {
-        isBiz.value = true;
+        isBiz.value = notRepo.value = true;
         isRepo.value = isField.value = isTable.value = isCol.value = false;
         let arr: any[] = [];
         arr = await RepoList;
@@ -340,7 +342,7 @@
       titlestr.value = repoTitleMap.get(repoIdnum.value + 'R');
       console.log('fieldclick');
       nextTick(async () => {
-        isField.value = true;
+        isField.value = notRepo.value = true;
         isRepo.value = isTable.value = isBiz.value = isCol.value = false;
         let arr: any[] = [];
         arr = await RepoList;
@@ -559,7 +561,22 @@
     } finally {
     }
   }
-
+  async function backtomain() {
+    nextTick(async () => {
+      titlestr.value = '我的模型';
+      isRepo.value = true;
+      notRepo.value = isField.value = isTable.value = isBiz.value = isCol.value = false;
+    });
+    tableReload({
+      //@ts-ignore
+      title: titlestr.value,
+      api: repositoryListApi,
+      columns: RepoColumns,
+      searchInfo: {
+        userid: userIdnum.value,
+      },
+    });
+  }
   async function handleCreate(record: Recordable) {
     if (isRepo.value) {
       record.userId = userIdnum.value;
