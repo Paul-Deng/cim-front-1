@@ -152,7 +152,7 @@ export const FieldColumns: BasicColumn[] = [
 ];
 export const RepoColumns: BasicColumn[] = [
   {
-    title: '模型名称',
+    title: '模型',
     dataIndex: 'repositoryName',
     width: 80,
   },
@@ -368,7 +368,7 @@ export const fieldFormSchema: FormSchema[] = [
 export const repoFormSchema: FormSchema[] = [
   {
     field: 'repositoryName',
-    label: '模型名称',
+    label: '模型列表',
     component: 'Input',
   },
   {

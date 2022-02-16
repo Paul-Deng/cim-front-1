@@ -15,6 +15,7 @@
           :treeData="treeData"
           :replaceFields="{ key: 'id', title: 'code' }"
           @select="handleSelect"
+          style="font-size: 18px"
         />
       </div>
       <div class="atable">
@@ -189,10 +190,11 @@
     isTreeTable: true,
     striped: false,
     useSearchForm: false,
-    showTableSetting: false,
+    showTableSetting: true,
     bordered: true,
     showIndexColumn: false,
     canResize: false,
+    size: 'large',
     searchInfo: requestParam,
     actionColumn: {
       width: 80,
@@ -623,14 +625,16 @@
 <style lang="scss" scoped>
   .side {
     width: 28%;
-    margin-left: 1%;
+    // margin-top: 0.8%;
+    margin-left: 2%;
     margin-right: 1%;
     float: left;
     text-align: center;
   }
   .atable {
+    margin-top: 2%;
     overflow: hidden;
-    margin-right: 1%;
+    margin-right: 2%;
   }
   .ant-dropdown-link {
     width: 10%;

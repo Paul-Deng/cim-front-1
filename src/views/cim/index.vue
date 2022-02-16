@@ -135,6 +135,7 @@
     formConfig: {
       labelWidth: 120,
     },
+    size: 'large',
     isTreeTable: true,
     striped: false,
     useSearchForm: false,
@@ -405,17 +406,17 @@
     display: none !important;
   }
   .side {
-    width: 35%;
-    margin-left: 1%;
+    width: 28%;
+    margin-left: 2%;
     margin-right: 1%;
-    margin-top: 1px;
+    // margin-top: 1px;
     float: left;
     text-align: center;
   }
   .atable {
     overflow: hidden;
-    margin-right: 1%;
-    margin-top: 10px;
+    margin-right: 2%;
+    margin-top: 2%;
   }
   .ant-dropdown-link {
     width: 10%;
