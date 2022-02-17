@@ -25,11 +25,11 @@
       </div>
     </div>
     <div class="welcome-mid">
-      <div style="height: 350px; background-color: white; padding: 20px; text-align: center">
+      <div style="height: 350px; padding: 20px; text-align: center">
         <a-row :gutter="16">
           <a-col :span="8">
             <a-card class="cardImg" style="height: 300px" title="Innovate Faster" :bordered="false">
-              <p style="font-size: 30px">Achieve faster time to value through interoperability</p>
+              <p style="font-size: 20px">Achieve faster time to value through interoperability</p>
             </a-card>
           </a-col>
           <a-col :span="8">
@@ -39,7 +39,7 @@
               title="Influence & Collabrate"
               :bordered="false"
             >
-              <p style="font-size: 30px"
+              <p style="font-size: 20px; overflow: hidden"
                 >Create seamless, customized experiences across cloud-native applications</p
               >
             </a-card>
@@ -51,7 +51,7 @@
               title="Improve Analytics"
               :bordered="false"
             >
-              <p style="font-size: 30px"
+              <p style="font-size: 20px"
                 >Enable a cross-system view of data and reduce time to build and maintain
                 integrations</p
               >
@@ -106,6 +106,11 @@
     overflow: visible;
   }
   .cardImg {
-    background: url(./图片2.png) no-repeat;
+    width: 85%;
+    background: url(./图片2.png);
+    background-size: 100% 100%;
+  }
+  .cardText {
+    overflow: hidden;
   }
 </style>

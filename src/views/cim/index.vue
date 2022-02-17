@@ -67,14 +67,6 @@
   import ColModal from './ColModal.vue';
   import { useColumnStore } from '/@/store/modules/columnList';
   import { useBizStore } from '/@/store/modules/bizList';
-  // const openKeys = ref<string[]>(['sub1']);
-
-  // watch(
-  //   () => openKeys,
-  //   (val) => {
-  //     console.log('openKeys', val);
-  //   },
-  // );
 
   let treeData = ref<TreeItem[]>([]);
   let bizListTree = ref<TreeItem[]>([]);
@@ -86,16 +78,14 @@
   let isBiz = ref(true);
   let isTable = ref(false);
   let isCol = ref(false);
-  let isReloadData = ref(true);
-
-  // function forceUpdate(this: any) {
-  //   this.$forceUpdate();
-  // }
+  // let isReloadData = ref(true);
+  let titlestr = ref<string>('CIM模型');
+  let fieldTitleMap = new Map();
+  let bizTitleMap = new Map();
+  let tableTitleMap = new Map();
 
   async function fetch() {
     treeData.value = await fieldList;
-    // console.log('fetch?');
-    // console.log(treeData.value);
   }
   watch(
     () => [...treeData.value],
@@ -129,7 +119,7 @@
   const [registerModal, { openModal }] = useModal();
 
   let [registerTable, { tableReload, expandAll }] = useTable({
-    title: '模型',
+    title: titlestr,
     columns: BizColumns,
     api: input,
     formConfig: {
@@ -164,7 +154,7 @@
     bizIdnum.value = keys[0].substring(indexF + 1, indexB);
     tableIdnum.value = keys[0].substring(indexB + 1, indexT);
     if (indexB > 1 && indexT < 1) {
-      isReloadData.value = false;
+      titlestr.value = bizTitleMap.get(bizIdnum.value + 'B');
       nextTick(async () => {
         isTable.value = true;
         isBiz.value = isCol.value = false;
@@ -185,17 +175,20 @@
           const childrenstr: any[] = [];
           const length = temp.length;
           for (let j = 0; j < length; j++) {
+            tableTitleMap.set(temp[j].id + 'T', titlestr.value + '/' + temp[j].tableCode);
             childrenstr.push({
               code: temp[j].tableCode,
               id: keys[0] + temp[j].id + 'T',
+              children: (() => {})(),
             });
           }
           return childrenstr;
         })();
         treeData.value = arr;
-        isReloadData.value = true;
       });
       tableReload({
+        //@ts-ignore
+        title: titlestr,
         api: TableListApi,
         columns: TableColumns,
         searchInfo: {
@@ -204,8 +197,10 @@
         },
       });
     } else if (indexT > 1) {
-      isReloadData.value = false;
+      titlestr.value = tableTitleMap.get(tableIdnum.value + 'T');
       tableReload({
+        //@ts-ignore
+        title: titlestr,
         api: GetTableColumnApi,
         columns: ColColumns,
         searchInfo: {
@@ -217,12 +212,9 @@
       nextTick(() => {
         isCol.value = true;
         isBiz.value = isTable.value = false;
-        isReloadData.value = true;
       });
     } else {
-      isReloadData.value = false;
-      // console.log('fenye');
-      // console.log(keys[0]);
+      titlestr.value = fieldTitleMap.get(fieldIdnum.value + 'F');
       nextTick(async () => {
         isBiz.value = true;
         isTable.value = isCol.value = false;
@@ -236,13 +228,15 @@
         };
         bizListTree.value = (await getBizList(bizParams)).items as unknown as TreeItem[];
         const bizTemp = toRaw(bizListTree.value);
-        // console.log('bizlength');
-        // console.log(num);
         arr[num].children = (() => {
           const childrenstr: any[] = [];
           const bizLength = bizTemp.length;
           for (let index = 0; index < bizLength; index++) {
             bizIdMap.set(bizTemp[index].id + 'B', index);
+            bizTitleMap.set(
+              bizTemp[index].id + 'B',
+              titlestr.value + '/' + bizTemp[index].businessObjectCode,
+            );
             childrenstr.push({
               code: bizTemp[index].businessObjectCode,
               id: keys[0] + bizTemp[index].id + 'B',
@@ -253,18 +247,12 @@
           }
           return childrenstr.sort((a, b) => a.id - b.id);
         })();
-        // _this.$forceUpdate();
         treeData.value = [];
-        // treeData.value = await fieldList;
         treeData.value = Object.assign(arr);
-        // treeData.value.set(treeData.value, arr);
-        // this.$set(treeData, arr);
-        // console.log('getlistagain');
-        // console.log(treeData.value);
-        // console.log(BasicTree);
-        isReloadData.value = true;
       });
       tableReload({
+        //@ts-ignore
+        title: titlestr,
         api: getBizList,
         columns: BizColumns,
         searchInfo: {
@@ -302,6 +290,7 @@
     const result: any[] = [];
     for (let index = 0; index < temp.length; index++) {
       fieldIdMap.set(temp[index].id + 'F', index);
+      fieldTitleMap.set(temp[index].id + 'F', titlestr.value + '/' + temp[index].fieldCode);
       result.push({
         code: temp[index].fieldCode,
         id: temp[index].id + 'F',
