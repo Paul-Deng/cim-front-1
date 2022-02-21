@@ -67,6 +67,7 @@
   import ColModal from './ColModal.vue';
   import { useColumnStore } from '/@/store/modules/columnList';
   import { useBizStore } from '/@/store/modules/bizList';
+  // import { GlobalVars } from '../mycim/mycim.data';
 
   let treeData = ref<TreeItem[]>([]);
   let bizListTree = ref<TreeItem[]>([]);
@@ -99,7 +100,10 @@
     },
   );
 
+  // const { ctx } = getCurrentInstance() as any;
   onMounted(() => {
+    // GlobalVars.c = true;
+    // console.log(GlobalVars.c);
     fetch();
   });
 
@@ -268,6 +272,7 @@
       isUpdate: true,
     });
   }
+
   function handleDelete(record: Recordable) {
     console.log(record);
     if (isBiz.value) {
@@ -298,8 +303,6 @@
         children: (() => {})(),
       });
     }
-    // console.log('fieldmap');
-    // console.log(fieldIdMap);
     return result.sort((a, b) => a.id - b.id);
   })();
 
@@ -317,9 +320,10 @@
           message: '提交成功',
           duration: 1,
         });
-        setTimeout(async function () {
-          document.location.reload();
-        }, 500);
+        tableReload();
+        // setTimeout(async function () {
+        //   document.location.reload();
+        // }, 500);
       } else {
         notification.error({
           message: '提交失败',
@@ -344,9 +348,10 @@
           message: '提交成功',
           duration: 1,
         });
-        setTimeout(async function () {
-          document.location.reload();
-        }, 500);
+        tableReload();
+        // setTimeout(async function () {
+        //   document.location.reload();
+        // }, 500);
       } else {
         notification.error({
           message: '提交失败',
@@ -371,9 +376,10 @@
           message: '提交成功',
           duration: 1,
         });
-        setTimeout(async function () {
-          document.location.reload();
-        }, 500);
+        tableReload();
+        // setTimeout(async function () {
+        //   document.location.reload();
+        // }, 500);
       } else {
         notification.error({
           message: '提交失败',

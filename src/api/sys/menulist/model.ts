@@ -5,7 +5,6 @@ enum Api {
   MODEL_WELCOME_LIST = '/api-model/model/welcome',
 
   MENULIST_ADD = '/api-user/route',
-  REPOSITORY_LIST = '/api-model/model/repository',
   ROUTE_DELETE = '/api-user/route/delete',
 }
 

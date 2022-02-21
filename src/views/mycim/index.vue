@@ -25,6 +25,7 @@
           @edit-change="handleEditChange"
         >
           <template #toolbar>
+            <a-button type="primary" @click="freshData"> 刷新 </a-button>
             <a-button v-if="notRepo" type="primary" @click="backtomain"> 模型列表 </a-button>
             <CustomBasicUpload
               :maxSize="20"
@@ -81,7 +82,14 @@
 <script lang="ts" setup>
   import { nextTick, onMounted, ref, toRaw } from 'vue';
   import { watch } from 'vue';
-  import { TableColumns, ColColumns, BizColumns, FieldColumns, RepoColumns } from './mycim.data';
+  import {
+    TableColumns,
+    ColColumns,
+    BizColumns,
+    FieldColumns,
+    RepoColumns,
+    GlobalVars,
+  } from './mycim.data';
   import {
     FieldListApi,
     GetTableColumnApi,
@@ -113,6 +121,7 @@
 
   const openKeys = ref<string[]>(['sub1']);
   const { createMessage } = useMessage();
+  // let globalV = reactive(GlobalVars);
 
   watch(
     () => openKeys,
@@ -139,10 +148,10 @@
   }
   async function fetch() {
     treeData.value = await RepoList;
-    // console.log('treeData');
-    // console.log(treeData.value);
   }
   onMounted(() => {
+    console.log('global value');
+    console.log(GlobalVars.c);
     fetch();
   });
 
@@ -171,6 +180,7 @@
     repositoryId: repoIdnum,
   };
   let param = {
+    pageSize: 1000,
     userId: userIdnum.value,
   };
 
@@ -397,6 +407,10 @@
       record,
       isUpdate: true,
     });
+    nextTick(() => {
+      GlobalVars.c = true;
+    });
+    console.log(GlobalVars.c);
   }
   function handleDelete(record: Recordable) {
     console.log(record);
@@ -473,9 +487,10 @@
           message: '提交成功',
           duration: 1,
         });
-        setTimeout(async function () {
-          document.location.reload();
-        }, 500);
+        tableReload();
+        // setTimeout(async function () {
+        //   document.location.reload();
+        // }, 500);
       } else {
         notification.error({
           message: '提交失败',
@@ -499,9 +514,10 @@
           message: '提交成功',
           duration: 1,
         });
-        setTimeout(async function () {
-          document.location.reload();
-        }, 500);
+        tableReload();
+        // setTimeout(async function () {
+        //   document.location.reload();
+        // }, 500);
       } else {
         notification.error({
           message: '提交失败',
@@ -525,9 +541,10 @@
           message: '提交成功',
           duration: 1,
         });
-        setTimeout(async function () {
-          document.location.reload();
-        }, 500);
+        tableReload();
+        // setTimeout(async function () {
+        //   document.location.reload();
+        // }, 500);
       } else {
         notification.error({
           message: '提交失败',
@@ -551,9 +568,9 @@
           message: '提交成功',
           duration: 1,
         });
-        setTimeout(async function () {
-          document.location.reload();
-        }, 500);
+        // setTimeout(async function () {
+        //   document.location.reload();
+        // }, 500);
       } else {
         notification.error({
           message: '提交失败',
@@ -578,6 +595,9 @@
         userid: userIdnum.value,
       },
     });
+  }
+  async function freshData() {
+    tableReload({});
   }
   async function handleCreate(record: Recordable) {
     if (isRepo.value) {

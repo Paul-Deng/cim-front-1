@@ -10,8 +10,10 @@
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
+
 <script lang="ts" setup>
   import { ref, computed, unref, toRaw } from 'vue';
+  // import App from '/@/App.vue';
   import { BasicForm, useForm } from '/@/components/Form';
   import { bizFormSchema } from './cim.data';
   import { BasicModal, useModalInner } from '/@/components/Modal';
@@ -19,9 +21,11 @@
   import { TableItem } from '/@/api/menu/model/model';
   import { BizObjListApi } from '/@/api/menu/repositories/model';
   import { useBizStore } from '/@/store/modules/bizList';
+  // import { store } from '/@/store';
+  // import { router } from '/@/router';
 
   const isUpdate = ref(true);
-
+  // const updateSuc = ref(false);
   const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
     labelWidth: 100,
     schemas: bizFormSchema,
@@ -32,6 +36,7 @@
   const [registerModal, { closeModal }] = useModalInner(async (data) => {
     resetFields();
     isUpdate.value = !!data?.isUpdate;
+    // updateSuc.value = !!data?.updateSuc;
 
     if (unref(isUpdate)) {
       setFieldsValue({
@@ -57,6 +62,8 @@
         toRaw<TableItem>({
           id: params.id,
           bizId: params.id,
+          businessObjectCode: params.businessObjectCode,
+          businessObjectName: params.businessObjectName,
           description: params.description,
           fieldId: params.fieldId,
           repositoryId: params.repositoryId,
@@ -68,14 +75,12 @@
           message: '提交成功',
           duration: 1,
         });
-        setTimeout(async () => {
-          document.location.reload();
-        }, 500);
       } else {
         notification.error({
           message: '提交失败',
           duration: 3,
         });
+        // return false;
       }
       console.log(values);
       closeModal();

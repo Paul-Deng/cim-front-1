@@ -122,57 +122,6 @@ export const BizColumns: BasicColumn[] = [
     width: 40,
   },
 ];
-export const FieldColumns: BasicColumn[] = [
-  {
-    title: '领域编码',
-    dataIndex: 'fieldCode',
-    width: 50,
-  },
-  {
-    title: '领域名称',
-    dataIndex: 'fieldName',
-    width: 100,
-    align: 'left',
-  },
-  {
-    title: '领域ID',
-    dataIndex: 'id',
-    width: 55,
-  },
-  {
-    title: '模型ID',
-    dataIndex: 'repositoryId',
-    width: 55,
-  },
-  {
-    title: '介绍',
-    dataIndex: 'description',
-    width: 55,
-  },
-];
-export const RepoColumns: BasicColumn[] = [
-  {
-    title: '模型',
-    dataIndex: 'repositoryName',
-    width: 80,
-  },
-  {
-    title: '数据库类型',
-    dataIndex: 'repositoryType',
-    width: 80,
-    align: 'left',
-  },
-  {
-    title: '模型ID',
-    dataIndex: 'id',
-    width: 55,
-  },
-  {
-    title: '介绍',
-    dataIndex: 'description',
-    width: 55,
-  },
-];
 
 export const tableFormSchema: FormSchema[] = [
   {
@@ -191,12 +140,8 @@ export const tableFormSchema: FormSchema[] = [
     field: 'id',
     label: '表ID',
     component: 'Input',
-    required: false,
-    //readonly
-    dynamicDisabled: true,
-    componentProps: {
-      placeholder: '后台自动生成',
-    },
+    required: true,
+    ifShow: false,
   },
   {
     field: 'description',
@@ -204,47 +149,47 @@ export const tableFormSchema: FormSchema[] = [
     component: 'Input',
     required: false,
   },
-  // {
-  //   field: 'bizCode',
-  //   label: '业务对象',
-  //   component: 'Input',
-  //   required: true,
-  // },
-  // {
-  //   field: 'bizId',
-  //   label: '业务对象ID',
-  //   component: 'Input',
-  //   required: true,
-  //   ifShow: false,
-  // },
-  // {
-  //   field: 'fieldId',
-  //   label: '领域ID',
-  //   component: 'Input',
-  //   required: true,
-  //   ifShow: false,
-  // },
-  // {
-  //   field: 'repositoryId',
-  //   label: '模型ID',
-  //   component: 'Input',
-  //   required: true,
-  //   ifShow: false,
-  // },
-  // {
-  //   field: 'userId',
-  //   label: '用户ID',
-  //   component: 'Input',
-  //   required: true,
-  //   ifShow: false,
-  // },
-  // {
-  //   field: 'updatedTime',
-  //   label: '更新时间',
-  //   component: 'Input',
-  //   required: true,
-  //   ifShow: false,
-  // },
+  {
+    field: 'bizCode',
+    label: '业务对象',
+    component: 'Input',
+    required: true,
+  },
+  {
+    field: 'bizId',
+    label: '业务对象ID',
+    component: 'Input',
+    required: true,
+    ifShow: false,
+  },
+  {
+    field: 'fieldId',
+    label: '领域ID',
+    component: 'Input',
+    required: true,
+    ifShow: false,
+  },
+  {
+    field: 'repositoryId',
+    label: '模型ID',
+    component: 'Input',
+    required: true,
+    ifShow: false,
+  },
+  {
+    field: 'userId',
+    label: '用户ID',
+    component: 'Input',
+    required: true,
+    ifShow: false,
+  },
+  {
+    field: 'updatedTime',
+    label: '更新时间',
+    component: 'Input',
+    required: true,
+    ifShow: false,
+  },
 ];
 
 export const colFormSchema: FormSchema[] = [
@@ -264,11 +209,6 @@ export const colFormSchema: FormSchema[] = [
     label: '字段ID',
     component: 'Input',
     required: false,
-    //readonly
-    componentProps: {
-      placeholder: '后台自动生成',
-    },
-    dynamicDisabled: true,
   },
   {
     field: 'columnType',
@@ -303,8 +243,8 @@ export const colFormSchema: FormSchema[] = [
 ];
 export const bizFormSchema: FormSchema[] = [
   {
-    field: 'businessObjectCode',
-    label: '业务对象编码',
+    field: 'bizCode',
+    label: '业务对象',
     component: 'Input',
     rules: [
       {
@@ -318,13 +258,9 @@ export const bizFormSchema: FormSchema[] = [
     label: '业务对象ID',
     component: 'Input',
     required: false,
-    componentProps: {
-      placeholder: '后台自动生成',
-    },
-    dynamicDisabled: true,
   },
   {
-    field: 'businessObjectName',
+    field: 'bizName',
     label: '业务对象名称',
     component: 'Input',
     required: false,
@@ -335,87 +271,4 @@ export const bizFormSchema: FormSchema[] = [
     component: 'Input',
     required: false,
   },
-  {
-    field: 'fieldId',
-    label: '领域ID',
-    component: 'Input',
-    // ifShow: false,
-    // required: false,
-  },
-  {
-    field: 'repositoryId',
-    label: '模型ID',
-    component: 'Input',
-    // ifShow: false,
-    // required: false,
-  },
 ];
-export const fieldFormSchema: FormSchema[] = [
-  {
-    field: 'fieldCode',
-    label: '领域编码',
-    component: 'Input',
-  },
-  {
-    field: 'fieldName',
-    label: '领域名称',
-    component: 'Input',
-  },
-  {
-    field: 'id',
-    label: '领域ID',
-    component: 'Input',
-    required: false,
-    dynamicDisabled: true,
-    componentProps: {
-      placeholder: '后台自动生成',
-    },
-  },
-  {
-    field: 'repositoryId',
-    label: '模型ID',
-    component: 'Input',
-    required: false,
-    dynamicDisabled: true,
-  },
-];
-export const repoFormSchema: FormSchema[] = [
-  {
-    field: 'repositoryName',
-    label: '模型列表',
-    component: 'Input',
-    required: true,
-  },
-  {
-    field: 'repositoryType',
-    label: '数据库类型',
-    component: 'Input',
-    required: true,
-  },
-  {
-    field: 'id',
-    label: '模型ID',
-    component: 'Input',
-    required: false,
-    componentProps: {
-      placeholder: '后台自动生成',
-    },
-    dynamicDisabled: true,
-  },
-  {
-    field: 'description',
-    label: '介绍',
-    component: 'Input',
-    required: false,
-  },
-  {
-    field: 'userId',
-    label: '用户ID',
-    component: 'Input',
-    required: false,
-    dynamicDisabled: true,
-  },
-];
-export class GlobalVars {
-  public static c = false;
-}

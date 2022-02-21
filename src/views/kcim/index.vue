@@ -304,12 +304,12 @@
       const result = await tableStore.deleteTable(ids);
       if (result) {
         notification.success({
-          message: '提交成功',
+          message: '提交成功，请刷新页面',
           duration: 1,
         });
-        setTimeout(async function () {
-          document.location.reload();
-        }, 500);
+        // setTimeout(async function () {
+        //   document.location.reload();
+        // }, 500);
       } else {
         notification.error({
           message: '提交失败',
@@ -331,12 +331,12 @@
       const result = await colStore.deleteColumn(ids);
       if (result) {
         notification.success({
-          message: '提交成功',
+          message: '提交成功，请刷新页面',
           duration: 1,
         });
-        setTimeout(async function () {
-          document.location.reload();
-        }, 500);
+        // setTimeout(async function () {
+        //   document.location.reload();
+        // }, 500);
       } else {
         notification.error({
           message: '提交失败',
@@ -358,12 +358,12 @@
       const result = await bizStore.deleteBiz(ids);
       if (result) {
         notification.success({
-          message: '提交成功',
+          message: '提交成功，请刷新页面',
           duration: 1,
         });
-        setTimeout(async function () {
-          document.location.reload();
-        }, 500);
+        // setTimeout(async function () {
+        //   document.location.reload();
+        // }, 500);
       } else {
         notification.error({
           message: '提交失败',

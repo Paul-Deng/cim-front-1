@@ -29,6 +29,8 @@ if (import.meta.env.DEV) {
 async function bootstrap() {
   const app = createApp(App);
 
+  app.config.globalProperties.$updateSuc = false;
+
   app.use(Antd);
 
   // Configure store

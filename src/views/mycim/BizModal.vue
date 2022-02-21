@@ -19,8 +19,10 @@
   import { TableItem } from '/@/api/menu/model/model';
   import { BizObjListApi } from '/@/api/menu/repositories/model';
   import { useBizStore } from '/@/store/modules/bizList';
+  import { GlobalVars } from './mycim.data';
 
   const isUpdate = ref(true);
+  // let updateSuc = getCurrentInstance()?.appContext.config.globalProperties.$updateSuc;
 
   const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
     labelWidth: 100,
@@ -50,6 +52,7 @@
     });
   });
 
+  // const app = createApp(App);
   const getTitle = computed(() => (!unref(isUpdate) ? '新增业务对象' : '编辑业务对象'));
   const bizStore = useBizStore();
   async function handleSubmit(this: any) {
@@ -57,11 +60,14 @@
       const values = await validate();
       // TODO custom api
       var params = values;
+      console.log('????');
       console.log(params);
       const result = await bizStore.saveOrUpdateBiz(
         toRaw<TableItem>({
           id: params.id,
           bizId: params.id,
+          businessObjectCode: params.businessObjectCode,
+          businessObjectName: params.businessObjectName,
           description: params.description,
           fieldId: params.fieldId,
           repositoryId: params.repositoryId,
@@ -70,20 +76,22 @@
       );
       if (result) {
         notification.success({
-          message: '提交成功',
+          message: '提交成功，请刷新页面',
           duration: 1,
         });
-        setTimeout(async () => {
-          document.location.reload();
-        }, 500);
+        // console.log(GlobalVars.c);
+        // setTimeout(async () => {
+        //   document.location.reload();
+        // }, 500);
       } else {
         notification.error({
           message: '提交失败',
           duration: 3,
         });
       }
-      console.log(values);
+      // console.log(values);
       closeModal();
+      GlobalVars.c = true;
     } finally {
     }
   }

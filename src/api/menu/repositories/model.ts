@@ -13,6 +13,7 @@ import {
   RepositoryVOPageResult,
 } from '../model/model';
 import { ModelAllResultVO, TableItem, FieldItem } from '../model/model';
+import { MappingColumnVOResult, MappingItem } from '../model/mapping';
 
 enum Api {
   MODEL_WELCOME_LIST = '/api-model/model/welcome',
@@ -43,6 +44,36 @@ enum Api {
   REMOTE_FILED = '/api-model/model/field/kv',
   REMOTE_BUSINESS_OBJECT = '/api-model/model/biz/kv',
   REMOTE_TABLE = '/api-model/model/table/kv',
+
+  MAPPING_LIST = '/api-model/mapping/table/welcome',
+  MAPPING_ADD = '/api-model/mapping',
+  MAPPING_DELETE = '/api-model/mapping/delete',
+  MAPPING_CONVERT = '/api-model/mapping/convert',
+  MAPPING_COLUMN_LIST = '/api-model/mapping/column/list',
+}
+
+export function MappingListApi(params: MappingItem) {
+  return defHttp.request<MappingColumnVOResult>({
+    url: Api.MAPPING_LIST,
+    method: 'POST',
+    params,
+    headers: {
+      //@ts-ignore
+      ignoreCancelToken: true,
+    },
+  });
+}
+
+export function SaveOrUpdateMappingApi(params: MappingItem[]) {
+  return defHttp.request<MappingColumnVOResult>({
+    url: Api.MAPPING_ADD,
+    method: 'POST',
+    params,
+    headers: {
+      //@ts-ignore
+      ignoreCancelToken: true,
+    },
+  });
 }
 
 export function ModelWelcomeApi(params: ModelAll, mode: ErrorMessageMode = 'message') {
