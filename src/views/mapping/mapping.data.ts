@@ -62,36 +62,12 @@ export const ColColumns: BasicColumn[] = [
     width: 55,
   },
   {
-    title: '非空',
-    dataIndex: 'columnNull',
-    width: 40,
-    customRender: ({ text }) => {
-      const boolval = text ? 'true' : 'false';
-      return (text = boolval);
-    },
-  },
-  {
-    title: '主键',
-    dataIndex: 'columnPrimary',
-    width: 40,
-    customRender: ({ text }) => {
-      const boolval = text ? 'true' : 'false';
-      return (text = boolval);
-    },
-  },
-  {
-    title: '唯一',
-    dataIndex: 'columnUnique',
-    width: 40,
-    customRender: ({ text }) => {
-      const boolval = text ? 'true' : 'false';
-      return (text = boolval);
-    },
-  },
-  {
-    title: '外键',
-    dataIndex: 'columnForeignKey',
-    width: 40,
+    width: 80,
+    title: '操作',
+    dataIndex: 'action',
+    slots: { customRender: 'action' },
+    fixed: undefined,
+    ifShow: true,
   },
 ];
 export const BizColumns: BasicColumn[] = [
@@ -120,6 +96,29 @@ export const BizColumns: BasicColumn[] = [
     title: '模型ID',
     dataIndex: 'repositoryId',
     width: 40,
+  },
+];
+export const RepoColumns: BasicColumn[] = [
+  {
+    title: '模型',
+    dataIndex: 'repositoryName',
+    width: 80,
+  },
+  {
+    title: '数据库类型',
+    dataIndex: 'repositoryType',
+    width: 80,
+    align: 'left',
+  },
+  {
+    title: '模型ID',
+    dataIndex: 'id',
+    width: 55,
+  },
+  {
+    title: '介绍',
+    dataIndex: 'description',
+    width: 55,
   },
 ];
 
@@ -271,4 +270,90 @@ export const bizFormSchema: FormSchema[] = [
     component: 'Input',
     required: false,
   },
+];
+
+export const mappingFormSchema: FormSchema[] = [
+  {
+    field: 'targetRepositoryName',
+    label: '目标模型',
+    component: 'Input',
+    rules: [
+      {
+        required: true,
+        message: '请选择目标模型',
+      },
+    ],
+  },
+  {
+    field: 'id',
+    label: '目标领域',
+    component: 'Input',
+    required: true,
+  },
+  {
+    field: 'sourceBizId',
+    label: '目标业务对象',
+    component: 'Input',
+    required: true,
+  },
+  {
+    field: 'customTableCode',
+    label: '目标表',
+    component: 'Input',
+    required: true,
+  },
+  {
+    field: 'customColumnName',
+    label: '目标字段',
+    component: 'Input',
+    required: true,
+  },
+];
+
+export const MappingListColumns: BasicColumn[] = [
+  {
+    title: '表映射关系',
+    dataIndex: 'standardTableCode',
+    width: '20%',
+    slots: {
+      customRender: 'mappingTableCode',
+    },
+  },
+  {
+    title: '标准模型字段名',
+    dataIndex: 'standardColumnName',
+    slots: {
+      customRender: 'standardColumn',
+    },
+    width: '20%',
+  },
+  {
+    title: '标准模型字段类型',
+    dataIndex: 'standardColumnType',
+    slots: {
+      customRender: 'standardColumnType',
+    },
+    width: '10%',
+  },
+  {
+    title: '自定义模型字段',
+    dataIndex: 'customColumnName',
+    slots: {
+      customRender: 'customColumn',
+    },
+    width: '20%',
+  },
+  {
+    title: '自定义模型类型',
+    dataIndex: 'customColumnType',
+    slots: {
+      customRender: 'customColumnType',
+    },
+    width: '10%',
+  },
+  // {
+  //   title: '更新时间',
+  //   width: '20%',
+  //   dataIndex: 'updatedTime',
+  // },
 ];

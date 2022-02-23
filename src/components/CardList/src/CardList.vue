@@ -6,7 +6,7 @@
     RedoOutlined,
     TableOutlined,
   } from '@ant-design/icons-vue';
-  import { List, Card, Image, Typography, Tooltip, Slider, Avatar } from 'ant-design-vue';
+  import { List, Card, Image, Typography, Tooltip, Slider } from 'ant-design-vue';
   import { Dropdown } from '/@/components/Dropdown';
   import { BasicForm, useForm } from '/@/components/Form';
   import { Button } from '/@/components/Button';
@@ -167,10 +167,13 @@
 
               <CardMeta>
                 <template #title>
-                  <TypographyText :content="item.name" :ellipsis="{ tooltip: item.address }" />
+                  <TypographyText
+                    :content="item.repositoryName"
+                    :ellipsis="{ tooltip: item.repositoryType }"
+                  />
                 </template>
                 <template #avatar>
-                  <Avatar :src="item.avatar" />
+                  <!-- <Avatar :src="item.avatar" /> -->
                 </template>
                 <template #description>{{ item.time }}</template>
               </CardMeta>

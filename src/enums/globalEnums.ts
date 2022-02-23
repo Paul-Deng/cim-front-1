@@ -8,3 +8,11 @@ export enum GlobalEnum {
 
   SLASH_SEPARATOR = ' / ',
 }
+
+export enum ModelType {
+  REPOSITORY = 1,
+  FIELD = 2,
+  BIZ = 3,
+  TABLE = 4,
+  COLUMN = 5,
+}

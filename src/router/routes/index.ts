@@ -6,6 +6,7 @@ import { mainOutRoutes } from './mainOut';
 import { PageEnum } from '/@/enums/pageEnum';
 import { t } from '/@/hooks/web/useI18n';
 import { dashboard } from '/@/router/routes/modules/dashboard';
+import { mapping } from '/@/router/routes/modules/mapping';
 // import { mapping } from '/@/router/routes/modules/mapping';
 
 const modules = import.meta.globEager('./modules/**/*.ts');
@@ -29,6 +30,16 @@ export const RootRoute: AppRouteRecordRaw = {
   },
 };
 
+// export const MapRoute: AppRouteRecordRaw = {
+//   path: '/mapping',
+//   name: 'Map',
+//   component: () => import('/@/views/mapping/NewMapping/index.vue'),
+//   // redirect: PageEnum.BASE_TEST,
+//   meta: {
+//     title: 'TEST-MAP',
+//   },
+// };
+
 export const LoginRoute: AppRouteRecordRaw = {
   path: '/login',
   name: 'Login',
@@ -43,6 +54,8 @@ export const basicRoutes = [
   LoginRoute,
   dashboard,
   RootRoute,
+  mapping,
+  // MapRoute,
   ...mainOutRoutes,
   REDIRECT_ROUTE,
   PAGE_NOT_FOUND_ROUTE,

@@ -286,7 +286,9 @@ export function useDataSource(
       let res;
 
       if (opt?.api) {
+        //@ts-ignore
         res = await opt?.api(params);
+        //@ts-ignore
         apitemp = opt?.api;
         // console.log('apinow');
         // console.log(opt?.api);

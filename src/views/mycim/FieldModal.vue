@@ -69,12 +69,12 @@
       );
       if (result) {
         notification.success({
-          message: '提交成功',
+          message: '提交成功，请刷新页面',
           duration: 1,
         });
-        setTimeout(async () => {
-          document.location.reload();
-        }, 500);
+        // setTimeout(async () => {
+        //   document.location.reload();
+        // }, 500);
       } else {
         notification.error({
           message: '提交失败',

@@ -4,10 +4,10 @@ import { LAYOUT } from '/@/router/constant';
 import { t } from '/@/hooks/web/useI18n';
 
 export const dashboard: AppRouteModule = {
-  path: '/dashboard',
-  name: 'Dashboard',
+  path: '/welcome',
+  name: 'Welcome',
   component: LAYOUT,
-  redirect: '/dashboard/index',
+  redirect: '/welcome/index',
   meta: {
     hideChildrenInMenu: true,
     orderNo: 10,
@@ -17,7 +17,7 @@ export const dashboard: AppRouteModule = {
   children: [
     {
       path: 'index',
-      name: 'DashboardDemo',
+      name: 'WelcomeDemo',
       component: () => import('/@/views/welcome/index.vue'),
       meta: {
         title: t('routes.dashboard.index'),

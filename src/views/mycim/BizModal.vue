@@ -19,7 +19,7 @@
   import { TableItem } from '/@/api/menu/model/model';
   import { BizObjListApi } from '/@/api/menu/repositories/model';
   import { useBizStore } from '/@/store/modules/bizList';
-  import { GlobalVars } from './mycim.data';
+  // import { GlobalVars } from './mycim.data';
 
   const isUpdate = ref(true);
   // let updateSuc = getCurrentInstance()?.appContext.config.globalProperties.$updateSuc;
@@ -91,7 +91,7 @@
       }
       // console.log(values);
       closeModal();
-      GlobalVars.c = true;
+      // GlobalVars.c = true;
     } finally {
     }
   }

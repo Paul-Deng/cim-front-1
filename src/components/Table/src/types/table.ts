@@ -78,6 +78,7 @@ export interface FetchParams {
   api?: Recordable;
   title?: string;
   columns?: Recordable;
+  // actionColumn?: BasicColumn;
 }
 
 export interface GetColumnsParams {
@@ -104,7 +105,7 @@ export interface TableActionType {
   insertTableDataRecord: (record: Recordable, index?: number) => Recordable | void;
   findTableDataRecord: (rowKey: string | number) => Recordable | void;
   getColumns: (opt?: GetColumnsParams) => BasicColumn[];
-  setColumns: (columns: BasicColumn[] | string[]) => void;
+  setColumns: (columns: BasicColumn[] | string[] | BasicColumn | Boolean | string | number) => void;
   getDataSource: <T = Recordable>() => T[];
   getRawDataSource: <T = Recordable>() => T;
   setLoading: (loading: boolean) => void;

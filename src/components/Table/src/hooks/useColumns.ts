@@ -203,16 +203,19 @@ export function useColumns(
 
     if (columns.length <= 0) {
       columnsRef.value = [];
+      console.log('debug1');
       return;
     }
-
+    console.log('debug2');
     const firstColumn = columns[0];
 
     const cacheKeys = cacheColumns.map((item) => item.dataIndex);
 
     if (!isString(firstColumn)) {
+      console.log('debug3');
       columnsRef.value = columns as BasicColumn[];
     } else {
+      console.log('debug4');
       const columnKeys = columns as string[];
       const newColumns: BasicColumn[] = [];
       cacheColumns.forEach((item) => {
@@ -231,6 +234,7 @@ export function useColumns(
 
       // Sort according to another array
       if (!isEqual(cacheKeys, columns)) {
+        console.log('debug5');
         newColumns.sort((prev, next) => {
           return (
             cacheKeys.indexOf(prev.dataIndex as string) -

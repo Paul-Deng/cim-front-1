@@ -1,10 +1,6 @@
 <template>
   <div>
-    <div class="uploadbtn" width="100%">
-      <!-- <ImpExcel class="m-3" @success="loadDataSuccess" dateFormat="YYYY-MM-DD">
-        <a-button> 导入Excel </a-button>
-      </ImpExcel> -->
-    </div>
+    <div class="uploadbtn" width="100%"> </div>
     <div>
       <div class="side">
         <BasicTree
@@ -82,14 +78,7 @@
 <script lang="ts" setup>
   import { nextTick, onMounted, ref, toRaw } from 'vue';
   import { watch } from 'vue';
-  import {
-    TableColumns,
-    ColColumns,
-    BizColumns,
-    FieldColumns,
-    RepoColumns,
-    GlobalVars,
-  } from './mycim.data';
+  import { TableColumns, ColColumns, BizColumns, FieldColumns, RepoColumns } from './mycim.data';
   import {
     FieldListApi,
     GetTableColumnApi,
@@ -118,10 +107,12 @@
   import { useRepoStore } from '/@/store/modules/repoList';
   import { useMessage } from '/@/hooks/web/useMessage';
   import { downloadDefaultModelApi } from '/@/api/sys/file/file';
+  import { useTabs } from '/@/hooks/web/useTabs';
 
   const openKeys = ref<string[]>(['sub1']);
   const { createMessage } = useMessage();
-  // let globalV = reactive(GlobalVars);
+  const { refreshPage } = useTabs();
+  const loading = ref(false);
 
   watch(
     () => openKeys,
@@ -150,8 +141,6 @@
     treeData.value = await RepoList;
   }
   onMounted(() => {
-    console.log('global value');
-    console.log(GlobalVars.c);
     fetch();
   });
 
@@ -407,10 +396,6 @@
       record,
       isUpdate: true,
     });
-    nextTick(() => {
-      GlobalVars.c = true;
-    });
-    console.log(GlobalVars.c);
   }
   function handleDelete(record: Recordable) {
     console.log(record);
@@ -487,7 +472,7 @@
           message: '提交成功',
           duration: 1,
         });
-        tableReload();
+        freshData();
         // setTimeout(async function () {
         //   document.location.reload();
         // }, 500);
@@ -514,7 +499,7 @@
           message: '提交成功',
           duration: 1,
         });
-        tableReload();
+        freshData();
         // setTimeout(async function () {
         //   document.location.reload();
         // }, 500);
@@ -597,7 +582,18 @@
     });
   }
   async function freshData() {
-    tableReload({});
+    // tableReload({});
+    // console.log('refresh btn');
+    // nextTick(async () => {
+    //   console.log('refresh data');
+    //   treeData.value = Object.assign(await RepoList);
+    // });
+    loading.value = true;
+    await refreshPage();
+    setTimeout(() => {
+      loading.value = false;
+      // Animation execution time
+    }, 1200);
   }
   async function handleCreate(record: Recordable) {
     if (isRepo.value) {
