@@ -110,4 +110,6 @@ export interface MappingItem {
   parentId?: number;
   createdTime?: Date;
   updatedTime?: Date;
+  repositoryId?: number;
 }
+export type MappingItemResult = BasicFetchResult<MappingItem>;

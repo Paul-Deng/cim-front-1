@@ -13,38 +13,20 @@
         />
       </div>
       <div class="atable" v-cloak>
-        <BasicTable
-          @register="registerTable"
-          @fetch-success="onFetchSuccess"
-          @edit-change="handleEditChange"
-        >
+        <BasicTable @register="registerTable" @fetch-success="onFetchSuccess">
           <template #action="{ record }">
             <TableAction
               :actions="[
                 {
-                  icon: 'clarity:note-edit-line',
-                  onClick: handleEditChange.bind(null, record),
-                },
-                {
-                  icon: 'ant-design:delete-outlined',
-                  color: 'error',
-                  popConfirm: {
-                    title: '是否确认删除',
-                    confirm: handleDelete.bind(null, record),
-                  },
+                  icon: 'clarity:add-line',
+                  onClick: handleAdd.bind(null, record),
                 },
               ]"
             />
           </template>
         </BasicTable>
-        <template v-if="isBiz">
-          <BizModal @register="registerModal" />
-        </template>
-        <template v-if="isTable">
-          <TableModal @register="registerModal" />
-        </template>
         <template v-if="isCol">
-          <ColModal @register="registerModal" />
+          <MapModal @register="registerModal" />
         </template>
       </div>
     </div>
@@ -59,15 +41,8 @@
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
   import { BasicTree, TreeItem } from '/@/components/Tree';
   import { getBizList } from '/@/api/demo/system';
-  import { notification } from 'ant-design-vue';
-  import { useTableStore } from '/@/store/modules/tableList';
   import { useModal } from '/@/components/Modal';
-  import TableModal from '/@/views/cim/TableModal.vue';
-  import BizModal from '/@/views/cim/BizModal.vue';
-  import ColModal from '/@/views/cim/ColModal.vue';
-  import { useColumnStore } from '/@/store/modules/columnList';
-  import { useBizStore } from '/@/store/modules/bizList';
-  // import { mappingColumnSchema } from './mapping.data';
+  import MapModal from './MapModal.vue';
 
   let treeData = ref<TreeItem[]>([]);
   let bizListTree = ref<TreeItem[]>([]);
@@ -109,14 +84,6 @@
     bizId: bizIdnum,
     tableId: tableIdnum,
   };
-  // let actionCol = {
-  //   width: 80,
-  //   title: '操作',
-  //   dataIndex: 'action',
-  //   slots: { customRender: 'action' },
-  //   fixed: undefined,
-  //   ifShow: true,
-  // };
 
   let requestApi = ref<any>(getBizList);
   let input = requestApi;
@@ -136,6 +103,9 @@
     showTableSetting: false,
     bordered: true,
     showIndexColumn: false,
+    rowSelection: {
+      type: 'checkbox',
+    },
     canResize: false,
     searchInfo: requestParam,
   });
@@ -256,26 +226,26 @@
     }
     // console.log('outside func');
   }
-  function handleEditChange(record: Recordable) {
+  function handleAdd(record: Recordable) {
     openModal(true, {
       record,
       isUpdate: true,
     });
   }
-  function handleDelete(record: Recordable) {
-    console.log(record);
-    if (isBiz.value) {
-      bizDelete(record);
-    } else if (isTable.value) {
-      tableDelete(record);
-    } else if (isCol.value) {
-      columnDelete(record);
-    } else {
-      bizDelete(record.id);
-      console.log('error');
-    }
-    // if(record.id)
-  }
+  // function handleDelete(record: Recordable) {
+  //   console.log(record);
+  //   if (isBiz.value) {
+  //     bizDelete(record);
+  //   } else if (isTable.value) {
+  //     tableDelete(record);
+  //   } else if (isCol.value) {
+  //     columnDelete(record);
+  //   } else {
+  //     bizDelete(record.id);
+  //     console.log('error');
+  //   }
+  //   // if(record.id)
+  // }
 
   let fieldList = (async () => {
     let tempTree = ref<TreeItem[]>([]);
@@ -291,93 +261,8 @@
         children: (() => {})(),
       });
     }
-    // console.log('fieldmap');
-    // console.log(fieldIdMap);
     return result.sort((a, b) => a.id - b.id);
   })();
-
-  const tableStore = useTableStore();
-  async function tableDelete(record: Recordable) {
-    try {
-      const values = record;
-      var params = values;
-      const id = params.id;
-      var ids: Array<number> = new Array<number>();
-      ids.push(id);
-      const result = await tableStore.deleteTable(ids);
-      if (result) {
-        notification.success({
-          message: '提交成功，请刷新页面',
-          duration: 1,
-        });
-        // setTimeout(async function () {
-        //   document.location.reload();
-        // }, 500);
-      } else {
-        notification.error({
-          message: '提交失败',
-          duration: 3,
-        });
-      }
-    } finally {
-      // console.log('?');
-    }
-  }
-  const colStore = useColumnStore();
-  async function columnDelete(record: Recordable) {
-    try {
-      const values = record;
-      var params = values;
-      const id = params.id;
-      var ids: Array<number> = new Array<number>();
-      ids.push(id);
-      const result = await colStore.deleteColumn(ids);
-      if (result) {
-        notification.success({
-          message: '提交成功，请刷新页面',
-          duration: 1,
-        });
-        // setTimeout(async function () {
-        //   document.location.reload();
-        // }, 500);
-      } else {
-        notification.error({
-          message: '提交失败',
-          duration: 3,
-        });
-      }
-    } finally {
-      // console.log('?');
-    }
-  }
-  const bizStore = useBizStore();
-  async function bizDelete(record: Recordable) {
-    try {
-      const values = record;
-      var params = values;
-      const id = params.id;
-      var ids: Array<number> = new Array<number>();
-      ids.push(id);
-      const result = await bizStore.deleteBiz(ids);
-      if (result) {
-        notification.success({
-          message: '提交成功，请刷新页面',
-          duration: 1,
-        });
-        // setTimeout(async function () {
-        //   document.location.reload();
-        // }, 500);
-      } else {
-        notification.error({
-          message: '提交失败',
-          duration: 3,
-        });
-      }
-    } finally {
-      // console.log('?');
-    }
-  }
-
   function onFetchSuccess() {
     // 演示默认展开所有表项
     nextTick(expandAll);

@@ -138,13 +138,13 @@
     showIndexColumn: false,
     canResize: false,
     searchInfo: requestParam,
-    actionColumn: {
-      width: 80,
-      title: '操作',
-      dataIndex: 'action',
-      slots: { customRender: 'action' },
-      fixed: undefined,
-    },
+    // actionColumn: {
+    //   width: 80,
+    //   title: '操作',
+    //   dataIndex: 'action',
+    //   slots: { customRender: 'action' },
+    //   fixed: undefined,
+    // },
   });
 
   let fieldIdMap = new Map();

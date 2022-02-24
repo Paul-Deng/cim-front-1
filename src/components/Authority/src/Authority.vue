@@ -3,12 +3,11 @@
 -->
 <script lang="ts">
   import type { PropType } from 'vue';
-  import {  } from 'vue';
   import { RoleEnum } from '/@/enums/roleEnum';
   import { usePermission } from '/@/hooks/web/usePermission';
   import { getSlot } from '/@/utils/helper/tsxHelper';
 
-  export default ({
+  export default {
     name: 'Authority',
     props: {
       /**
@@ -41,5 +40,5 @@
         return renderAuth();
       };
     },
-  });
+  };
 </script>

@@ -52,7 +52,7 @@ export const mapping: AppRouteModule = {
     },
     {
       path: '/mapping/add',
-      name: 'MappingTableAdd',
+      name: 'MappingAdd',
       component: () => import('/@/views/mapping/NewMapping/index.vue'),
       meta: {
         title: '添加映射关系',

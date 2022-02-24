@@ -14,23 +14,29 @@
   import { MappingTableWelcomeApi } from '/@/api/menu/mapping/mapping';
   import { GlobalEnum, ModelType } from '/@/enums/globalEnums';
   import { MappingItem } from '/@/api/menu/model/mapping';
-  import { repositoryListApi } from '/@/api/menu/repositories/model';
   import { getAuthCache } from '/@/utils/auth';
   import { USER_INFO_KEY } from '/@/enums/cacheEnum';
-  import { onMounted, ref, toRaw } from 'vue';
+  import { ref } from 'vue';
   import { UserInfo } from '/#/store';
-  import { TreeItem } from '/@/components/Tree';
   import { MappingListColumns } from '../mapping.data';
+  import { useRoute } from 'vue-router';
 
-  let abc = ref<TreeItem[]>([]);
-  async function fetch() {
-    abc.value = await RepoList;
-    console.log('repo inside');
-    // console.log(document.getElementsByName())
+  const route = useRoute();
+  let repositoryIdnum = ref(1);
+  let passParam = route.params.id;
+  let tempid = 'MappingId';
+  let checkStorage = localStorage.getItem(tempid);
+  console.log(typeof passParam);
+  if (checkStorage) {
+    console.log('id exist');
+    console.log(localStorage.getItem(tempid));
+    repositoryIdnum.value = +checkStorage;
+  } else {
+    console.log('empty');
+    localStorage.setItem(tempid, String(passParam));
+    repositoryIdnum.value = +passParam;
+    console.log(repositoryIdnum);
   }
-  onMounted(() => {
-    fetch();
-  });
 
   let userIdnum = ref<number>(1);
   userIdnum.value = getAuthCache<UserInfo>(USER_INFO_KEY).userId;
@@ -38,13 +44,11 @@
     //@ts-ignore
     userIdnum.value = null;
   }
-  // const route = useRoute();
   const requestParam: MappingItem = {
+    repositoryId: repositoryIdnum.value,
     mappingType: ModelType.TABLE,
   };
-  let params = {
-    userId: userIdnum.value,
-  };
+
   const [registerTable] = useTable({
     api: MappingTableWelcomeApi,
     searchInfo: requestParam,
@@ -57,23 +61,4 @@
       pageSize: Number(GlobalEnum.PAGE_SIZE),
     },
   });
-
-  let RepoList = (async () => {
-    let tempTree = ref<TreeItem[]>([]);
-    tempTree.value = (await repositoryListApi(params)).items as unknown as TreeItem[];
-    const temp = toRaw(tempTree.value);
-    const result: any[] = [];
-    for (let index = 0; index < temp.length; index++) {
-      // repoIdMap.set(temp[index].id + 'R', inde/x);
-      // repoTitleMap.set(temp[index].id + 'R', temp[index].repositoryName);
-      result.push({
-        code: temp[index].repositoryName,
-        id: temp[index].id + 'R',
-        type: temp[index].repositoryType,
-        userId: userIdnum.value,
-        children: (() => {})(),
-      });
-    }
-    return result.sort((a, b) => a.id - b.id);
-  })();
 </script>

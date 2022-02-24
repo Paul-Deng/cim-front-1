@@ -235,7 +235,6 @@ export function useDataSource(
 
     return findRow(dataSourceRef.value);
   }
-  // let apiTemp;
   async function fetch(opt?: FetchParams) {
     const {
       api,
@@ -247,7 +246,6 @@ export function useDataSource(
       useSearchForm,
       pagination,
     } = unref(propsRef);
-    // apitemp = api;
     if (!api || !isFunction(api)) return;
     try {
       setLoading(true);
@@ -290,9 +288,6 @@ export function useDataSource(
         res = await opt?.api(params);
         //@ts-ignore
         apitemp = opt?.api;
-        // console.log('apinow');
-        // console.log(opt?.api);
-        // console.log(apitemp);
       } else if (apitemp) {
         res = await apitemp(params);
       } else {
