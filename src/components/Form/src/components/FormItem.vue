@@ -15,7 +15,7 @@
   import { useItemLabelWidth } from '../hooks/useLabelWidth';
   import { useI18n } from '/@/hooks/web/useI18n';
 
-  export default ({
+  export default {
     name: 'BasicFormItem',
     inheritAttrs: false,
     props: {
@@ -79,7 +79,7 @@
         }
         if (schema.component === 'Divider') {
           componentProps = Object.assign({ type: 'horizontal' }, componentProps, {
-            orientation: 'left',
+            orientation: 'center',
             plain: true,
           });
         }
@@ -376,5 +376,5 @@
         );
       };
     },
-  });
+  };
 </script>

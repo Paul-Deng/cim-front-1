@@ -5,10 +5,10 @@
         <a-card hoverable style="width: 300px">
           <template #cover>
             <div class="add-btn" style="width: 100%; flex-wrap: wrap">
-              <router-link :to="{ name: 'MappingAdd', params: { id: item.id }}">
+              <router-link :to="{ name: 'MappingAdd', params: { id: item.id } }">
                 <a-button type="primary" style="width: 50%"> 添加映射关系 </a-button>
               </router-link>
-              <router-link :to="{ name: 'ExistMapping', params: { id: item.id }}">
+              <router-link :to="{ name: 'ExistMapping', params: { id: item.id } }">
                 <a-button
                   type="primary"
                   style="background-color: cornflowerblue; width: 49%; float: right"
@@ -54,18 +54,18 @@
   //     // go(PageEnum.BASE_LOGIN);
   //   return;
   // } else {
-    // const go = useGo();
+  // const go = useGo();
   //   return;
   // });
-  
+
   let userIdnum = ref<number>(1);
   userIdnum.value = getAuthCache<UserInfo>(USER_INFO_KEY).userId;
-  
+
   let abc = ref<TreeItem[]>([]);
   async function fetch() {
     abc.value = await RepoList;
     console.log('repo inside');
-  };
+  }
 
   onMounted(() => {
     fetch();

@@ -9,11 +9,12 @@
 </template>
 
 <script lang="ts">
-  // import {  } from 'vue';
-  export default {
+  //@ts-ignore
+  import { defineComponent } from 'vue';
+  export default defineComponent({
     name: 'AButton',
     inheritAttrs: false,
-  };
+  });
 </script>
 <script lang="ts" setup>
   import { computed, unref } from 'vue';

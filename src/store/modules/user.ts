@@ -57,9 +57,6 @@ export const useUserStore = defineStore({
       return this.lastUpdateTime;
     },
     getUserIdState(): number {
-      console.log('und??');
-      console.log(getAuthCache<UserInfo>(USER_INFO_KEY).userId);
-      console.log(getAuthCache<number>(USER_ID_KEY));
       return getAuthCache<number>(USER_ID_KEY);
     },
   },

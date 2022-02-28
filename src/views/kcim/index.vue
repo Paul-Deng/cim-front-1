@@ -206,8 +206,6 @@
       });
     } else {
       isReloadData.value = false;
-      // console.log('fenye');
-      // console.log(keys[0]);
       nextTick(async () => {
         isBiz.value = true;
         isTable.value = isCol.value = false;
@@ -221,8 +219,6 @@
         };
         bizListTree.value = (await getBizList(bizParams)).items as unknown as TreeItem[];
         const bizTemp = toRaw(bizListTree.value);
-        // console.log('bizlength');
-        // console.log(num);
         arr[num].children = (() => {
           const childrenstr: any[] = [];
           const bizLength = bizTemp.length;

@@ -19,6 +19,7 @@ import {
   Slider,
   Rate,
   Divider,
+  Tag,
 } from 'ant-design-vue';
 
 import ApiRadioGroup from './components/ApiRadioGroup.vue';
@@ -67,6 +68,7 @@ componentMap.set('InputCountDown', CountdownInput);
 
 componentMap.set('Upload', BasicUpload);
 componentMap.set('Divider', Divider);
+componentMap.set('Tag', Tag);
 
 export function add(compName: ComponentType, component: Component) {
   componentMap.set(compName, component);

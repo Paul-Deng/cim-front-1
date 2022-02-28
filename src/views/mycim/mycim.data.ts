@@ -416,6 +416,3 @@ export const repoFormSchema: FormSchema[] = [
     dynamicDisabled: true,
   },
 ];
-// export class GlobalVars {
-//   public static c = false;
-// }

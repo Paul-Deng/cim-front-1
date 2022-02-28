@@ -42,15 +42,9 @@
         fieldId: data.record.fieldId,
       });
     }
-    // const treeData = await BizObjListApi();
-    // updateSchema({
-    //   field: 'id',
-    //   componentProps: { treeData },
-    // });
   });
 
-  // const app = createApp(App);
-  const getTitle = computed(() => (!unref(isUpdate) ? '新增映射关系' : '编辑映射关系'));
+  const getTitle = computed(() => (!unref(isUpdate) ? '批量增加映射关系' : '批量编辑映射关系'));
   const mapStore = useMapStore();
   async function handleSubmit(this: any) {
     try {

@@ -7,6 +7,8 @@ export enum GlobalEnum {
   PAGE_SIZE = 10,
 
   SLASH_SEPARATOR = ' / ',
+
+  KCIM_REPOSITORY_ID = 1,
 }
 
 export enum ModelType {
