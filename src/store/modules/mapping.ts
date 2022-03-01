@@ -5,7 +5,7 @@ import { defineStore } from 'pinia';
 import { LOCK_INFO_KEY } from '/@/enums/cacheEnum';
 import { Persistent } from '/@/utils/cache/persistent';
 import { ErrorMessageMode } from '/#/axios';
-import { MappingItem, MappingItemResult } from '/@/api/menu/model/mapping';
+import { MappingItem } from '/@/api/menu/model/mapping';
 import { deleteMapApi, saveOrUpdateMapApi } from '/@/api/sys/model/mapModel';
 interface LockState {
   lockInfo: Nullable<LockInfo>;
@@ -19,13 +19,13 @@ export const useMapStore = defineStore({
   getters: {},
   actions: {
     async saveOrUpdateMap(
-      params: MappingItem & {
+      params: MappingItem[] & {
         mode?: ErrorMessageMode;
       },
-    ): Promise<MappingItemResult | null> {
+    ): Promise<MappingItem | null> {
       try {
-        const { ...mapParams } = params;
-        const data = await saveOrUpdateMapApi(mapParams);
+        // const { ...mapParams } = params;
+        const data = await saveOrUpdateMapApi(params);
         return data;
       } catch (error) {
         return null;

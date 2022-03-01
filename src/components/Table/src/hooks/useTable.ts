@@ -80,6 +80,16 @@ export function useTable(tableProps?: Props): [
       }
       return await getTableInstance().tableReload(opt);
     },
+    table2Reload: async (opt?: FetchParams) => {
+      if (opt?.columns) {
+        getTableInstance().setColumns(opt?.columns);
+      }
+      if (opt?.title) {
+        //@ts-ignore
+        getTableInstance().setColumns(opt?.title);
+      }
+      return await getTableInstance().table2Reload(opt);
+    },
     setProps: (props: Partial<BasicTableProps>) => {
       getTableInstance().setProps(props);
     },

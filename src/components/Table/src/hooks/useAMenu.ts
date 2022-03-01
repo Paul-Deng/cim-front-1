@@ -70,6 +70,9 @@ export function useAMenu(
     tableReload: async (opt?: FetchParams) => {
       getTableInstance().tableReload(opt);
     },
+    table2Reload: async (opt?: FetchParams) => {
+      getTableInstance().table2Reload(opt);
+    },
     setProps: (props: Partial<BasicTableProps>) => {
       getTableInstance().setProps(props);
     },

@@ -1,13 +1,13 @@
 import { defHttp } from '/@/utils/http/axios';
 import { ErrorMessageMode } from '/#/axios';
-import { MappingItem, MappingItemResult } from '/@/api/menu/model/mapping';
+import { MappingItem } from '/@/api/menu/model/mapping';
 enum Api {
   MAPPING_ADD = '/api-model/mapping',
   MAPPING_DELETE = '/api-model/mapping/delete',
 }
 
-export function saveOrUpdateMapApi(params: MappingItem, mode: ErrorMessageMode = 'message') {
-  return defHttp.request<MappingItemResult>(
+export function saveOrUpdateMapApi(params: MappingItem[], mode: ErrorMessageMode = 'message') {
+  return defHttp.request<MappingItem>(
     {
       url: Api.MAPPING_ADD,
       method: 'POST',
