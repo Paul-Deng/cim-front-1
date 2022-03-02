@@ -627,14 +627,6 @@
     repositoryId: 0,
     standardId: 1,
   };
-  // let tempMap = {
-  //   kcimColName: '',
-  //   kcimColType: '',
-  //   kcimColLength: '',
-  //   targetColName: '',
-  //   targetColType: '',
-  //   targetColLength: '',
-  // };
   const mapData: MappingItem[] = [];
   const tempMapData: Array<string | undefined> = [];
 
@@ -656,11 +648,10 @@
       try {
         mapParams = {
           customId: targetColId.value,
-          id: kcimColId.value,
+          standardId: kcimColId.value,
           mappingType: 5,
           parentId: 9,
           repositoryId: targetRepoId.value,
-          standardId: 1,
         };
         mapData.push(mapParams);
 
@@ -750,6 +741,7 @@
         };
         mapData.push(mapParams);
         console.log(mapData);
+        //@ts-ignore
         tempMapData.push(tempMap);
         console.log('tempMap');
         console.log(tempMap);
