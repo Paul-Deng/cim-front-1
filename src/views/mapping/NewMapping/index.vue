@@ -1,15 +1,27 @@
 <template>
-  <div>
+  <div class="mapSelect" id="mapSelect">
     <div class="kcimModel">
       <BasicForm class="kcimForm" @register="registerKCIM" label-width="large" />
-      <BasicTable
-        class="kcimTable"
-        @register="registerKCIMTable"
-        @selection-change="handleKcimSelect"
-      />
     </div>
+    <div class="targetModel" id="target">
+      <BasicForm class="targetForm" @register="registerTarget" />
+    </div>
+  </div>
+  <div class="colSelect" id="colSelect">
+    <BasicTable
+      class="kcimTable"
+      @register="registerKCIMTable"
+      @selection-change="handleKcimSelect"
+    />
     <div class="mapBtnArea">
+      <a v-if="isMap" class="multiBtn" href="javascript:void(0)" @click="goAnchor('colSelect')">
+        添加多条映射关系
+      </a>
+      <a v-if="isMulti" class="multiBtn" href="javascript:void(0)" @click="goAnchor('mapSelect')">
+        添加单条映射关系
+      </a>
       <a-button
+        v-if="isMap"
         class="mapBtn"
         @click="handleSubmitMap"
         type="primary"
@@ -18,15 +30,31 @@
       >
         <swap-outlined :style="{ color: 'white' }" />
       </a-button>
+      <a-button
+        v-if="isMulti"
+        class="mapBtn"
+        @click="handleAddMap"
+        type="primary"
+        shape="circle"
+        style="border: none"
+      >
+        <plus-outlined :style="{ color: 'white' }" />
+      </a-button>
     </div>
-    <div class="targetModel">
-      <BasicForm class="targetForm" @register="registerTarget" />
-      <BasicTable
-        class="targetTable"
-        @register="registerTargetTable"
-        @selection-change="handleTargetSelect"
-      />
-    </div>
+    <BasicTable
+      class="targetTable"
+      @register="registerTargetTable"
+      @selection-change="handleTargetSelect"
+    />
+  </div>
+  <div id="MultiTable">
+    <BasicTable v-if="isMulti" class="multiTable" @register="registerMultiTable">
+      <template #toolbar>
+        <a-button v-if="isMulti" type="primary" @click="handleMultiSubmit">
+          提交所有映射关系
+        </a-button>
+      </template>
+    </BasicTable>
   </div>
 </template>
 <script lang="tsx" setup>
@@ -41,13 +69,15 @@
     repositoryListApi,
     TableListApi,
   } from '/@/api/menu/repositories/model';
-  import { ref } from 'vue';
+  import { ref, watch, nextTick } from 'vue';
   import { GlobalEnum } from '/@/enums/globalEnums';
   import { useUserStore } from '/@/store/modules/user';
-  import { SwapOutlined } from '@ant-design/icons-vue';
+  import { SwapOutlined, PlusOutlined } from '@ant-design/icons-vue';
   import { notification } from 'ant-design-vue';
   import { useMapStore } from '/@/store/modules/mapping';
   import { MappingItem } from '/@/api/menu/model/mapping';
+  import { cloneDeep } from 'lodash-es';
+  import { BasicColumn } from '/@/components/Table/src/types/table';
 
   let kcimFieldId = ref<number>(1);
   let kcimBizId = ref<number>(1);
@@ -56,7 +86,26 @@
   let targetFieldId = ref<number>(1);
   let targetBizId = ref<number>(1);
   let targetTableId = ref<number>(1);
+  let isCol = ref<Boolean>(false);
+  let isMap = ref<Boolean>(true);
+  let isMulti = ref<Boolean>(false);
 
+  // const props = defineProps({
+  //   material: {
+  //     type: Object,
+  //     default: () => {
+  //       return {};
+  //     },
+  //   },
+  // });
+  // watch(
+  //   () => props.material.id,
+  //   (val) => {
+  //     if (val && document.getElementById(val) != null) {
+  //       document.getElementById(val).scrollIntoView(true);
+  //     }
+  //   },
+  // );
   const MappingKCIMSchemas: FormSchema[] = [
     {
       field: 'KCIMIntro',
@@ -118,6 +167,7 @@
           valueField: 'id',
           numberToString: true,
           params: {
+            pageSize: 1000,
             repositoryId: GlobalEnum.KCIM_REPOSITORY_ID,
           },
           onChange: (e: ChangeEvent) => {
@@ -158,10 +208,11 @@
           valueField: 'id',
           numberToString: true,
           params: {
+            pageSize: 1000,
             fieldId: formModel.KCIMFieldId,
           },
           onChange: (e: ChangeEvent) => {
-            formModel.CIMTableId = null;
+            formModel.KCIMTableId = null;
             kcimBizId.value = +e;
           },
         };
@@ -183,7 +234,7 @@
     },
     {
       label: '表名称',
-      field: 'CIMTableId',
+      field: 'KCIMTableId',
       component: 'ApiSelect',
       required: true,
       colProps: {
@@ -198,7 +249,8 @@
           placeholder: '',
           numberToString: true,
           params: {
-            bizId: formModel.CIMBizId,
+            pageSize: 1000,
+            bizId: formModel.KCIMBizId,
           },
           onChange: (e: ChangeEvent) => {
             kcimTableId.value = +e;
@@ -207,7 +259,7 @@
       },
     },
   ];
-  let isCol = ref<Boolean>(false);
+
   const [registerKCIM, {}] = useForm({
     labelCol: {
       span: 10,
@@ -254,6 +306,7 @@
           valueField: 'id',
           numberToString: true,
           params: {
+            pageSize: 10000,
             userId: userStore.getUserIdState,
           },
           onChange: async (e: ChangeEvent) => {
@@ -299,6 +352,7 @@
           valueField: 'id',
           numberToString: true,
           params: {
+            pageSize: 10000,
             repositoryId: formModel.customRepositoryId,
           },
           onChange: (e: ChangeEvent) => {
@@ -341,6 +395,7 @@
           placeholder: '',
           numberToString: true,
           params: {
+            pageSize: 10000,
             repositoryId: formModel.customRepositoryId,
             fieldId: formModel.customFieldId,
           },
@@ -383,6 +438,7 @@
           placeholder: '',
           numberToString: true,
           params: {
+            pageSize: 10000,
             repositoryId: formModel.customRepositoryId,
             fieldId: formModel.customFieldId,
             bizId: formModel.customBizId,
@@ -396,6 +452,39 @@
     },
   ];
 
+  const MultiSelectColumns: BasicColumn[] = [
+    {
+      title: '源模型字段',
+      dataIndex: 'kColName',
+      width: 100,
+      align: 'left',
+    },
+    {
+      title: '源模型字段类型',
+      dataIndex: 'kColType',
+      width: 50,
+    },
+    {
+      title: '源模型字段长度',
+      dataIndex: 'kColLength',
+      width: 50,
+    },
+    {
+      title: '目标模型字段',
+      dataIndex: 'tColName',
+      width: 100,
+    },
+    {
+      title: '目标模型字段类型',
+      dataIndex: 'tColType',
+      width: 50,
+    },
+    {
+      width: 50,
+      title: '目标模型字段长度',
+      dataIndex: 'tColLength',
+    },
+  ];
   let kcimParams = {
     repositoryId: 1,
     fieldId: 1,
@@ -481,6 +570,12 @@
   let kcimColSelect = ref<boolean>(false);
   let targetColSelect = ref<boolean>(false);
   let kcimColId = ref<number>(1);
+  let kcimColName = ref<string>();
+  let kcimColType = ref<string>();
+  let kcimColLength = ref<string>();
+  let targetColName = ref<string>();
+  let targetColType = ref<string>();
+  let targetColLength = ref<string>();
   let targetColId = ref<number>(1);
 
   function handleKcimSelect(keys) {
@@ -488,6 +583,9 @@
     console.log(keys.rows[0]);
     if (keys.rows[0]) {
       kcimColId.value = keys.rows[0].id;
+      kcimColName.value = keys.rows[0].columnName;
+      kcimColType.value = keys.rows[0].columnType;
+      kcimColLength.value = keys.rows[0].columnLength;
       kcimColSelect.value = true;
     } else {
       kcimColSelect.value = false;
@@ -512,6 +610,9 @@
     console.log(keys.rows[0]);
     if (keys.rows[0]) {
       targetColId.value = keys.rows[0].id;
+      targetColName.value = keys.rows[0].columnName;
+      targetColType.value = keys.rows[0].columnType;
+      targetColLength.value = keys.rows[0].columnLength;
       targetColSelect.value = true;
     } else {
       targetColSelect.value = false;
@@ -521,16 +622,22 @@
   const mapStore = useMapStore();
   let mapParams = {
     customId: 0,
-    id: 0,
     mappingType: 0,
     parentId: 0,
     repositoryId: 0,
     standardId: 1,
   };
+  // let tempMap = {
+  //   kcimColName: '',
+  //   kcimColType: '',
+  //   kcimColLength: '',
+  //   targetColName: '',
+  //   targetColType: '',
+  //   targetColLength: '',
+  // };
   const mapData: MappingItem[] = [];
-  // const mapData = [];
-  console.log(typeof mapData);
-  console.log(mapData);
+  const tempMapData: Array<string | undefined> = [];
+
   async function handleSubmitMap() {
     console.log('map submit');
     if (kcimColSelect.value && !targetColSelect.value) {
@@ -580,10 +687,127 @@
       console.log('either');
     }
   }
+
+  // const [registerMultiModal, { openModal }] = useModal();
+  const [registerMultiTable, { setTableData }] = useTable({
+    title: '批量导入映射关系',
+    columns: MultiSelectColumns,
+    // api: GetTableColumnApi,
+    formConfig: {
+      labelWidth: 120,
+    },
+    isTreeTable: true,
+    striped: false,
+    useSearchForm: false,
+    showTableSetting: false,
+    bordered: true,
+    showIndexColumn: false,
+    canResize: false,
+  });
+
+  watch(
+    () => mapData,
+    (list) => {
+      nextTick(() => {
+        setTableData(cloneDeep(list));
+      });
+    },
+    {
+      immediate: true,
+    },
+  );
+  async function handleAddMap() {
+    console.log('multi select');
+    if (kcimColSelect.value && !targetColSelect.value) {
+      notification.error({
+        message: '请选择目标模型字段',
+        duration: 3,
+      });
+      console.log('target not');
+    } else if (!kcimColSelect.value && targetColSelect.value) {
+      notification.error({
+        message: '请选择标准模型字段',
+        duration: 3,
+      });
+      console.log('kcim not');
+    } else if (kcimColSelect.value && targetColSelect.value) {
+      try {
+        mapParams = {
+          customId: targetColId.value,
+          standardId: kcimColId.value,
+          mappingType: 5,
+          parentId: 9,
+          repositoryId: targetRepoId.value,
+          // standardId: ,
+        };
+        let tempMap = {
+          kColName: kcimColName.value,
+          kColType: kcimColType.value,
+          kColLength: kcimColLength.value,
+          tColName: targetColName.value,
+          tColType: targetColType.value,
+          tColLength: targetColLength.value,
+        };
+        mapData.push(mapParams);
+        console.log(mapData);
+        tempMapData.push(tempMap);
+        console.log('tempMap');
+        console.log(tempMap);
+        setTableData(tempMapData);
+      } finally {
+      }
+      console.log('both');
+    } else {
+      notification.error({
+        message: '请选择参与映射的字段',
+        duration: 3,
+      });
+      console.log('either');
+    }
+  }
+  async function handleMultiSubmit() {
+    console.log('multi submit');
+    try {
+      const result = await mapStore.saveOrUpdateMap(mapData);
+      if (result) {
+        notification.success({
+          message: '所有映射关系提交成功',
+          duration: 2,
+        });
+      } else {
+        notification.error({
+          message: '映射失败',
+          duration: 3,
+        });
+      }
+    } finally {
+    }
+    console.log('both');
+  }
+
+  function goAnchor(id) {
+    var anchor = document.getElementById(id);
+    console.log(id);
+    // chrome
+    if (id == 'colSelect') {
+      //@ts-ignore
+      document.body.scrollTop = anchor.offsetTop;
+      isMap.value = false;
+      isMulti.value = true;
+    } else if (id == 'mapSelect') {
+      //@ts-ignore
+      document.body.scrollTop = anchor.offsetTop;
+      isMap.value = true;
+      isMulti.value = false;
+    }
+  }
 </script>
 <style>
+  .mapSelect {
+    overflow: auto;
+  }
   .kcimModel {
-    width: 43%;
+    width: 50%;
     float: left;
     overflow: hidden;
   }
@@ -592,15 +816,9 @@
     margin-left: 10%;
     margin-right: 10%;
   }
-  .kcimTable {
-    width: 85%;
-    margin-left: 5%;
-    margin-right: 10%;
-    margin-top: 5%;
-  }
   .targetModel {
     overflow: hidden;
-    width: 43%;
+    width: 50%;
     float: right;
   }
   .targetForm {
@@ -608,28 +826,48 @@
     margin-left: 10%;
     margin-right: 10%;
   }
+  .colSelect {
+    overflow: auto;
+  }
+  .kcimTable {
+    float: left;
+    width: 40%;
+    margin-left: 3%;
+    /* margin-right: 10%; */
+    margin-top: 5%;
+  }
+
   .targetTable {
-    width: 85%;
-    margin-right: 5%;
-    margin-left: 10%;
+    float: right;
+    width: 40%;
+    margin-right: 2%;
+    /* margin-left: 5%; */
     margin-top: 5%;
   }
   .mapBtnArea {
-    overflow: hidden;
     float: left;
     width: 14%;
-    margin-top: 10px;
-    /* margin-left: 30%; */
-    height: 200%;
+    margin-top: 6%;
+    margin-left: 0.5%;
+    /* height: 200px; */
+  }
+  .multiBtn {
+    margin-left: 25%;
   }
   .mapBtn {
-    overflow: hidden;
+    overflow: auto;
     width: 55%;
-    font-size: 350%;
-    margin-top: 600px;
-    margin-left: 22.5%;
-    height: 110px;
-    text-shadow: none;
-    background-color: #0960bd;
+    font-size: 370%;
+    margin-top: 80px;
+    margin-left: 23.5%;
+    margin-right: 22.5%;
+    height: 140px;
+  }
+  #MultiTable {
+    margin-top: 30px;
+    margin-left: 5%;
+    margin-right: 5%;
+    height: 470px;
+    margin-bottom: 100px;
   }
 </style>

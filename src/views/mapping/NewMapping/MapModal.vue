@@ -60,14 +60,16 @@
       console.log('????');
       console.log(params);
       const result = await mapStore.saveOrUpdateMap(
-        toRaw<MappingItem>({
-          customId: params.customId,
-          id: params.id,
-          mappingType: params.mappingType,
-          parentId: params.parentId,
-          repositoryId: params.repositoryId,
-          standardId: params.standardId,
-        }),
+        toRaw<MappingItem[]>([
+          {
+            customId: params.customId,
+            id: params.id,
+            mappingType: params.mappingType,
+            parentId: params.parentId,
+            repositoryId: params.repositoryId,
+            standardId: params.standardId,
+          },
+        ]),
       );
       if (result) {
         notification.success({

@@ -73,6 +73,9 @@ export function useAMenu(
     table2Reload: async (opt?: FetchParams) => {
       getTableInstance().table2Reload(opt);
     },
+    table3Reload: async (opt?: FetchParams) => {
+      getTableInstance().table3Reload(opt);
+    },
     setProps: (props: Partial<BasicTableProps>) => {
       getTableInstance().setProps(props);
     },

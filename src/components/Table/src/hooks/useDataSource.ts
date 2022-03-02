@@ -370,6 +370,11 @@ export function useDataSource(
     return await fetch(opt);
   }
 
+  async function table3Reload(opt?: FetchParams) {
+    console.log('table3Reload');
+    return await fetch(opt);
+  }
+
   onMounted(() => {
     useTimeoutFn(() => {
       unref(propsRef).immediate && fetch();
@@ -387,6 +392,7 @@ export function useDataSource(
     reload,
     tableReload,
     table2Reload,
+    table3Reload,
     updateTableData,
     updateTableDataRecord,
     deleteTableDataRecord,

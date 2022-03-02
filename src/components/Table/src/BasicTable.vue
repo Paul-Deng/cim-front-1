@@ -149,6 +149,7 @@
         reload,
         tableReload,
         table2Reload,
+        table3Reload,
         getAutoCreateKey,
         updateTableData,
       } = useDataSource(
@@ -277,6 +278,7 @@
         reload,
         tableReload,
         table2Reload,
+        table3Reload,
         getSelectRows,
         clearSelectedRowKeys,
         getSelectRowKeys,

@@ -106,7 +106,7 @@ export interface MappingItem {
   id?: number;
   customId?: number;
   standardId?: number;
-  mappingType: number;
+  mappingType?: number;
   parentId?: number;
   createdTime?: Date;
   updatedTime?: Date;
