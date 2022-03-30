@@ -38,13 +38,13 @@
           </template>
         </BasicTable>
         <template v-if="isBiz">
-          <BizModal @register="registerModal" />
+          <BizModal :fieldId="fieldIdnum" @register="registerModal" />
         </template>
         <template v-if="isTable">
-          <TableModal @register="registerModal" />
+          <TableModal :bizId="bizIdnum" @register="registerModal" />
         </template>
         <template v-if="isCol">
-          <ColModal @register="registerModal" />
+          <ColModal :tableId="tableIdnum" @register="registerModal" />
         </template>
       </div>
     </div>

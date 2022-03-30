@@ -1,13 +1,14 @@
 import { defHttp } from '/@/utils/http/axios';
 import { ErrorMessageMode } from '/#/axios';
-import { TableItem, TableListResultVO } from '../../menu/model/model';
+import { BusinessObjectItem, BusinessObjectListResultVO } from '/@/api/menu/model/model';
+
 enum Api {
   BIZ_ADD = '/api-model/model/biz',
   BIZ_DELETE = '/api-model/model/biz/delete',
 }
 
-export function saveOrUpdateBizApi(params: TableItem, mode: ErrorMessageMode = 'message') {
-  return defHttp.request<TableListResultVO>(
+export function saveOrUpdateBizApi(params: BusinessObjectItem, mode: ErrorMessageMode = 'message') {
+  return defHttp.request<BusinessObjectListResultVO>(
     {
       url: Api.BIZ_ADD,
       method: 'POST',

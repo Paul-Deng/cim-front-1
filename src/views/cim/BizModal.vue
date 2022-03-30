@@ -14,9 +14,9 @@
 <script lang="ts" setup>
   import { ref, computed, unref, toRaw } from 'vue';
   // import App from '/@/App.vue';
-  import { BasicForm, useForm } from '/@/components/Form';
+  import { useForm } from '/@/components/Form';
   import { bizFormSchema } from './cim.data';
-  import { BasicModal, useModalInner } from '/@/components/Modal';
+  import { useModalInner } from '/@/components/Modal';
   import { notification } from 'ant-design-vue';
   import { TableItem } from '/@/api/menu/model/model';
   import { BizObjListApi } from '/@/api/menu/repositories/model';
@@ -25,7 +25,9 @@
   // import { router } from '/@/router';
 
   const isUpdate = ref(true);
-  // const updateSuc = ref(false);
+
+  const props = defineProps(['fieldId']);
+
   const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
     labelWidth: 100,
     schemas: bizFormSchema,

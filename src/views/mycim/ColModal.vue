@@ -16,9 +16,11 @@
   import { colFormSchema } from './mycim.data';
   import { BasicModal, useModalInner } from '/@/components/Modal';
   import { notification } from 'ant-design-vue';
-  import { TableItem } from '/@/api/menu/model/model';
+  import { TableColumnItem, TableItem } from '/@/api/menu/model/model';
   import { GetTableColumnApi } from '/@/api/menu/repositories/model';
   import { useColumnStore } from '/@/store/modules/columnList';
+
+  const props = defineProps(['tableId']);
 
   const isUpdate = ref(true);
 
@@ -57,11 +59,11 @@
   async function handleSubmit() {
     try {
       const values = await validate();
-      // TODO custom api
-      var params = values;
+      var params = values;      
+      console.log('params:');
       console.log(params);
       const result = await columnStore.saveOrUpdateColumn(
-        toRaw<TableItem>({
+        toRaw<TableColumnItem>({
           columnDefaultValue: params.columnDefaultValue,
           columnDescription: params.columnDescription,
           columnForeignKey: params.columnForeignKey,
@@ -73,13 +75,7 @@
           columnType: params.columnType,
           columnUnique: params.columnUnique,
           id: params.id,
-          tableId: params.tableId,
-          bizCode: params.bizCode,
-          bizId: params.bizId,
-          bizName: params.bizName,
-          description: params.description,
-          fieldId: params.fieldId,
-          repositoryId: params.repositoryId,
+          tableId: props.tableId,
           userId: params.userId,
         }),
       );

@@ -21,6 +21,7 @@
   import { TableListApi } from '/@/api/menu/repositories/model';
 
   const isUpdate = ref(true);
+  const props = defineProps(['bizId']);
 
   const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
     labelWidth: 100,
@@ -56,11 +57,9 @@
       const result = await tableStore.saveOrUpdateTable(
         toRaw<TableItem>({
           id: params.id,
-          bizId: params.bizId,
-          bizName: params.bizName,
+          bizId: props.bizId,
           description: params.description,
           fieldId: params.fieldId,
-          repositoryId: params.repositoryId,
           tableCode: params.tableCode,
           userId: params.userId,
         }),

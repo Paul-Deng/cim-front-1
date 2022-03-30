@@ -50,3 +50,13 @@ export interface GetUserInfoModel {
   // 介绍
   desc?: string;
 }
+
+export interface Oauth2LoginParams {
+  grantType: string;
+  accessToken?: string;
+  mobile?: string;
+  username?: string;
+  password?: string;
+  accountType?: string;
+}
+

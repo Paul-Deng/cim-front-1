@@ -8,6 +8,7 @@ export default {
     // tooltip
     tooltipErrorLog: '错误日志',
     tooltipLock: '锁定屏幕',
+    dropdownFileCenter: '文件中心',
     tooltipNotify: '消息通知',
 
     tooltipEntryFull: '全屏',

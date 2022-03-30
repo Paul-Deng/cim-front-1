@@ -5,7 +5,7 @@ import { defineStore } from 'pinia';
 import { LOCK_INFO_KEY } from '/@/enums/cacheEnum';
 import { Persistent } from '/@/utils/cache/persistent';
 import { ErrorMessageMode } from '/#/axios';
-import { TableItem, TableListResultVO } from '/@/api/menu/model/model';
+import { FieldItem } from '/@/api/menu/model/model';
 import { deleteFieldApi, saveOrUpdateFieldApi } from '/@/api/sys/model/fieldModel';
 interface LockState {
   lockInfo: Nullable<LockInfo>;
@@ -19,10 +19,10 @@ export const useFieldStore = defineStore({
   getters: {},
   actions: {
     async saveOrUpdateField(
-      params: TableItem & {
+      params: FieldItem & {
         mode?: ErrorMessageMode;
       },
-    ): Promise<TableListResultVO | null> {
+    ): Promise<FieldItem | null> {
       try {
         const { ...fieldParams } = params;
         const data = await saveOrUpdateFieldApi(fieldParams);

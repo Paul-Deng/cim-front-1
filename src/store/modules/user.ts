@@ -7,7 +7,7 @@ import { PageEnum } from '/@/enums/pageEnum';
 import { ROLES_KEY, TOKEN_KEY, USER_INFO_KEY, USER_ID_KEY } from '/@/enums/cacheEnum';
 import { getAuthCache, setAuthCache } from '/@/utils/auth';
 import { GetUserInfoModel, LoginParams, RoleInfo } from '/@/api/sys/model/userModel';
-import { doLogout, getUserInfo, loginApi } from '/@/api/sys/user';
+import { doLogout, getThirdAccessTokenByCodeApi, getThirdKingdeeUrlApi, getUserInfo, loginApi } from '/@/api/sys/user';
 import { useI18n } from '/@/hooks/web/useI18n';
 import { useMessage } from '/@/hooks/web/useMessage';
 import { router } from '/@/router';
@@ -104,6 +104,17 @@ export const useUserStore = defineStore({
         return Promise.reject(error);
       }
     },
+
+    async getThirdKingdeeUrl(): Promise<String> {
+      const data = await getThirdKingdeeUrlApi<String>();
+      return data;
+    },
+
+    async getThirdAccessTokenByCode<T = any>(url: string): Promise<T> {
+      const data = await getThirdAccessTokenByCodeApi<T>(url, 'message');
+      return data;
+    },
+
     async afterLoginAction(goHome?: boolean): Promise<GetUserInfoModel | null> {
       if (!this.getToken) return null;
       // get user info
@@ -184,6 +195,10 @@ export const useUserStore = defineStore({
           await this.logout(true);
         },
       });
+    },
+
+    handleUserFile() {
+      router.push(PageEnum.BASE_USER_FILE);
     },
   },
 });

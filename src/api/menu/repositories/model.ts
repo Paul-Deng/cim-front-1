@@ -405,14 +405,15 @@ export function deleteTableColumnApi(params: number[], mode: ErrorMessageMode = 
   );
 }
 
-export function GetTableColumnApi(params?: TableItem) {
-  return defHttp.request<TableListResultVO>({
-    url: Api.MODEL_COLUMN_LIST,
-    method: 'POST',
-    params,
-    headers: {
-      // @ts-ignore
-      ignoreCancelToken: true,
+export function GetTableColumnApi(params: TableColumnItem, mode: ErrorMessageMode = 'message') {
+  return defHttp.request<TableColumnItem>(
+    {
+      url: Api.MODEL_COLUMN_LIST,
+      method: 'POST',
+      params,
     },
-  });
+    {
+      errorMessageMode: mode,
+    },
+  );
 }

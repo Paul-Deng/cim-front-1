@@ -49,6 +49,17 @@ export const LoginRoute: AppRouteRecordRaw = {
   },
 };
 
+export const KingdeeCloudLoginRoute: AppRouteRecordRaw = {
+  path: '/oauth/kd',
+  name: 'KingdeeCloud',
+  component: () => import('/@/views/sys/sso/kd/index.vue'),
+  meta: {
+    ignoreAuth: true,
+    title: '云之家授权登录',
+    icon: 'bx:bx-home',
+  },
+};
+
 // Basic routing without permission
 export const basicRoutes = [
   LoginRoute,
@@ -56,6 +67,7 @@ export const basicRoutes = [
   RootRoute,
   mapping,
   // MapRoute,
+  KingdeeCloudLoginRoute,
   ...mainOutRoutes,
   REDIRECT_ROUTE,
   PAGE_NOT_FOUND_ROUTE,

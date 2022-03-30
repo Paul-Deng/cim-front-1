@@ -8,4 +8,6 @@ export enum PageEnum {
   ERROR_PAGE = '/exception',
   // error log page path
   ERROR_LOG_PAGE = '/error-log/list',
+
+  BASE_USER_FILE = '/user/files',
 }

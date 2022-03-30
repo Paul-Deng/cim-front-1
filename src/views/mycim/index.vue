@@ -59,16 +59,16 @@
           <RepoModal @register="registerModal" />
         </template>
         <template v-if="isField">
-          <FieldModal @register="registerModal" />
+          <FieldModal :repoId="repoIdnum" @register="registerModal" />
         </template>
         <template v-if="isBiz">
-          <BizModal @register="registerModal" />
+          <BizModal :fieldId="fieldIdnum" @register="registerModal" />
         </template>
         <template v-if="isTable">
-          <TableModal @register="registerModal" />
+          <TableModal :bizId="bizIdnum" @register="registerModal" />
         </template>
         <template v-if="isCol">
-          <ColModal @register="registerModal" />
+          <ColModal :tableId="tableIdnum" @register="registerModal" />
         </template>
       </div>
     </div>
@@ -205,7 +205,6 @@
   });
 
   function handleSelect(keys) {
-    console.log(keys[0]);
     let indexR = keys[0].indexOf('R');
     let indexF = keys[0].indexOf('F');
     let indexB = keys[0].indexOf('B');
@@ -214,6 +213,7 @@
     fieldIdnum.value = keys[0].substring(indexR + 1, indexF);
     bizIdnum.value = keys[0].substring(indexF + 1, indexB);
     tableIdnum.value = keys[0].substring(indexB + 1, indexT);
+
     if (indexB > 1 && indexT < 1) {
       let num = bizIdMap.get(bizIdnum.value + 'B');
       titlestr.value = bizTitleMap.get(bizIdnum.value + 'B');
@@ -398,6 +398,7 @@
     });
   }
   function handleDelete(record: Recordable) {
+    console.log("record");
     console.log(record);
     if (isRepo.value) {
       repoDelete(record);
@@ -613,13 +614,18 @@
       record.fieldId = fieldIdnum.value;
       record.repositoryId = repoIdnum.value;
     }
-
+    console.log("recordStart:");
+    console.log(record);
+    console.log("recordEnd:");
     openModal(true, {
       record,
       isUpdate: false,
     });
     try {
       const values = record;
+      console.log("valuesStart:");
+      console.log(values);
+      console.log("valuesEnd:");
       var params = values;
       const id = params.id;
       console.log('openmodal');

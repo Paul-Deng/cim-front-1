@@ -12,7 +12,7 @@
 
       <template #overlay>
         <Menu @click="handleMenuClick">
-          <MenuItem
+          <!-- <MenuItem
             key="doc"
             :text="t('layout.header.dropdownItemDoc')"
             icon="ion:document-text-outline"
@@ -24,7 +24,14 @@
             key="lock"
             :text="t('layout.header.tooltipLock')"
             icon="ion:lock-closed-outline"
-          />
+          /> -->
+          <!-- //todo 这里需要修改 -->
+          <!-- <MenuItem
+            key="file"
+            :text="t('layout.header.dropdownFileCenter')"
+            icon="ion:file-tray-full-outline"
+          /> -->
+          <!-- <MenuDivider /> -->
           <MenuItem
             key="logout"
             :text="t('layout.header.dropdownItemLoginOut')"
@@ -60,7 +67,7 @@
 
   import { createAsyncComponent } from '/@/utils/factory/createAsyncComponent';
 
-  type MenuEvent = 'logout' | 'doc' | 'lock';
+  type MenuEvent = 'logout' | 'doc' | 'lock' | 'file';
 
   export default defineComponent({
     name: 'UserDropdown',
@@ -96,6 +103,10 @@
         userStore.confirmLoginOut();
       }
 
+      function handleUserFile() {
+        userStore.handleUserFile();
+      }
+
       // open doc
       function openDoc() {
         openWindow(DOC_URL);
@@ -111,6 +122,9 @@
             break;
           case 'lock':
             handleLock();
+            break;
+          case 'file':
+            handleUserFile();
             break;
         }
       }

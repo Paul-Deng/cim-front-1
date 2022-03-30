@@ -2,11 +2,13 @@ import { defHttp } from '/@/utils/http/axios';
 import { LoginParams, LoginResultModel, GetUserInfoModel } from './model/userModel';
 
 import { ErrorMessageMode } from '/#/axios';
+import { ContentTypeEnum } from '/@/enums/httpEnum';
 
 enum Api {
   Login = '/api-auth/oauth/login',
   Logout = '/api-auth/oauth/logout',
   GetUserInfo = '/api-user/user/current',
+  getKingdeeLoginUrl = '/api-auth/oauth/kd/url',
   GetPermCode = '/getPermCode',
 }
 
@@ -23,6 +25,33 @@ export function loginApi(params: LoginParams, mode: ErrorMessageMode = 'modal') 
       errorMessageMode: mode,
     },
   );
+}
+
+export function getThirdKingdeeUrlApi<T = any>() {
+  const resultData = defHttp.request<T>({
+    url: Api.getKingdeeLoginUrl,
+    method: 'GET',
+  });
+  return resultData;
+}
+
+export function getThirdAccessTokenByCodeApi<T = any>(
+  url: string,
+  mode: ErrorMessageMode = 'message',
+) {
+  const resultData = defHttp.request<T>(
+    {
+      url,
+      method: 'GET',
+      headers: {
+        'Content-type': ContentTypeEnum.FORM_URLENCODED,
+      },
+    },
+    {
+      errorMessageMode: mode,
+    },
+  );
+  return resultData;
 }
 
 /**

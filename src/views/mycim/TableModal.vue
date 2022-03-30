@@ -20,6 +20,8 @@
   import { TableItem } from '/@/api/menu/model/model';
   import { TableListApi } from '/@/api/menu/repositories/model';
 
+  const props = defineProps(['bizId']);
+
   const isUpdate = ref(true);
 
   const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
@@ -52,7 +54,9 @@
   });
 
   const getTitle = computed(() => (!unref(isUpdate) ? '新增表' : '编辑表'));
+
   const tableStore = useTableStore();
+
   async function handleSubmit() {
     try {
       const values = await validate();
@@ -62,11 +66,9 @@
       const result = await tableStore.saveOrUpdateTable(
         toRaw<TableItem>({
           id: params.id,
-          bizId: params.bizId,
-          bizName: params.bizName,
+          bizId: props.bizId,
           description: params.description,
           fieldId: params.fieldId,
-          repositoryId: params.repositoryId,
           tableCode: params.tableCode,
           userId: params.userId,
         }),

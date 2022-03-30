@@ -5,6 +5,7 @@ import {
   MappingFieldResultVO,
   MappingFieldVO,
   MappingFieldVOResult,
+  MappingItem,
   MappingTableResultVO,
   MappingTableVO,
   MappingTableWelcome,
@@ -18,6 +19,7 @@ import { MappingBizAddResultVO } from '/@/api/menu/model/mapping';
 import { ErrorMessageMode } from '/#/axios';
 
 enum Api {
+  MAPPING_ADD = '/api-model/mapping',
   MAPPING_FIELD = '/api-model/mapping/field',
   MAPPING_FIELD_ADD = '/api-model/mapping/field/add',
   MAPPING_FIELD_KV = '/api-model/mapping/field/kv',
@@ -31,8 +33,8 @@ enum Api {
   MAPPING_TABLE_ADD = '/api-model/mapping/table/add',
   MAPPING_TABLE_WELCOME_LIST = '/api-model/mapping/table/welcome',
 
-  MAPPING_COLUMN_LIST = '/api-model/mapping/column',
-  MAPPING_COLUMN_ADD = '/api-model/mapping/column/add',
+  MAPPING_COLUMN_LIST = '/api-model/mapping/column/list',
+  MAPPING_COLUMN_ADD = '/api-model/mapping/column',
   MAPPING_COLUMN_DELETE = '/api-model/mapping/column/delete',
 }
 
@@ -138,15 +140,11 @@ export function getMappingBizKVApi(params: MappingBizVO) {
 
 // Table 部分
 
-export function MappingTableWelcomeApi(params: MappingTableWelcome) {
-  return defHttp.request<MappingTableWelcomeResultVO>({
+export function MappingTableWelcomeApi(params: MappingItem) {
+  return defHttp.request<MappingColumnVOResult>({
     url: Api.MAPPING_TABLE_WELCOME_LIST,
     method: 'POST',
     params,
-    headers: {
-      //@ts-ignore
-      ignoreCancelToken: true,
-    },
   });
 }
 
@@ -179,16 +177,11 @@ export function getMappingColumnApi(params: MappingColumnVO & BasicPageParams) {
   return data;
 }
 
-export function saveOrUpdateMappingColumnApi(params: MappingColumnVO[]) {
-  const data = defHttp.request<MappingColumnVOResult>({
-    url: Api.MAPPING_COLUMN_ADD,
+export function saveOrUpdateMappingColumnApi(params: MappingItem[]) {
+  const data = defHttp.request<MappingItem>({
+    url: Api.MAPPING_ADD,
     method: 'POST',
     params,
-    headers: {
-      //@ts-ignore
-      ignoreCancelToken: true,
-      'Content-Type': ContentTypeEnum.JSON,
-    },
   });
   return data;
 }

@@ -274,7 +274,7 @@ export const colFormSchema: FormSchema[] = [
     field: 'columnType',
     label: '字段类型',
     component: 'Input',
-    required: false,
+    required: true,
   },
   {
     field: 'columnLength',
@@ -327,7 +327,7 @@ export const bizFormSchema: FormSchema[] = [
     field: 'businessObjectName',
     label: '业务对象名称',
     component: 'Input',
-    required: false,
+    required: true,
   },
   {
     field: 'description',

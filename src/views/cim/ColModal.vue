@@ -12,15 +12,16 @@
 </template>
 <script lang="ts" setup>
   import { ref, computed, unref, toRaw } from 'vue';
-  import { BasicForm, useForm } from '/@/components/Form';
+  import { useForm } from '/@/components/Form';
   import { colFormSchema } from './cim.data';
-  import { BasicModal, useModalInner } from '/@/components/Modal';
+  import { useModalInner } from '/@/components/Modal';
   import { notification } from 'ant-design-vue';
-  import { TableItem } from '/@/api/menu/model/model';
+  import { TableColumnItem } from '/@/api/menu/model/model';
   import { GetTableColumnApi } from '/@/api/menu/repositories/model';
   import { useColumnStore } from '/@/store/modules/columnList';
 
   const isUpdate = ref(true);
+  const props = defineProps(['tableId']);
 
   const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
     labelWidth: 100,
@@ -52,9 +53,10 @@
       const values = await validate();
       // TODO custom api
       var params = values;
+      console.log('params:');
       console.log(params);
       const result = await columnStore.saveOrUpdateColumn(
-        toRaw<TableItem>({
+        toRaw<TableColumnItem>({
           columnDefaultValue: params.columnDefaultValue,
           columnDescription: params.columnDescription,
           columnForeignKey: params.columnForeignKey,
@@ -67,12 +69,6 @@
           columnUnique: params.columnUnique,
           id: params.id,
           tableId: params.tableId,
-          bizCode: params.bizCode,
-          bizId: params.bizId,
-          bizName: params.bizName,
-          description: params.description,
-          fieldId: params.fieldId,
-          repositoryId: params.repositoryId,
           userId: params.userId,
         }),
       );

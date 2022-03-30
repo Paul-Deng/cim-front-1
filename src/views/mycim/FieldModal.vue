@@ -16,11 +16,14 @@
   import { fieldFormSchema } from './mycim.data';
   import { BasicModal, useModalInner } from '/@/components/Modal';
   import { notification } from 'ant-design-vue';
-  import { TableItem } from '/@/api/menu/model/model';
+  import { FieldItem } from '/@/api/menu/model/model';
   import { FieldListApi } from '/@/api/menu/repositories/model';
   import { useFieldStore } from '/@/store/modules/fieldList';
 
+  const props = defineProps(['repoId']);
+
   const isUpdate = ref(true);
+
   const fieldStore = useFieldStore();
 
   const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
@@ -53,6 +56,7 @@
   });
 
   const getTitle = computed(() => (!unref(isUpdate) ? '新增领域' : '编辑领域'));
+
   async function handleSubmit(this: any) {
     try {
       const values = await validate();
@@ -60,11 +64,11 @@
       var params = values;
       console.log(params);
       const result = await fieldStore.saveOrUpdateField(
-        toRaw<TableItem>({
+        toRaw<FieldItem>({
           fieldCode: params.fieldCode,
           fieldName: params.fieldName,
           id: params.id,
-          repositoryId: params.repositoryId,
+          repositoryId: props.repoId,
         }),
       );
       if (result) {
@@ -72,9 +76,6 @@
           message: '提交成功，请刷新页面',
           duration: 1,
         });
-        // setTimeout(async () => {
-        //   document.location.reload();
-        // }, 500);
       } else {
         notification.error({
           message: '提交失败',

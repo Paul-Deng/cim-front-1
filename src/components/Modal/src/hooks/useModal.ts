@@ -79,7 +79,6 @@ export function useModal(): UseModalReturnType {
       getInstance()?.setModalProps({
         visible: visible,
       });
-
       if (!data) return;
       const id = unref(uid);
       if (openOnSet) {

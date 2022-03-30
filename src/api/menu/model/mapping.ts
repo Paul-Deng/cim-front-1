@@ -1,93 +1,40 @@
 import { BasicFetchResult } from '../../model/baseModel';
-import { BusinessObjectItem, TableColumnItem, TableItem } from '/@/api/menu/model/model';
-import { FieldItem } from './model';
+import { TableColumnItem, TableItem } from '/@/api/menu/model/model';
 
 export interface MappingWelcome {
   id?: number;
   mappingName?: string;
-  standardFieldId?: number;
-  standardBusinessObjectId?: number;
-  standardTableId?: number;
-  customFieldId?: number;
-  customBusinessObjectId?: number;
-  customTableId?: number;
+  targetFieldId?: number;
+  targetBusinessObjectId?: number;
+  targetTableId?: number;
+  sourceFieldId?: number;
+  sourceBusinessObjectId?: number;
+  sourceTableId?: number;
   mappingUserId?: number;
   createdTime?: Date;
   updatedTime?: Date;
 }
 
-export interface MappingTableWelcome {
-  id?: number;
-  mappingBiz?: MappingBizVO;
-  standardTable: TableItem;
-  customTable: TableItem;
-  standardColumn: TableColumnItem;
-  customColumn: TableColumnItem;
-  createdTime?: Date;
-  updatedTime?: Date;
-}
-
-export type MappingTableWelcomeResultVO = BasicFetchResult<MappingTableWelcome>;
-
-export interface MappingBizAddVO {
-  id?: number;
-  customFieldId?: number;
-  customBusinessObjectId?: number;
-}
-
-export type MappingBizAddResultVO = BasicFetchResult<MappingBizAddVO>;
-
 export interface MappingColumn {
   id?: number;
-  customColumnId?: number;
-  standardColumnId?: number;
+  sourceColumnId?: number;
+  targetColumnId?: number;
   mappingTableId?: number;
 }
 
 export interface MappingColumnVO {
   id?: number;
   mappingTableId?: number;
-  standard?: TableColumnItem;
-  custom?: TableColumnItem;
+  target?: TableColumnItem;
+  source?: TableColumnItem;
 }
 
 export type MappingColumnVOResult = BasicFetchResult<MappingColumnVO>;
 
-export interface MappingField {
-  id?: number;
-  standardFieldId?: number;
-  customFieldId?: number;
-  createdTime?: Date;
-  updatedTime?: Date;
-  extendFieldOne?: string;
-  extendFieldTwo?: number;
-}
-
-export type MappingFieldResultVO = BasicFetchResult<MappingField>;
-
-export interface MappingFieldVO {
-  id?: number;
-  standard?: FieldItem;
-  custom?: FieldItem;
-}
-
-export type MappingFieldVOResult = BasicFetchResult<MappingFieldVO>;
-
-export interface MappingBizVO {
-  id?: number;
-  mappingFieldId?: number;
-  standard?: BusinessObjectItem;
-  custom?: BusinessObjectItem;
-  createdTime?: Date;
-  updatedTime?: Date;
-}
-export type MappingBizVOResult = BasicFetchResult<MappingBizVO>;
-
 export interface MappingTable {
   id?: number;
-  mappingBusinessObjectId?: number;
-  standardTableId: number;
-  customTableId: number;
+  sourceId: number;
+  targetId?: number;
   createdTime?: Date;
   updatedTime?: Date;
 }
@@ -95,21 +42,25 @@ export type MappingTableResultVO = BasicFetchResult<MappingTable>;
 
 export interface MappingTableVO {
   id?: number;
-  standard: TableItem;
-  custom: TableItem;
+  target: TableItem;
+  source: TableItem;
+  createdTime?: Date;
+  updatedTime?: Date;
+}
+
+export interface MappingItem {
+  id?: number;
+  sourceRepoId?: number;
+  targetRepoId?: number;
+  sourceFieldId?: number;
+  targetFieldId?: number;
+  sourceBizId?: number;
+  targetBizId?: number;
+  sourceTableId?: number;
+  targetTableId?: number;
+  sourceColumnId?: number;
+  targetColumnId?: number;
   createdTime?: Date;
   updatedTime?: Date;
 }
 export type MappingTableVOResult = BasicFetchResult<MappingTableVO>;
-
-export interface MappingItem {
-  id?: number;
-  customId?: number;
-  standardId?: number;
-  mappingType?: number;
-  parentId?: number;
-  createdTime?: Date;
-  updatedTime?: Date;
-  repositoryId?: number;
-}
-export type MappingItemResult = BasicFetchResult<MappingItem>;

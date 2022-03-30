@@ -1,13 +1,14 @@
 import { defHttp } from '/@/utils/http/axios';
 import { ErrorMessageMode } from '/#/axios';
-import { TableItem, TableListResultVO } from '../../menu/model/model';
+import { RepositoryItem } from '../../menu/model/model';
+import { RepositoryVOPageResult } from '/@/api/menu/model/model';
 enum Api {
   REPO_ADD = '/api-model/model/repository',
   REPO_DELETE = '/api-model/model/repository/delete',
 }
 
-export function saveOrUpdateRepoApi(params: TableItem, mode: ErrorMessageMode = 'message') {
-  return defHttp.request<TableListResultVO>(
+export function saveOrUpdateRepoApi(params: RepositoryItem, mode: ErrorMessageMode = 'message') {
+  return defHttp.request<RepositoryVOPageResult>(
     {
       url: Api.REPO_ADD,
       method: 'POST',

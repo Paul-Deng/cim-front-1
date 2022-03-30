@@ -16,7 +16,7 @@
   import { repoFormSchema } from './mycim.data';
   import { BasicModal, useModalInner } from '/@/components/Modal';
   import { notification } from 'ant-design-vue';
-  import { TableItem } from '/@/api/menu/model/model';
+  import { RepositoryItem, TableItem } from '/@/api/menu/model/model';
   import { repositoryListApi } from '/@/api/menu/repositories/model';
   import { useRepoStore } from '/@/store/modules/repoList';
 
@@ -50,7 +50,9 @@
   });
 
   const getTitle = computed(() => (!unref(isUpdate) ? '新增模型' : '编辑模型'));
+
   const repoStore = useRepoStore();
+
   async function handleSubmit() {
     try {
       const values = await validate();
@@ -58,9 +60,8 @@
       var params = values;
       console.log(params);
       const result = await repoStore.saveOrUpdateRepo(
-        toRaw<TableItem>({
+        toRaw<RepositoryItem>({
           id: params.id,
-          description: params.description,
           repositoryType: params.repositoryType,
           repositoryName: params.repositoryName,
         }),

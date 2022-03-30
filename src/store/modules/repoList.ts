@@ -5,8 +5,9 @@ import { defineStore } from 'pinia';
 import { LOCK_INFO_KEY } from '/@/enums/cacheEnum';
 import { Persistent } from '/@/utils/cache/persistent';
 import { ErrorMessageMode } from '/#/axios';
-import { TableItem, TableListResultVO } from '/@/api/menu/model/model';
+import { RepositoryVOPageResult } from '/@/api/menu/model/model';
 import { deleteRepoApi, saveOrUpdateRepoApi } from '/@/api/sys/model/repoModel';
+import { RepositoryItem } from '../../api/menu/model/model';
 interface LockState {
   lockInfo: Nullable<LockInfo>;
 }
@@ -19,10 +20,10 @@ export const useRepoStore = defineStore({
   getters: {},
   actions: {
     async saveOrUpdateRepo(
-      params: TableItem & {
+      params: RepositoryItem & {
         mode?: ErrorMessageMode;
       },
-    ): Promise<TableListResultVO | null> {
+    ): Promise<RepositoryVOPageResult | null> {
       try {
         const { ...repoParams } = params;
         const data = await saveOrUpdateRepoApi(repoParams);

@@ -16,13 +16,13 @@
   import { bizFormSchema } from './mycim.data';
   import { BasicModal, useModalInner } from '/@/components/Modal';
   import { notification } from 'ant-design-vue';
-  import { TableItem } from '/@/api/menu/model/model';
+  import { BusinessObjectItem } from '/@/api/menu/model/model';
   import { BizObjListApi } from '/@/api/menu/repositories/model';
   import { useBizStore } from '/@/store/modules/bizList';
-  // import { GlobalVars } from './mycim.data';
+
+  const props = defineProps(['fieldId']);
 
   const isUpdate = ref(true);
-  // let updateSuc = getCurrentInstance()?.appContext.config.globalProperties.$updateSuc;
 
   const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
     labelWidth: 100,
@@ -54,23 +54,22 @@
 
   // const app = createApp(App);
   const getTitle = computed(() => (!unref(isUpdate) ? '新增业务对象' : '编辑业务对象'));
+
   const bizStore = useBizStore();
+
   async function handleSubmit(this: any) {
     try {
       const values = await validate();
       // TODO custom api
       var params = values;
-      console.log('????');
       console.log(params);
       const result = await bizStore.saveOrUpdateBiz(
-        toRaw<TableItem>({
+        toRaw<BusinessObjectItem>({
           id: params.id,
-          bizId: params.id,
+          fieldId: props.fieldId,
           businessObjectCode: params.businessObjectCode,
           businessObjectName: params.businessObjectName,
           description: params.description,
-          fieldId: params.fieldId,
-          repositoryId: params.repositoryId,
           userId: params.userId,
         }),
       );

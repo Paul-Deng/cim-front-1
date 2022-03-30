@@ -40,7 +40,7 @@ export const getRouteList = () => {
   return defHttp.get<getMenuListResultModel>({ url: Api.RouteList });
 };
 export const getRoleListByPage = (params?: RolePageParams) =>
-  defHttp.get<RolePageListGetResultModel>({ url: Api.RolePageList, params });
+  defHttp.post<RolePageListGetResultModel>({ url: Api.RolePageList, params });
 
 export const getAllRoleList = (params?: RoleParams) =>
   defHttp.get<RoleListGetResultModel>({ url: Api.GetAllRoleList, params });
